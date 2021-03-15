@@ -1,0 +1,33 @@
+# See https://help.github.com/ignore-files/ for more about ignoring files.
+
+# dependencies
+/node_modules/
+
+# testing
+/coverage/
+/test/
+
+# bundle production
+/build/
+
+# stats
+/stats/
+stats.json
+
+# reports
+/reports/
+
+# misc
+.DS_Store
+.env
+
+# log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# editor
+.idea
+
+# Cache
+.eslintcache

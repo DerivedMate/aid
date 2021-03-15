@@ -1,0 +1,21 @@
+/// Normalize and sanitize css with browserslist
+/// https://www.npmjs.com/package/postcss-normalize
+@import-normalize;
+@import-sanitize;
+
+@import 'theme';
+
+html,
+body {
+  background-color: $background-color;
+  color: $color;
+  font-family: 'Open Sans Light', 'Source Code Pro Medium', sans-serif;
+  font-size: 100%;
+  height: 100%;
+}
+
+.appWrapper {
+  box-sizing: border-box;
+  height: 100%;
+  padding: 3rem;
+}
