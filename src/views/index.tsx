@@ -10,3 +10,5 @@ const loadableOptions = {
 export const Home = loadable(() => import(/* webpackChunkName: 'home' */ './home'), loadableOptions)
 
 export const NotFound = loadable(() => import(/* webpackChunkName: 'notFound' */ './not-found'), loadableOptions)
+
+export const About = loadable(() => import(/* webpackChunkName: 'about' */ './about'), loadableOptions)

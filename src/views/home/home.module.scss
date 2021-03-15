@@ -40,6 +40,11 @@
   }
 }
 
+.testLink {
+  color: #2c2c2c;
+  text-align: center;
+}
+
 @keyframes draw-path {
   to {
     stroke-dashoffset: 0;

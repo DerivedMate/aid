@@ -10,7 +10,7 @@ export interface IState {
 }
 
 export default class ErrorBoundary extends React.Component<IProperties, IState> {
-  static getDerivedStateFromError(error: Error): IState {
+  static makeError(error: Error): IState {
     return { hasError: true, error }
   }
 

@@ -5,9 +5,13 @@
 
 @import 'theme';
 
+:root {
+  --color: #fefefe;
+}
+
 html,
 body {
-  background-color: $background-color;
+  background-color: var(--color);
   color: $color;
   font-family: 'Open Sans Light', 'Source Code Pro Medium', sans-serif;
   font-size: 100%;

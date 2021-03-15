@@ -37,45 +37,16 @@
     "type": "git",
     "url": "git+https://github.com/blephy/reactjs-typescript-pwa.git"
   },
-  "keywords": [
-    "react",
-    "typescript",
-    "eslint",
-    "stylelint",
-    "markdownlint",
-    "htmlhint",
-    "prettier",
-    "webpack",
-    "postcss",
-    "svgo",
-    "svgr",
-    "babel",
-    "lint-staged",
-    "commitlint",
-    "husky",
-    "github actions",
-    "normalize",
-    "sanitize",
-    "css modules",
-    "lighthouse",
-    "browserslist",
-    "spa",
-    "pwa"
-  ],
-  "author": {
-    "name": "Allan Dollé",
-    "email": "hello@allandolle.fr",
-    "url": "https://allandolle.fr/"
-  },
+  "keywords": [],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/blephy/reactjs-typescript-pwa/issues"
+    "url": "https://github.com/DerivedMate/aid/issues"
   },
   "engines": {
     "node": ">=12",
     "npm": ">=6"
   },
-  "homepage": "https://github.com/blephy/reactjs-typescript-pwa#readme",
+  "homepage": "https://github.com/DerivedMate/aid",
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/plugin-proposal-class-properties": "^7.10.4",
@@ -92,6 +63,7 @@
     "@types/css-minimizer-webpack-plugin": "^1.1.0",
     "@types/enzyme": "^3.10.7",
     "@types/enzyme-adapter-react-16": "^1.0.6",
+    "@types/express": "^4.17.11",
     "@types/jest": "^26.0.14",
     "@types/loadable__component": "^5.13.1",
     "@types/mini-css-extract-plugin": "^0.9.1",

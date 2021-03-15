@@ -1,11 +1,3 @@
-/* TEAM */
-  Developer: Allan Dollé
-  Contact: hello@allandolle.fr
-	Linkedin: https://www.linkedin.com/in/blephy/
-	From: Amiens, France
-
-/* THANKS */
-
 /* SITE */
 	Language: English
   Xhtml: Compatible

@@ -31,3 +31,5 @@ yarn-error.log*
 
 # Cache
 .eslintcache
+
+README.html

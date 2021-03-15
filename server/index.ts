@@ -30,7 +30,7 @@ const corsOptions = {
 /**
  * Init production server
  */
-function initServer() {
+const initServer = () => {
   const server = express()
 
   server.use(
@@ -92,8 +92,12 @@ function initServer() {
         frameAncestors: ["'none'"],
         workerSrc: ["'self'"],
         manifestSrc: ["'self'"],
-        reportUri: [process.env.CSP_REPORT_URI],
-        reportTo: [process.env.CSP_REPORT_URI],
+        reportUri: [
+          /* process.env.CSP_REPORT_URI */
+        ],
+        reportTo: [
+          /* process.env.CSP_REPORT_URI */
+        ],
         upgradeInsecureRequests: '',
         blockAllMixedContent: ''
       }
@@ -131,7 +135,7 @@ function initServer() {
   )
 
   /** Set Permissions-Policy header */
-  server.use((req, res, next) => {
+  server.use((_req, res, next) => {
     res.setHeader('Permissions-Policy', 'geolocation=(self), microphone=(), fullscreen=(self)')
     next()
   })

@@ -2,7 +2,6 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { RouteComponentProps } from 'react-router-dom'
 
-import RSAllanDolle from '@/database/rich-snippets/me'
 import PwaReact from '@/images/pwa-react-uhd-trans.png'
 
 import styles from './home.module.scss'
@@ -11,9 +10,7 @@ type TMatch = {
   path: string
 }
 
-export default function Home({
-  match
-}: RouteComponentProps<TMatch>): React.FunctionComponentElement<RouteComponentProps> {
+const Home = ({ match }: RouteComponentProps<TMatch>): React.FunctionComponentElement<RouteComponentProps> => {
   const { path } = match
   const canonicalUrl = `${process.env.SERVER_BASE_URL}${path}`
   const appTitle = 'ReactJS Progressive Web App'
@@ -26,7 +23,6 @@ export default function Home({
         <title>Home</title>
         <link rel='canonical' href={canonicalUrl} />
         <meta name='description' content={description} />
-        <script type='application/ld+json'>{JSON.stringify(RSAllanDolle)}</script>
       </Helmet>
       <div className={styles.container}>
         <h1 className={styles.title}>{appTitle}</h1>
@@ -42,7 +38,11 @@ export default function Home({
           loading='lazy'
           alt='Pwa React'
         />
+        <a href='./about' className={styles.testLink}>
+          About
+        </a>
       </div>
     </>
   )
 }
+export default Home

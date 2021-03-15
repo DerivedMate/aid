@@ -1,5 +1,3 @@
-Contact: hello@allandolle.fr
-Preferred-Languages: fr, en
 #Hiring:
 #Policy:
 #Canonical:
