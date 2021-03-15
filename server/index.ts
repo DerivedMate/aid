@@ -27,25 +27,7 @@ const corsOptions = {
   optionsSuccessStatus: 200
 }
 
-/**
- * Init production server
- */
-const initServer = () => {
-  const server = express()
-
-  server.use(
-    bodyParser.json({
-      type: ['application/json']
-    })
-  )
-
-  /** Set compression */
-  server.use(compression())
-
-  /**
-   * Security
-   */
-
+const initSecurity = server => {
   /** Set HTTP parameter pollution */
   server.use(hpp())
 
@@ -153,6 +135,24 @@ const initServer = () => {
     )
     next()
   })
+}
+
+/**
+ * Init production server
+ */
+const initServer = () => {
+  const server = express()
+
+  server.use(
+    bodyParser.json({
+      type: ['application/json']
+    })
+  )
+
+  initSecurity(server)
+
+  /** Set compression */
+  server.use(compression())
 
   /**
    * Serve static files
