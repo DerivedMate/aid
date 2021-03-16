@@ -1,5 +1,5 @@
 const path = require('path')
-const express = require('express')
+import express = require('express')
 const fallback = require('express-history-api-fallback')
 const compression = require('compression')
 const helmet = require('helmet')
