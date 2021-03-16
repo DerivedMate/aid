@@ -1,6 +1,6 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import { RouteComponentProps } from 'react-router-dom'
+import { Link, RouteComponentProps } from 'react-router-dom'
 
 import PwaReact from '@/images/pwa-react-uhd-trans.png'
 
@@ -38,9 +38,9 @@ const Home = ({ match }: RouteComponentProps<TMatch>): React.FunctionComponentEl
           loading='lazy'
           alt='Pwa React'
         />
-        <a href='./about' className={styles.testLink}>
+        <Link to='/about' className={styles.testLink}>
           About
-        </a>
+        </Link>
       </div>
     </>
   )

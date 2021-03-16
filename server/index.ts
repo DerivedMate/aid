@@ -1,11 +1,14 @@
 const path = require('path')
 import express = require('express')
+import { readFileSync } from 'fs'
 const fallback = require('express-history-api-fallback')
 const compression = require('compression')
 const helmet = require('helmet')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const hpp = require('hpp')
+import http = require('http')
+import https = require('https')
 require('dotenv').config()
 
 /**
@@ -26,6 +29,10 @@ const corsOptions = {
   origin: process.env.HTTPS === 'true' ? `https://${process.env.DOMAIN_NAME}` : `http://${process.env.DOMAIN_NAME}`,
   optionsSuccessStatus: 200
 }
+
+const privateKey = readFileSync(process.env.KEY_PATH, 'utf-8')
+const publicKey = readFileSync(process.env.CRT_PATH, 'utf-8')
+const credentials = { key: privateKey, cert: publicKey }
 
 const initSecurity = server => {
   /** Set HTTP parameter pollution */
@@ -141,30 +148,30 @@ const initSecurity = server => {
  * Init production server
  */
 const initServer = () => {
-  const server = express()
+  const app = express()
 
-  server.use(
+  app.use(
     bodyParser.json({
       type: ['application/json']
     })
   )
 
-  initSecurity(server)
+  initSecurity(app)
 
   /** Set compression */
-  server.use(compression())
+  app.use(compression())
 
   /**
    * Serve static files
    */
-  server.use(express.static(distPathToServe, staticExpressOption))
+  app.use(express.static(distPathToServe, staticExpressOption))
 
   /**
    * Fallback history for SPA
    * Allow to serve static files and redirect to .html for not found assets / routes
    * Needed for SPA / PWA
    */
-  server.use(
+  app.use(
     fallback('index.html', {
       root: distPathToServe,
       lastModified: staticExpressOption.lastModified,
@@ -176,14 +183,17 @@ const initServer = () => {
   /**
    * Permit preflight request
    */
-  server.options('*', cors())
+  app.options('*', cors())
 
   /**
    * Server start
    */
-  server.listen(serverPort, () => {
-    console.log('Listening on port:', serverPort)
-  })
+  // app.listen(serverPort, () => {
+  //   console.log('Listening on port:', serverPort)
+  // })
+  // const httpServer = http.createServer(app)
+  const httpsServer = https.createServer(credentials, app)
+  httpsServer.listen(serverPort)
 }
 
 initServer()
