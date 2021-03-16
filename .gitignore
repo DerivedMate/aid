@@ -38,3 +38,4 @@ README.html
 *.crt
 *.key
 *.csr
+*.pem

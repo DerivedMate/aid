@@ -1,8 +1,8 @@
 import React from 'react'
+import PwaReact from '@/images/pwa-react-uhd-trans.png'
 import { Helmet } from 'react-helmet'
 import { Link, RouteComponentProps } from 'react-router-dom'
-
-import PwaReact from '@/images/pwa-react-uhd-trans.png'
+import { Button } from '@material-ui/core'
 
 import styles from './home.module.scss'
 
@@ -10,7 +10,34 @@ type TMatch = {
   path: string
 }
 
+const showLocalNotification = (title: string, body: string): void => {
+  const options = {
+    body
+  }
+
+  navigator.serviceWorker
+    .getRegistration()
+    .then(r => r.showNotification(title, options))
+    .catch(e => {
+      console.error(e)
+    })
+}
+
 const Home = ({ match }: RouteComponentProps<TMatch>): React.FunctionComponentElement<RouteComponentProps> => {
+  const onPressReg = () => {
+    window.Notification.requestPermission()
+      .then(notPerm => {
+        if (notPerm !== 'granted') {
+          throw new Error('Permission not granted for Notification')
+        }
+      })
+      .catch(console.error)
+  }
+
+  const onPressTrigger = () => {
+    showLocalNotification('This better fucking work', 'Coño, te mataré si no funciona esta wea... te lo juro')
+  }
+
   const { path } = match
   const canonicalUrl = `${process.env.SERVER_BASE_URL}${path}`
   const appTitle = 'ReactJS Progressive Web App'
@@ -41,8 +68,15 @@ const Home = ({ match }: RouteComponentProps<TMatch>): React.FunctionComponentEl
         <Link to='/about' className={styles.testLink}>
           About
         </Link>
+        <Button color='primary' onClick={onPressReg}>
+          Ask me
+        </Button>
+        <Button color='primary' onClick={onPressTrigger}>
+          Trigger me
+        </Button>
       </div>
     </>
   )
 }
+
 export default Home

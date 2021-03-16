@@ -1,6 +1,6 @@
 import '@/styles/index.scss'
 
-import React from 'react'
+import React, { ReactElement } from 'react'
 import { Helmet } from 'react-helmet'
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom'
 
@@ -16,7 +16,7 @@ const DEFAULT_PROPS: IProps = {
   routes: []
 }
 
-export const App = (props: IProps) => {
+export const App = (props: IProps): ReactElement => {
   const { routes } = Object.assign(DEFAULT_PROPS, props)
 
   return (

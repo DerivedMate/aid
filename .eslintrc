@@ -62,7 +62,7 @@
         "next": ["const", "let"]
       }
     ],
-    "no-console": 1,
+    "no-console": 0,
     "semi": ["error", "never"],
     "comma-dangle": ["error", "never"],
     "import/no-extraneous-dependencies": [
@@ -71,7 +71,7 @@
         "devDependencies": true
       }
     ],
-    "simple-import-sort/sort": "error",
+    "simple-import-sort/sort": "off",
     "sort-imports": "off",
     "import/first": "error",
     "import/newline-after-import": "error",

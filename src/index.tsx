@@ -12,16 +12,20 @@ render(<App routes={routes} />, DOM_NODE)
 /**
  * Service worker register and event listeners
  */
-async function registerSw(): Promise<void> {
-  if ('serviceWorker' in navigator) {
-    const { Workbox } = await import(/* webpackChunkName: 'workbox-window' */ 'workbox-window')
+const registerSw = async (): Promise<ServiceWorkerRegistration> => {
+  const { Workbox } = await import(/* webpackChunkName: 'workbox-window' */ 'workbox-window')
 
-    const wb = new Workbox('/service-worker.js')
+  const wb = new Workbox('/service-worker.js')
 
-    wb.register()
+  return wb.register()
+}
+
+const initServices = async () => {
+  if (process.env.NODE_ENV === 'production') {
+    if ('serviceWorker' in navigator) {
+      await registerSw()
+    }
   }
 }
 
-if (process.env.NODE_ENV === 'production') {
-  registerSw()
-}
+initServices()
