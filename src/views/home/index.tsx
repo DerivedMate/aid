@@ -34,6 +34,24 @@ const Home = ({ match }: RouteComponentProps<TMatch>): React.FunctionComponentEl
       .catch(console.error)
   }
 
+  navigator.serviceWorker.addEventListener('message', msg => {
+    console.dir(msg)
+  })
+
+  const onNotify = () => {
+    navigator.serviceWorker.getRegistration().then(
+      r =>
+        r &&
+        r.active.postMessage(
+          JSON.stringify({
+            type: 'LO_QUE_SEA',
+            title: 'Message title',
+            body: 'El cuerpo o lo que sea, no sé'
+          })
+        )
+    )
+  }
+
   const onPressTrigger = () => {
     showLocalNotification('This better fucking work', 'Coño, te mataré si no funciona esta wea... te lo juro')
   }
@@ -68,11 +86,17 @@ const Home = ({ match }: RouteComponentProps<TMatch>): React.FunctionComponentEl
         <Link to='/about' className={styles.testLink}>
           About
         </Link>
+        <Link to='/signin' className={styles.testLink}>
+          Sign In
+        </Link>
         <Button color='primary' onClick={onPressReg}>
           Ask me
         </Button>
         <Button color='primary' onClick={onPressTrigger}>
           Trigger me
+        </Button>
+        <Button color='primary' onClick={onNotify}>
+          Send a message
         </Button>
       </div>
     </>

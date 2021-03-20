@@ -1,0 +1,21 @@
+import { EndPoint } from './_common'
+import { Express } from 'express-serve-static-core'
+import { registerSupervisor } from '../database/schema/Supervisor'
+
+class Signup extends EndPoint {
+  mount(s: Express, prefix: string) {
+    s.post(`${prefix}/signup`, (req, res) => {
+      const payload = req.body
+      console.dir(payload)
+      registerSupervisor(payload)
+        .then(r => {
+          res.sendStatus(r ? 200 : 401)
+        })
+        .catch(e => {
+          res.status(401).send(JSON.stringify(e))
+        })
+    })
+  }
+}
+
+export const instance = new Signup()

@@ -1,6 +1,6 @@
 import { LoadableComponent } from '@loadable/component'
 
-import { About, Home, NotFound } from '@/views'
+import { About, Home, NotFound, SignIn } from '@/views'
 
 export interface IRoute {
   name: string
@@ -26,6 +26,11 @@ const routes: IRoute[] = [
     name: 'about',
     path: '/about',
     component: About
+  },
+  {
+    name: 'signin',
+    path: '/signin',
+    component: SignIn
   }
 ]
 

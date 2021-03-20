@@ -2,6 +2,7 @@ create database aid owner aidclient;
 \c aid;
 
 CREATE EXTENSION pgcrypto;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Custom types
 create type bloodtype as enum (
@@ -13,7 +14,7 @@ create type bloodtype as enum (
 
 -- Highlevel user structures
 create table if not exists supervisor (
-  supervisor_id UUID,
+  supervisor_id UUID default uuid_generate_v4(),
   email varchar(255) not null unique,
   password text not null,
   name varchar(255) not null,
@@ -23,7 +24,7 @@ create table if not exists supervisor (
 grant all privileges on table supervisor to aidclient;
 
 create table if not exists supervised (
-  supervised_id UUID,
+  supervised_id UUID default uuid_generate_v4(),
   device_id UUID not null unique,
   auth text not null unique,
   primary key (supervised_id)
@@ -31,7 +32,7 @@ create table if not exists supervised (
 grant all privileges on table supervised to aidclient;
 
 create table if not exists supervision (
-  supervision_id UUID,
+  supervision_id UUID default uuid_generate_v4(),
   supervisor_id UUID not null,
   supervised_id UUID not null,
   primary key (supervision_id)
@@ -41,7 +42,7 @@ grant all privileges on table supervision to aidclient;
 
 -- User-specific info
 create table if not exists medicine (
-  medicine_id UUID,
+  medicine_id UUID default uuid_generate_v4(),
   name varchar(255) not null,
   amount int default 1,
   unit varchar(255) default '',
@@ -50,7 +51,7 @@ create table if not exists medicine (
 grant all privileges on table medicine to aidclient;
 
 create table if not exists take (
-  take_id UUID,
+  take_id UUID default uuid_generate_v4(),
   medicine_id UUID not null,
   date timestamp,
   primary key (take_id)
@@ -58,7 +59,7 @@ create table if not exists take (
 grant all privileges on table take to aidclient;
 
 create table if not exists info (
-  info_id UUID,
+  info_id UUID default uuid_generate_v4(),
   supervision UUID not null,
   name varchar(255) not null,
   lastname varchar(255) not null,
@@ -69,7 +70,7 @@ create table if not exists info (
 grant all privileges on table info to aidclient;
 
 create table if not exists position (
-  position_id UUID,
+  position_id UUID default uuid_generate_v4(),
   supervised_id UUID not null unique,
   pos point,
   primary key (position_id)

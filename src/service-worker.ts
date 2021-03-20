@@ -127,19 +127,38 @@ registerRoute(
   })
 )
 
-self.addEventListener('message', (event: { data: { type: string } }) => {
-  if (!event.data || !event.data.type) {
+self.addEventListener('message', (event: { data: string }) => {
+  interface IData {
+    type: string
+    title: string
+    body: string
+  }
+  const data: IData = JSON.parse(event.data) as IData
+
+  if (!data || !data.type) {
     return
   }
 
-  switch (event.data.type) {
+  switch (data.type) {
     case MessageTypes.SKIP_WAITING:
       self.skipWaiting()
       break
     case MessageTypes.CLIENTS_CLAIM:
       self.clients.claim()
       break
+    case MessageTypes.LO_QUE_SEA:
+      self.registration.showNotification(data.title, {
+        ...data,
+        body: data.body
+      })
+      break
     default:
       break
   }
+})
+
+self.addEventListener('activate', () => {
+  self.registration.showNotification('Active', {
+    body: 'Más sobre el siendo activo mío'
+  })
 })

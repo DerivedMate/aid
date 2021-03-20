@@ -6,6 +6,8 @@ const compression = require('compression')
 // const cors = require('cors')
 const bodyParser = require('body-parser')
 import https = require('https')
+import { init_api } from './api'
+// import { query } from './database/db'
 // import { initSecurity } from './security'
 require('dotenv').config()
 
@@ -46,6 +48,8 @@ const initServer = () => {
 
   app.use(express.static(distPathToServe, staticExpressOption))
 
+  init_api(app)
+
   app.use(
     fallback('index.html', {
       root: distPathToServe,
@@ -63,6 +67,7 @@ const initServer = () => {
   const httpsServer = https.createServer(credentials, app)
   httpsServer.listen(serverPort, () => {
     console.log(`listening at ${serverPort}`)
+    // query('select * from supervisor;', []).then(console.dir).catch(console.error  )
   })
 }
 
