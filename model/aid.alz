@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<heimer-mind-map version="2.2.0">
+ <color r="31" b="31" g="31"/>
+ <edge-color r="0" b="0" g="0"/>
+ <grid-color r="160" b="164" g="160"/>
+ <edge-width>2000</edge-width>
+ <text-size>11000</text-size>
+ <corner-radius>5000</corner-radius>
+ <graph>
+  <node index="6" h="118000" x="704565" y="48744" w="227000">
+   <text>Position {
+position_id : uuid4
+supervised_id : uuid4 !n u,
+pos : point
+}</text>
+   <color r="255" b="255" g="255"/>
+   <text-color r="0" b="0" g="0"/>
+  </node>
+  <node index="2" h="118000" x="390113" y="-139874" w="202000">
+   <text>Supervised {
+id : uuid4
+device_id : uuid4?
+auth : diffie_mixed_key
+}</text>
+   <color r="255" b="255" g="255"/>
+   <text-color r="0" b="0" g="0"/>
+  </node>
+  <node index="3" h="136000" x="695478" y="-337304" w="200000">
+   <text>Medicine {
+id : uuid4
+name : varchar(255)
+amount : int
+unit : varchar(255)
+}</text>
+   <color r="255" b="255" g="255"/>
+   <text-color r="0" b="0" g="0"/>
+  </node>
+  <node index="0" h="154000" x="-269353" y="-137125" w="223000">
+   <text>Supervisor {
+id : uuid4
+email : varchar(255)
+password : hash&lt;bcrypt>
+name : varchar(255)
+lastname : varchar(255)
+}</text>
+   <color r="255" b="255" g="255"/>
+   <text-color r="0" b="0" g="0"/>
+  </node>
+  <node index="1" h="118000" x="70812" y="-138134" w="200000">
+   <text>Supervision {
+id : uuid4
+supervisor : uuid4
+supervised : uuid4
+}</text>
+   <color r="166" b="169" g="255"/>
+   <text-color r="44" b="44" g="44"/>
+  </node>
+  <node index="4" h="118000" x="984596" y="-339721" w="200000">
+   <text>Take {
+id : uuid4
+medicine : uuid4
+date : datetime
+}</text>
+   <color r="255" b="255" g="255"/>
+   <text-color r="0" b="0" g="0"/>
+  </node>
+  <node index="5" h="190000" x="700168" y="-143357" w="223000">
+   <text>Info {
+id : uuid4
+supervised_id : uuid4
+name : varchar(255)
+lastname : varchar(255)
+hc_number : varchar(255)
+blood_type : varchar(3)
+[...]
+}</text>
+   <color r="255" b="255" g="255"/>
+   <text-color r="0" b="0" g="0"/>
+  </node>
+  <edge index1="6" index0="2" arrow-mode="0" reversed="0"/>
+  <edge index1="5" index0="2" arrow-mode="0" reversed="0"/>
+  <edge index1="3" index0="2" arrow-mode="0" reversed="0"/>
+  <edge index1="4" index0="3" arrow-mode="0" reversed="0"/>
+  <edge index1="1" index0="0" arrow-mode="0" reversed="0"/>
+  <edge index1="2" index0="1" arrow-mode="0" reversed="0"/>
+ </graph>
+ <layout-optimizer min-edge-length="100000" aspect-ratio="1000"/>
+</heimer-mind-map>

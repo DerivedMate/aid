@@ -1,0 +1,83 @@
+create database aid owner aidclient;
+\c aid;
+
+CREATE EXTENSION pgcrypto;
+
+-- Custom types
+create type bloodtype as enum (
+  'A+' , 'A-' , 
+  'B+' , 'B-' ,
+  'AB+', 'AB-',
+  'O+' , 'O-' 
+);
+
+-- Highlevel user structures
+create table if not exists supervisor (
+  supervisor_id UUID,
+  email varchar(255) not null unique,
+  password text not null,
+  name varchar(255) not null,
+  lastname varchar(255) not null,
+  primary key (supervisor_id)
+);
+grant all privileges on table supervisor to aidclient;
+
+create table if not exists supervised (
+  supervised_id UUID,
+  device_id UUID not null unique,
+  auth text not null unique,
+  primary key (supervised_id)
+);
+grant all privileges on table supervised to aidclient;
+
+create table if not exists supervision (
+  supervision_id UUID,
+  supervisor_id UUID not null,
+  supervised_id UUID not null,
+  primary key (supervision_id)
+);
+grant all privileges on table supervision to aidclient;
+
+
+-- User-specific info
+create table if not exists medicine (
+  medicine_id UUID,
+  name varchar(255) not null,
+  amount int default 1,
+  unit varchar(255) default '',
+  primary key (medicine_id)
+);
+grant all privileges on table medicine to aidclient;
+
+create table if not exists take (
+  take_id UUID,
+  medicine_id UUID not null,
+  date timestamp,
+  primary key (take_id)
+);
+grant all privileges on table take to aidclient;
+
+create table if not exists info (
+  info_id UUID,
+  supervision UUID not null,
+  name varchar(255) not null,
+  lastname varchar(255) not null,
+  hc_number varchar(255) not null,
+  blood_type bloodtype,
+  primary key (info_id)
+);
+grant all privileges on table info to aidclient;
+
+create table if not exists position (
+  position_id UUID,
+  supervised_id UUID not null unique,
+  pos point,
+  primary key (position_id)
+);
+grant all privileges on table position to aidclient;
+
+/*
+FOREACH t_name in array array[supervisor, supervised, supervision, medicine, take, info, position] LOOP
+  grant all privileges on table t_name to aidclient;
+END LOOP;
+*/

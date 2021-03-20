@@ -3,7 +3,7 @@ import express = require('express')
 import { readFileSync } from 'fs'
 const fallback = require('express-history-api-fallback')
 const compression = require('compression')
-const cors = require('cors')
+// const cors = require('cors')
 const bodyParser = require('body-parser')
 import https = require('https')
 // import { initSecurity } from './security'
@@ -58,7 +58,7 @@ const initServer = () => {
   /**
    * Permit preflight request
    */
-  app.options('*', cors())
+  // app.options('*', cors())
 
   const httpsServer = https.createServer(credentials, app)
   httpsServer.listen(serverPort, () => {
