@@ -9,10 +9,10 @@ class Signup extends EndPoint {
       console.dir(payload)
       registerSupervisor(payload)
         .then(r => {
-          res.sendStatus(r ? 200 : 401)
+          res.sendStatus(r ? 200 : 406)
         })
         .catch(e => {
-          res.status(401).send(JSON.stringify(e))
+          res.status(403).send(JSON.stringify(e))
         })
     })
   }

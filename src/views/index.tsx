@@ -14,3 +14,5 @@ export const NotFound = loadable(() => import(/* webpackChunkName: 'notFound' */
 export const About = loadable(() => import(/* webpackChunkName: 'about' */ './about'), loadableOptions)
 
 export const SignIn = loadable(() => import(/* webpackChunkName: 'signin' */ './signin'), loadableOptions)
+
+export const SignUp = loadable(() => import(/* webpackChunkName: 'signin' */ './signup'), loadableOptions)

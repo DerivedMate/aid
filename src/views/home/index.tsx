@@ -89,6 +89,9 @@ const Home = ({ match }: RouteComponentProps<TMatch>): React.FunctionComponentEl
         <Link to='/signin' className={styles.testLink}>
           Sign In
         </Link>
+        <Link to='/signup' className={styles.testLink}>
+          Sign Up
+        </Link>
         <Button color='primary' onClick={onPressReg}>
           Ask me
         </Button>

@@ -9,11 +9,23 @@ export interface Supervisor {
   lastname: string
 }
 
+export interface SupervisorNoPass {
+  supervisor_id: UUID
+  email: string
+  name: string
+  lastname: string
+}
+
 export interface RegistrationCredentials {
   email: string
   password: string
   name: string
   lastname: string
+}
+
+export interface RetrievalCredentials {
+  email: string
+  password: string
 }
 
 export const registerSupervisor = ({ email, password, name, lastname }: RegistrationCredentials): Promise<Boolean> => {
@@ -37,4 +49,28 @@ export const registerSupervisor = ({ email, password, name, lastname }: Registra
     if (res.rowCount === 1) return true
     else throw new Error(QError.NoInsert)
   })
+}
+
+export const retrieveSupervisor = ({ email, password }: RetrievalCredentials): Promise<SupervisorNoPass> => {
+  console.log(email, password)
+  return query(
+    `
+    select 
+      supervisor_id, email, name, lastname 
+    from supervisor
+    where 
+      email = $1
+      and password = crypt($2, password);
+  `,
+    [email, password]
+  )
+    .then(r => {
+      console.dir(r.rows)
+      if (r.rows.length === 1) return r.rows[0] as SupervisorNoPass
+      else throw new Error(QError.EntryNotFound)
+    })
+    .catch(e => {
+      console.error(e)
+      return e
+    })
 }

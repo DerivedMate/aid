@@ -6,12 +6,10 @@ import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import TextField from '@material-ui/core/TextField'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '@material-ui/core/Checkbox'
 import Link from '@material-ui/core/Link'
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
@@ -49,8 +47,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 enum ActionType {
-  Password,
-  Email,
+  UpdateField,
   HideAlert,
   ShowAlert,
   ShowSuccess
@@ -58,6 +55,7 @@ enum ActionType {
 interface IAction {
   type: ActionType
   data: string
+  key?: string
 }
 
 enum Severity {
@@ -67,24 +65,28 @@ enum Severity {
   Success = 'success'
 }
 
-interface IState {
+interface Credentials {
   email: string
   password: string
+  name: string
+  lastname: string
+}
+
+interface IState {
+  credentials: Credentials
   displayAlert: boolean
   alertMessage: string
   severity: Severity
 }
 
-const SignIn = (/* _: RouteComponentProps<IProps> */): ReactElement => {
+const SignUp = (/* _: RouteComponentProps<IProps> */): ReactElement => {
   const classes = useStyles()
 
   const [state, dispatch] = useReducer(
     (prev: IState, action: IAction): IState => {
       switch (action.type) {
-        case ActionType.Password:
-          return { ...prev, password: action.data }
-        case ActionType.Email:
-          return { ...prev, email: action.data }
+        case ActionType.UpdateField:
+          return { ...prev, credentials: { ...prev.credentials, [action.key as string]: action.data } }
         case ActionType.HideAlert:
           return { ...prev, displayAlert: false }
         case ActionType.ShowAlert:
@@ -95,7 +97,12 @@ const SignIn = (/* _: RouteComponentProps<IProps> */): ReactElement => {
           return prev
       }
     },
-    { email: '', password: '', displayAlert: false, alertMessage: '', severity: Severity.Error } as IState
+    {
+      credentials: { email: '', password: '', name: '', lastname: '' },
+      displayAlert: false,
+      alertMessage: '',
+      severity: Severity.Error
+    } as IState
   )
 
   const onSubmit: React.FormEventHandler<HTMLFormElement> & React.MouseEventHandler<HTMLButtonElement> = (
@@ -105,9 +112,9 @@ const SignIn = (/* _: RouteComponentProps<IProps> */): ReactElement => {
     e.preventDefault()
 
     // Implement
-    const validate = (s: IState) => s.email !== '' && s.password !== ''
+    const validate = (c: Credentials) => Object.values(c).every(v => v !== '')
 
-    if (!validate(state)) {
+    if (!validate(state.credentials)) {
       dispatch({
         type: ActionType.ShowAlert,
         data: 'Incorrect data' // Improve: point to the erroneous field &c
@@ -116,11 +123,13 @@ const SignIn = (/* _: RouteComponentProps<IProps> */): ReactElement => {
       return
     }
 
-    fetch(`${window.location.port === '3000' ? 'https://localhost:3001' : ''}/api/signin`, {
+    fetch(`${window.location.port === '3000' ? 'https://localhost:3001' : ''}/api/signup`, {
       method: 'POST',
       body: JSON.stringify({
-        email: state.email,
-        password: state.password
+        email: state.credentials.email,
+        password: state.credentials.password,
+        name: state.credentials.name,
+        lastname: state.credentials.lastname
       }),
       headers: {
         'Content-Type': 'application/json',
@@ -145,10 +154,11 @@ const SignIn = (/* _: RouteComponentProps<IProps> */): ReactElement => {
       })
   }
 
-  const makeOnChange = (type: ActionType) => (e: React.ChangeEvent) => {
+  const makeOnChange = (key: string) => (e: React.ChangeEvent) => {
     dispatch({
-      type,
-      data: (e.currentTarget as HTMLInputElement).value.trim()
+      type: ActionType.UpdateField,
+      data: (e.currentTarget as HTMLInputElement).value.trim(),
+      key
     })
   }
 
@@ -161,7 +171,7 @@ const SignIn = (/* _: RouteComponentProps<IProps> */): ReactElement => {
   return (
     <>
       <Helmet>
-        <title>Sign In</title>
+        <title>Sign Up</title>
       </Helmet>
       <Container component='main' maxWidth='xs'>
         <CssBaseline />
@@ -172,12 +182,33 @@ const SignIn = (/* _: RouteComponentProps<IProps> */): ReactElement => {
             </Alert>
           </Slide>
           <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
+            <AssignmentIndIcon />
           </Avatar>
           <Typography component='h1' variant='h5'>
-            Sign in
+            Sign Up
           </Typography>
           <form className={classes.form}>
+            <TextField
+              variant='outlined'
+              margin='normal'
+              required
+              fullWidth
+              id='name'
+              label='First Name'
+              name='name'
+              autoFocus
+              onChange={makeOnChange('name')}
+            />
+            <TextField
+              variant='outlined'
+              margin='normal'
+              required
+              fullWidth
+              id='lastname'
+              label='Last Name'
+              name='lastname'
+              onChange={makeOnChange('lastname')}
+            />
             <TextField
               variant='outlined'
               margin='normal'
@@ -187,8 +218,7 @@ const SignIn = (/* _: RouteComponentProps<IProps> */): ReactElement => {
               label='Email Address'
               name='email'
               autoComplete='email'
-              autoFocus
-              onChange={makeOnChange(ActionType.Email)}
+              onChange={makeOnChange('email')}
             />
             <TextField
               variant='outlined'
@@ -200,9 +230,8 @@ const SignIn = (/* _: RouteComponentProps<IProps> */): ReactElement => {
               type='password'
               id='password'
               autoComplete='current-password'
-              onChange={makeOnChange(ActionType.Password)}
+              onChange={makeOnChange('password')}
             />
-            <FormControlLabel control={<Checkbox value='remember' color='primary' />} label='Remember me' />
             <Button
               type='button'
               fullWidth
@@ -211,7 +240,7 @@ const SignIn = (/* _: RouteComponentProps<IProps> */): ReactElement => {
               className={classes.submit}
               onClick={onSubmit}
             >
-              Sign In
+              Sign Up
             </Button>
             <Grid container justify='space-between'>
               <Grid item>
@@ -221,7 +250,7 @@ const SignIn = (/* _: RouteComponentProps<IProps> */): ReactElement => {
               </Grid>
               <Grid item>
                 <Link href='/' variant='body2'>
-                  Don&apos;t have an account? Sign Up
+                  Already have an account? Sign In!
                 </Link>
               </Grid>
             </Grid>
@@ -235,4 +264,4 @@ const SignIn = (/* _: RouteComponentProps<IProps> */): ReactElement => {
   )
 }
 
-export default SignIn
+export default SignUp
