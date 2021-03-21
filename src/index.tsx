@@ -1,13 +1,23 @@
 import React from 'react'
 import { render } from 'react-dom'
 
-import { App } from '@/app'
-
-import routes from './app.routes'
+import App from '@/app'
+import configureStore, { history } from './store/configStore'
 
 const DOM_NODE: HTMLElement = document.querySelector('.appWrapper')
 
-render(<App routes={routes} />, DOM_NODE)
+const store = configureStore({
+  user: {
+    loggedIn: false
+  }
+})
+
+render(
+  <>
+    <App store={store} history={history} />
+  </>,
+  DOM_NODE
+)
 
 /**
  * Service worker register and event listeners

@@ -1,6 +1,5 @@
 import React, { ReactElement, useReducer } from 'react'
 import { Helmet } from 'react-helmet'
-// import { RouteComponentProps } from 'react-router-dom'
 
 import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
@@ -16,12 +15,12 @@ import Container from '@material-ui/core/Container'
 import Slide from '@material-ui/core/Slide'
 import Alert from '@material-ui/lab/Alert'
 import Copyright from '@/components/copyright'
-
-/*
-interface IProps {
-  name?: string
-}
-*/
+import { Dispatch } from 'redux'
+import { logIn, UserInfo } from '@/store/actions/user'
+import { Link as RouterLink, RouteComponentProps } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { AnyRecord } from '@/@types/common'
+import { State } from '@/store/reducers'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -79,14 +78,28 @@ interface IState {
   severity: Severity
 }
 
-const SignUp = (/* _: RouteComponentProps<IProps> */): ReactElement => {
+interface StateProps {
+  loggedIn: boolean
+}
+interface DispatchProps {
+  logIn: (info: UserInfo) => void
+}
+
+const mapState = (state: State): StateProps => ({
+  loggedIn: state.user.loggedIn
+})
+const mapDispatch = (dispatch: Dispatch): DispatchProps => ({
+  logIn: info => dispatch(logIn(info))
+})
+
+const SignUp = (props: RouteComponentProps<AnyRecord> & StateProps & DispatchProps): ReactElement => {
   const classes = useStyles()
 
   const [state, dispatch] = useReducer(
     (prev: IState, action: IAction): IState => {
       switch (action.type) {
         case ActionType.UpdateField:
-          return { ...prev, credentials: { ...prev.credentials, [action.key as string]: action.data } }
+          return { ...prev, credentials: { ...prev.credentials, [action.key]: action.data } }
         case ActionType.HideAlert:
           return { ...prev, displayAlert: false }
         case ActionType.ShowAlert:
@@ -145,6 +158,12 @@ const SignUp = (/* _: RouteComponentProps<IProps> */): ReactElement => {
           type: ActionType.ShowSuccess,
           data
         })
+
+        props.logIn({
+          email: state.credentials.email,
+          name: state.credentials.name,
+          lastname: state.credentials.lastname
+        })
       })
       .catch(err => {
         dispatch({
@@ -168,10 +187,12 @@ const SignUp = (/* _: RouteComponentProps<IProps> */): ReactElement => {
       data: ''
     })
 
+  const { loggedIn } = props
+
   return (
     <>
       <Helmet>
-        <title>Sign Up</title>
+        <title>Sign Up [{String(loggedIn)}]</title>
       </Helmet>
       <Container component='main' maxWidth='xs'>
         <CssBaseline />
@@ -182,7 +203,9 @@ const SignUp = (/* _: RouteComponentProps<IProps> */): ReactElement => {
             </Alert>
           </Slide>
           <Avatar className={classes.avatar}>
-            <AssignmentIndIcon />
+            <RouterLink className='clearLink' to='/'>
+              <AssignmentIndIcon />
+            </RouterLink>
           </Avatar>
           <Typography component='h1' variant='h5'>
             Sign Up
@@ -264,4 +287,4 @@ const SignUp = (/* _: RouteComponentProps<IProps> */): ReactElement => {
   )
 }
 
-export default SignUp
+export default connect<StateProps, DispatchProps, RouteComponentProps<AnyRecord>>(mapState, mapDispatch)(SignUp)

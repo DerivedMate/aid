@@ -28,12 +28,17 @@ export interface RetrievalCredentials {
   password: string
 }
 
-export const registerSupervisor = ({ email, password, name, lastname }: RegistrationCredentials): Promise<Boolean> => {
+export const registerSupervisor = ({
+  email,
+  password,
+  name,
+  lastname
+}: RegistrationCredentials): Promise<[boolean, UUID]> => {
   /**
    * @TODO Add input validation and serialization
    */
 
-  return query(
+  return query<Supervisor>(
     `
     INSERT INTO supervisor 
       (email, password, name, lastname)
@@ -42,11 +47,13 @@ export const registerSupervisor = ({ email, password, name, lastname }: Registra
       , crypt($2, gen_salt('bf'))
       , $3
       , $4
-      );
+      )
+    RETURNING supervisor_id;
     `,
     [email, password, name, lastname]
   ).then(res => {
-    if (res.rowCount === 1) return true
+    console.dir(res)
+    if (res.rowCount === 1) return [true, res.rows[0]['supervisor_id']]
     else throw new Error(QError.NoInsert)
   })
 }
