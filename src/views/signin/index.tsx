@@ -1,6 +1,6 @@
 import React, { ReactElement, useReducer } from 'react'
 import { Helmet } from 'react-helmet'
-// import { RouteComponentProps } from 'react-router-dom'
+import { RouteComponentProps, useParams } from 'react-router-dom'
 
 import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
@@ -18,12 +18,12 @@ import Container from '@material-ui/core/Container'
 import Slide from '@material-ui/core/Slide'
 import Alert from '@material-ui/lab/Alert'
 import Copyright from '@/components/copyright'
+import { AppActionType, UserInfo } from '@/app'
+import { DynamicRouteProps } from '@/app.routes'
 
-/*
 interface IProps {
   name?: string
 }
-*/
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -75,7 +75,7 @@ interface IState {
   severity: Severity
 }
 
-const SignIn = (/* _: RouteComponentProps<IProps> */): ReactElement => {
+const SignIn = (props: DynamicRouteProps<IProps>): ReactElement => {
   const classes = useStyles()
 
   const [state, dispatch] = useReducer(
@@ -135,6 +135,15 @@ const SignIn = (/* _: RouteComponentProps<IProps> */): ReactElement => {
         dispatch({
           type: ActionType.ShowSuccess,
           data
+        })
+        const { name, lastname, email } = JSON.parse(data)
+        props.dispatch({
+          type: AppActionType.LogIn,
+          userInfo: {
+            name,
+            lastname,
+            email
+          }
         })
       })
       .catch(err => {

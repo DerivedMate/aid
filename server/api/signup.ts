@@ -1,6 +1,7 @@
 import { EndPoint } from './_common'
 import { Express } from 'express-serve-static-core'
 import { registerSupervisor } from '../database/schema/Supervisor'
+import '../session'
 
 class Signup extends EndPoint {
   mount(s: Express, prefix: string) {

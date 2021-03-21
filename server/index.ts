@@ -7,6 +7,7 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 import https = require('https')
 import { init_api } from './api'
+import { init_session } from './session'
 // import { query } from './database/db'
 // import { initSecurity } from './security'
 require('dotenv').config()
@@ -48,6 +49,7 @@ const initServer = () => {
   app.use(compression())
 
   app.use(express.static(distPathToServe, staticExpressOption))
+  init_session(app, credentials)
 
   init_api(app)
 

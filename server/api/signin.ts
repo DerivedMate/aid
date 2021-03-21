@@ -8,9 +8,11 @@ class Signin extends EndPoint {
       const payload = req.body
       retrieveSupervisor(payload)
         .then(r => {
+          req.session.user_id = r.supervisor_id
           res.send(JSON.stringify(r))
         })
         .catch(e => {
+          console.error(e)
           res.status(403).send(JSON.stringify(e))
         })
     })
