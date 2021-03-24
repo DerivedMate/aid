@@ -1,16 +1,23 @@
 import React from 'react'
-
 import { Home, NotFound, SignIn, SignUp } from '@/views'
-import { Redirect, Route, Switch } from 'react-router-dom'
+import { Redirect, Switch } from 'react-router-dom'
+import GuardedRoute from './components/guarded-route'
+import About from './views/about'
 
-export const routes = (): React.ReactElement => {
+interface IProps {
+  auth: boolean
+}
+
+export const routes = ({ auth }: IProps): React.ReactElement => {
+  console.log(auth)
   return (
     <>
       <Switch>
-        <Route exact path='/' key='home_/' component={Home} />
-        <Route path='/signin' key='signin_/signin' component={SignIn} />
-        <Route path='/signup' key='signup_/signup' component={SignUp} />
-        <Route path='/404' key='notFound_/404' component={NotFound} />
+        <GuardedRoute auth={auth} exact path='/' key='home_/' component={Home} />
+        <GuardedRoute auth={auth} path='/signin' key='signin_/signin' component={SignIn} />
+        <GuardedRoute auth={auth} path='/signup' key='signup_/signup' component={SignUp} />
+        <GuardedRoute auth={auth} guarded path='/about' key='about_/about' component={About} />
+        <GuardedRoute auth={auth} path='/404' key='notFound_/404' component={NotFound} />
         <Redirect to='/404' />
       </Switch>
     </>

@@ -15,6 +15,8 @@ interface IProps {
 }
 
 const App = ({ history, store }: IProps): ReactElement => {
+  const auth = store.getState().user.loggedIn
+
   return (
     <ErrorBoundary>
       <Helmet defaultTitle={process.env.APP_TITLE} titleTemplate={`%s | ${process.env.APP_TITLE}`}>
@@ -22,7 +24,7 @@ const App = ({ history, store }: IProps): ReactElement => {
       </Helmet>
       <Provider store={store}>
         <ConnectedRouter history={history}>
-          <Routes />
+          <Routes auth={auth} />
         </ConnectedRouter>
       </Provider>
     </ErrorBoundary>
