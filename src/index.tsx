@@ -3,13 +3,15 @@ import { render } from 'react-dom'
 
 import App from '@/app'
 import configureStore, { history } from './store/configStore'
+import { DEFAULT_STATE as langState } from './store/reducers/lang'
 
 const DOM_NODE: HTMLElement = document.querySelector('.appWrapper')
 
 const store = configureStore({
   user: {
     loggedIn: false
-  }
+  },
+  lang: langState
 })
 
 render(

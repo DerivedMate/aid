@@ -1,0 +1,25 @@
+.wrapper {
+  box-sizing: border-box;
+  display: grid;
+  grid-template:
+    'main' 1fr
+    'nav' auto;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.view {
+  grid-area: main;
+  margin: 0;
+  padding: 1rem;
+}
+
+.navbar {
+  box-sizing: border-box;
+  grid-area: nav;
+  margin: 0;
+  max-width: 100vw;
+  padding: 0;
+}

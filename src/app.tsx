@@ -8,6 +8,7 @@ import { ConnectedRouter } from 'connected-react-router'
 import { Provider } from 'react-redux'
 import Routes from './app.routes'
 import configureStore from './store/configStore'
+import Wrapper from './components/wrapper'
 
 interface IProps {
   history: History
@@ -24,7 +25,9 @@ const App = ({ history, store }: IProps): ReactElement => {
       </Helmet>
       <Provider store={store}>
         <ConnectedRouter history={history}>
-          <Routes auth={auth} />
+          <Wrapper>
+            <Routes auth={auth} />
+          </Wrapper>
         </ConnectedRouter>
       </Provider>
     </ErrorBoundary>

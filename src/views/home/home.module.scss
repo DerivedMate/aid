@@ -1,48 +1,34 @@
-.container {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  justify-content: flex-start;
+@import '@/styles';
+
+.fullCard {
+  width: 100%;
 }
 
-.title {
-  letter-spacing: 0.4rem;
-  margin: 6rem 0;
+.styledLink {
+  padding: 4px;
+  text-decoration: none;
+}
+
+.buttonBox {
+  margin-top: 4px;
+}
+
+.gridButton {
+  align-content: space-around;
+  height: 2rem;
+}
+
+.button {
+  width: 100%;
+}
+
+.buttonLink {
+  color: $primary-color;
+  display: block;
+  height: 2rem;
+  line-height: 2rem;
   text-align: center;
-}
-
-.image {
-  height: auto;
-  width: 220px;
-
-  @media screen and (min-width: 640px) {
-    width: 320px;
-  }
-
-  @media screen and (min-width: 1280px) {
-    width: 450px;
-  }
-}
-
-.signature {
-  width: 80px;
-
-  path {
-    animation: draw-path 3.3s ease-in-out forwards;
-    stroke: #fff;
-    stroke-dasharray: 450;
-    stroke-dashoffset: 450;
-  }
-
-  circle {
-    animation: draw-circle 0.25s ease-in 1.5s forwards;
-  }
-}
-
-.testLink {
-  color: #2c2c2c;
-  text-align: center;
+  text-decoration: none;
 }
 
 @keyframes draw-path {

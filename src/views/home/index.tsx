@@ -1,8 +1,7 @@
 import React from 'react'
-import PwaReact from '@/images/pwa-react-uhd-trans.png'
 import { Helmet } from 'react-helmet'
 import { Link, RouteComponentProps } from 'react-router-dom'
-import { Button } from '@material-ui/core'
+import { Button, Card, CardActions, CardContent, Grid, Typography } from '@material-ui/core'
 
 import styles from './home.module.scss'
 
@@ -10,6 +9,7 @@ type TMatch = {
   path: string
 }
 
+/*
 const showLocalNotification = (title: string, body: string): void => {
   const options = {
     body
@@ -17,13 +17,15 @@ const showLocalNotification = (title: string, body: string): void => {
 
   navigator.serviceWorker
     .getRegistration()
-    .then(r => r.showNotification(title, options))
+    .then(r => r && r.showNotification(title, options))
     .catch(e => {
       console.error(e)
     })
 }
+*/
 
 const Home = ({ match }: RouteComponentProps<TMatch>): React.FunctionComponentElement<RouteComponentProps> => {
+  /*
   const onPressReg = () => {
     window.Notification.requestPermission()
       .then(notPerm => {
@@ -51,14 +53,14 @@ const Home = ({ match }: RouteComponentProps<TMatch>): React.FunctionComponentEl
         )
     )
   }
+  
 
   const onPressTrigger = () => {
     showLocalNotification('This better fucking work', 'Coño, te mataré si no funciona esta wea... te lo juro')
   }
-
+  */
   const { path } = match
   const canonicalUrl = `${process.env.SERVER_BASE_URL}${path}`
-  const appTitle = 'ReactJS Progressive Web App'
   const description =
     'A fast and full TypeScript PWA built with React with every best practices for SEO and web performances'
 
@@ -69,38 +71,37 @@ const Home = ({ match }: RouteComponentProps<TMatch>): React.FunctionComponentEl
         <link rel='canonical' href={canonicalUrl} />
         <meta name='description' content={description} />
       </Helmet>
-      <div className={styles.container}>
-        <h1 className={styles.title}>{appTitle}</h1>
-        <img
-          className={styles.image}
-          src={PwaReact.src}
-          srcSet={PwaReact.srcSet}
-          sizes='(max-width: 440px) 220px,
-            (max-width: 640px) 320px,
-            (max-width: 1280px) 450px'
-          width={PwaReact.width}
-          height={PwaReact.height}
-          loading='lazy'
-          alt='Pwa React'
-        />
-        <Link to='/about' className={styles.testLink}>
-          About
-        </Link>
-        <Link to='/signin' className={styles.testLink}>
-          Sign In
-        </Link>
-        <Link to='/signup' className={styles.testLink}>
-          Sign Up
-        </Link>
-        <Button color='primary' onClick={onPressReg}>
-          Ask me
-        </Button>
-        <Button color='primary' onClick={onPressTrigger}>
-          Trigger me
-        </Button>
-        <Button color='primary' onClick={onNotify}>
-          Send a message
-        </Button>
+      <div /* className={styles.container} */>
+        <Card variant='elevation' className={styles.fullCard}>
+          <CardContent>
+            <Typography variant='h4'>Aid</Typography>
+            <Typography variant='h6'>Lepiej. Szybciej. Bezpieczniej.</Typography>
+            <Typography variant='body2'>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates, soluta.
+            </Typography>
+          </CardContent>
+          <CardActions>
+            <Link to='/about' className={styles.styledLink}>
+              Dowiedz się więcej
+            </Link>
+          </CardActions>
+        </Card>
+        <Grid container spacing={1} className={styles.buttonBox}>
+          <Grid item xs={6} className={styles.gridButton}>
+            <Button variant='contained' className={styles.button}>
+              <Link className={styles.buttonLink} to='/signin'>
+                Zaloguj się
+              </Link>
+            </Button>
+          </Grid>
+          <Grid item xs={6} className={styles.gridButton}>
+            <Button variant='contained' className={styles.button}>
+              <Link className={styles.buttonLink} to='/signup'>
+                Załóż konto
+              </Link>
+            </Button>
+          </Grid>
+        </Grid>
       </div>
     </>
   )
