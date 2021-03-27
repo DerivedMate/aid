@@ -70,14 +70,24 @@ export const retrieveSupervisor = ({ email, password }: RetrievalCredentials): P
       and password = crypt($2, password);
   `,
     [email, password]
-  )
-    .then(r => {
-      console.dir(r.rows)
-      if (r.rows.length === 1) return r.rows[0] as SupervisorNoPass
-      else throw new Error(QError.EntryNotFound)
-    })
-    .catch(e => {
-      console.error(e)
-      return e
-    })
+  ).then(r => {
+    console.dir(r.rows)
+    if (r.rows.length === 1) return r.rows[0] as SupervisorNoPass
+    else throw new Error(QError.EntryNotFound)
+  })
 }
+
+export const getSupervisorSessionData = (id: UUID): Promise<SupervisorNoPass> =>
+  query(
+    `
+    select 
+      supervisor_id, email, name, lastname 
+    from supervisor
+    where 
+      supervisor_id = $1;
+  `,
+    [id]
+  ).then(r => {
+    if (r.rows.length === 0) throw new Error(QError.EntryNotFound)
+    else return r.rows[0] as SupervisorNoPass
+  })

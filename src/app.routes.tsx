@@ -7,7 +7,7 @@ import {
   About as AboutRoute
 } from '@/views'
 import { Redirect, Switch } from 'react-router-dom'
-import GuardedRoute from './components/guarded-route'
+import { DeGuardedRoute, GuardedRoute } from './components/guarded-route'
 
 export enum Routes {
   // General
@@ -31,10 +31,10 @@ export const routes = ({ auth }: IProps): React.ReactElement => {
   return (
     <>
       <Switch>
-        <GuardedRoute auth={auth} exact path='/' key='home_/' component={HomeRoute} />
-        <GuardedRoute auth={auth} path='/signin' key='signin_/signin' component={SignInRoute} />
-        <GuardedRoute auth={auth} path='/signup' key='signup_/signup' component={SignUpRoute} />
-        <GuardedRoute auth={auth} guarded path='/about' key='about_/about' component={AboutRoute} />
+        <GuardedRoute auth={auth} exact path={Routes.Home} key='home_/' component={HomeRoute} />
+        <DeGuardedRoute auth={auth} deGuarded path={Routes.SignIn} key='signin_/signin' component={SignInRoute} />
+        <DeGuardedRoute auth={auth} deGuarded path={Routes.SignUp} key='signup_/signup' component={SignUpRoute} />
+        <GuardedRoute auth={auth} guarded path={Routes.About} key='about_/about' component={AboutRoute} />
         <GuardedRoute auth={auth} path='/404' key='notFound_/404' component={NotFoundRoute} />
         <Redirect to='/404' />
       </Switch>

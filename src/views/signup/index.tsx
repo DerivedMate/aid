@@ -17,7 +17,7 @@ import Alert from '@material-ui/lab/Alert'
 import Copyright from '@/components/copyright'
 import { Dispatch } from 'redux'
 import { logIn, UserInfo } from '@/store/actions/user'
-import { Link as RouterLink, RouteComponentProps } from 'react-router-dom'
+import { Link as RouterLink, Redirect, RouteComponentProps } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { AnyRecord } from '@/@types/common'
 import { State } from '@/store/reducers'
@@ -192,6 +192,8 @@ const SignUp = (props: RouteComponentProps<AnyRecord> & StateProps & DispatchPro
     })
 
   const { loggedIn, locale } = props
+
+  if (loggedIn) return <Redirect to={Routes.Home} />
 
   return (
     <>

@@ -22,7 +22,7 @@ export const init_session = (server: Express, credentials: { key: string; cert?:
       resave: false,
       cookie: {
         maxAge: 30 * 24 * 3600 * 1000,
-        secure: true
+        secure: process.env['NODE_ENV'] === 'production'
       },
       saveUninitialized: false
     })

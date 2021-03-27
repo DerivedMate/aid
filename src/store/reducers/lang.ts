@@ -6,6 +6,7 @@ export const DEFAULT_STATE: LangState = (() => {
   const langs = window.navigator.languages.filter(l => !/-/.test(l))
   const avLangs = [Lang.Polish, Lang.Spanish, Lang.English].map(String)
   const lang = langOfString(langs.find(l => avLangs.includes(l)) || 'pl')
+  debugger
 
   return {
     lang,

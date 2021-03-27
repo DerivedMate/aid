@@ -20,7 +20,7 @@ import Copyright from '@/components/copyright'
 import { Dispatch } from 'redux'
 import { logIn, UserInfo } from '@/store/actions/user'
 import { connect } from 'react-redux'
-import { Link as RouterLink, RouteComponentProps } from 'react-router-dom'
+import { Link as RouterLink, Redirect, RouteComponentProps } from 'react-router-dom'
 import { State } from '@/store/reducers'
 import { AnyRecord } from 'dns'
 import { Locale } from '@/locale/model'
@@ -185,6 +185,8 @@ const SignIn = (props: RouteComponentProps<AnyRecord> & StateProps & DispatchPro
 
   const { loggedIn, locale } = props
 
+  if (loggedIn) return <Redirect to={Routes.Home} />
+
   return (
     <>
       <Helmet>
@@ -267,169 +269,3 @@ const SignIn = (props: RouteComponentProps<AnyRecord> & StateProps & DispatchPro
 }
 
 export default connect<StateProps, DispatchProps, RouteComponentProps<AnyRecord>>(mapState, mapDispatch)(SignIn)
-/*
-const SignIn = new (class __SignIn__ extends Module<IState, IAction, StateProps, DispatchProps, {}> {
-  mapState(): StateProps {
-    return {}
-  }
-  mapDispatch(dispatch: Dispatch): DispatchProps {
-    return {
-      logIn: info => dispatch(logIn(info))
-    }
-  }
-
-  reducer(prev: IState, action: IAction): IState {
-    switch (action.type) {
-      case ActionType.Password:
-        return { ...prev, password: action.data }
-      case ActionType.Email:
-        return { ...prev, email: action.data }
-      case ActionType.HideAlert:
-        return { ...prev, displayAlert: false }
-      case ActionType.ShowAlert:
-        return { ...prev, displayAlert: true, alertMessage: action.data, severity: Severity.Error }
-      case ActionType.ShowSuccess:
-        return { ...prev, displayAlert: true, alertMessage: action.data, severity: Severity.Success }
-      default:
-        return prev
-    }
-  }
-
-  onClose() {
-    this.dispatch({
-      type: ActionType.HideAlert,
-      data: ''
-    })
-  }
-
-  onSubmit(e: React.FormEvent<HTMLFormElement> & React.MouseEvent<HTMLButtonElement>): void {
-    e.stopPropagation()
-    e.preventDefault()
-
-    // Implement
-    const validate = (s: IState) => s.email !== '' && s.password !== ''
-
-    if (!validate(this.state)) {
-      this.dispatch({
-        type: ActionType.ShowAlert,
-        data: 'Incorrect data' // Improve: point to the erroneous field &c
-      })
-
-      return
-    }
-
-    fetch(`${window.location.port === '3000' ? 'https://localhost:3001' : ''}/api/signin`, {
-      method: 'POST',
-      body: JSON.stringify({
-        email: this.state.email,
-        password: this.state.password
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      }
-    })
-      .then(r => {
-        if (!r.ok) throw new Error(r.statusText)
-        return r.text()
-      })
-      .then(data => {
-        this.dispatch({
-          type: ActionType.ShowSuccess,
-          data
-        })
-
-        const { name, lastname, email } = JSON.parse(data)
-        props.logIn({
-          name,
-          lastname,
-          email
-        })
-      })
-      .catch(err => {
-        dispatch({
-          type: ActionType.ShowAlert,
-          data: JSON.stringify(err)
-        })
-      })
-  }
-
-  render() {
-    return (
-      <>
-        <Helmet>
-          <title>Sign In</title>
-        </Helmet>
-        <Container component='main' maxWidth='xs'>
-          <CssBaseline />
-          <div className={classes.paper}>
-            <Slide direction='down' in={state.displayAlert}>
-              <Alert severity={state.severity} onClose={onClose}>
-                {state.alertMessage}
-              </Alert>
-            </Slide>
-            <Avatar className={classes.avatar}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component='h1' variant='h5'>
-              Sign in
-            </Typography>
-            <form className={classes.form}>
-              <TextField
-                variant='outlined'
-                margin='normal'
-                required
-                fullWidth
-                id='email'
-                label='Email Address'
-                name='email'
-                autoComplete='email'
-                autoFocus
-                onChange={makeOnChange(ActionType.Email)}
-              />
-              <TextField
-                variant='outlined'
-                margin='normal'
-                required
-                fullWidth
-                name='password'
-                label='Password'
-                type='password'
-                id='password'
-                autoComplete='current-password'
-                onChange={makeOnChange(ActionType.Password)}
-              />
-              <FormControlLabel control={<Checkbox value='remember' color='primary' />} label='Remember me' />
-              <Button
-                type='button'
-                fullWidth
-                variant='contained'
-                color='primary'
-                className={classes.submit}
-                onClick={onSubmit}
-              >
-                Sign In
-              </Button>
-              <Grid container justify='space-between'>
-                <Grid item>
-                  <Link href='/' variant='body2'>
-                    Forgot password?
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <Link href='/' variant='body2'>
-                    Don&apos;t have an account? Sign Up
-                  </Link>
-                </Grid>
-              </Grid>
-            </form>
-          </div>
-          <Box mt={8}>
-            <Copyright />
-          </Box>
-        </Container>
-      </>
-    )
-  }
-})()
-*/
