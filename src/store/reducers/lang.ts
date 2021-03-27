@@ -1,11 +1,11 @@
-import { getDict } from '@/locale'
-import { Lang, langOfString, stringOfLang } from '@/locale/model'
+import getDict from '@/locale'
+import { Lang, langOfString } from '@/locale/model'
 import { LangAction, LangActionType, LangState } from '../actions/lang'
 
 export const DEFAULT_STATE: LangState = (() => {
   const langs = window.navigator.languages.filter(l => !/-/.test(l))
-  const avLangs = [Lang.Polish, Lang.Spanish, Lang.English]
-  const lang = langOfString(avLangs.map(stringOfLang).find(l => langs.includes(l)) || 'pl')
+  const avLangs = [Lang.Polish, Lang.Spanish, Lang.English].map(String)
+  const lang = langOfString(langs.find(l => avLangs.includes(l)) || 'pl')
 
   return {
     lang,

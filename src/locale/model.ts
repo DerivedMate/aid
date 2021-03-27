@@ -55,6 +55,6 @@ const langStrMap = {
 
 const strLangMap = transposeDict(langStrMap)
 
-export const langOfString = (str: string) => findRV(strLangMap, Lang.Polish, str)
+export const langOfString = (str: string): Lang => findRV(strLangMap, Lang.Polish, str)
 
-export const stringOfLang = (ln: Lang) => findRV(langStrMap, 'pl', ln)
+export const stringOfLang = (ln: Lang): string => findRV(langStrMap, 'pl', ln)

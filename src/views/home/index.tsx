@@ -1,31 +1,66 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import { Link, RouteComponentProps } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Button, Card, CardActions, CardContent, Grid, Typography } from '@material-ui/core'
 
+import { Locale } from '@/locale/model'
+import { State } from '@/store/reducers'
+import { connect } from 'react-redux'
+import { ignore } from '@/helpers/func'
+import { AnyRecord } from '@/@types/common'
+import { Routes } from '@/app.routes'
 import styles from './home.module.scss'
 
-type TMatch = {
-  path: string
+interface StateProps {
+  locale: Locale
 }
 
+const mapState = (state: State): StateProps => ({
+  locale: state.lang.dict
+})
+
+const Home = ({ locale }: StateProps): React.ReactElement => {
+  return (
+    <>
+      <Helmet>
+        <title>Home</title>
+      </Helmet>
+      <div /* className={styles.container} */>
+        <Card variant='elevation' className={styles.fullCard}>
+          <CardContent>
+            <Typography variant='h4'>{locale.home.toAbout.title}</Typography>
+            <Typography variant='h6'>{locale.home.toAbout.subtitle}</Typography>
+            <Typography variant='body2'>{locale.home.toAbout.body}</Typography>
+          </CardContent>
+          <CardActions>
+            <Link to='/about' className={styles.styledLink}>
+              {locale.commonButtons.learnMore}
+            </Link>
+          </CardActions>
+        </Card>
+        <Grid container spacing={1} className={styles.buttonBox}>
+          <Grid item xs={6} className={styles.gridButton}>
+            <Button variant='contained' className={styles.button}>
+              <Link className={styles.buttonLink} to={Routes.SignIn}>
+                {locale.signIn.signIn}
+              </Link>
+            </Button>
+          </Grid>
+          <Grid item xs={6} className={styles.gridButton}>
+            <Button variant='contained' className={styles.button}>
+              <Link className={styles.buttonLink} to={Routes.SignUp}>
+                {locale.signUp.signUp}
+              </Link>
+            </Button>
+          </Grid>
+        </Grid>
+      </div>
+    </>
+  )
+}
+
+export default connect<StateProps, AnyRecord, AnyRecord>(mapState, ignore({}))(Home)
 /*
-const showLocalNotification = (title: string, body: string): void => {
-  const options = {
-    body
-  }
-
-  navigator.serviceWorker
-    .getRegistration()
-    .then(r => r && r.showNotification(title, options))
-    .catch(e => {
-      console.error(e)
-    })
-}
-*/
-
-const Home = ({ match }: RouteComponentProps<TMatch>): React.FunctionComponentElement<RouteComponentProps> => {
-  /*
   const onPressReg = () => {
     window.Notification.requestPermission()
       .then(notPerm => {
@@ -59,52 +94,18 @@ const Home = ({ match }: RouteComponentProps<TMatch>): React.FunctionComponentEl
     showLocalNotification('This better fucking work', 'Coño, te mataré si no funciona esta wea... te lo juro')
   }
   */
-  const { path } = match
-  const canonicalUrl = `${process.env.SERVER_BASE_URL}${path}`
-  const description =
-    'A fast and full TypeScript PWA built with React with every best practices for SEO and web performances'
 
-  return (
-    <>
-      <Helmet>
-        <title>Home</title>
-        <link rel='canonical' href={canonicalUrl} />
-        <meta name='description' content={description} />
-      </Helmet>
-      <div /* className={styles.container} */>
-        <Card variant='elevation' className={styles.fullCard}>
-          <CardContent>
-            <Typography variant='h4'>Aid</Typography>
-            <Typography variant='h6'>Lepiej. Szybciej. Bezpieczniej.</Typography>
-            <Typography variant='body2'>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates, soluta.
-            </Typography>
-          </CardContent>
-          <CardActions>
-            <Link to='/about' className={styles.styledLink}>
-              Dowiedz się więcej
-            </Link>
-          </CardActions>
-        </Card>
-        <Grid container spacing={1} className={styles.buttonBox}>
-          <Grid item xs={6} className={styles.gridButton}>
-            <Button variant='contained' className={styles.button}>
-              <Link className={styles.buttonLink} to='/signin'>
-                Zaloguj się
-              </Link>
-            </Button>
-          </Grid>
-          <Grid item xs={6} className={styles.gridButton}>
-            <Button variant='contained' className={styles.button}>
-              <Link className={styles.buttonLink} to='/signup'>
-                Załóż konto
-              </Link>
-            </Button>
-          </Grid>
-        </Grid>
-      </div>
-    </>
-  )
+/*
+const showLocalNotification = (title: string, body: string): void => {
+  const options = {
+    body
+  }
+
+  navigator.serviceWorker
+    .getRegistration()
+    .then(r => r && r.showNotification(title, options))
+    .catch(e => {
+      console.error(e)
+    })
 }
-
-export default Home
+*/

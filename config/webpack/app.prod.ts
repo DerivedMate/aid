@@ -126,7 +126,7 @@ const webpackConfig: webpack.Configuration = {
     }
   },
   performance: {
-    hints: 'error',
+    hints: 'warning',
     maxEntrypointSize: 250000,
     maxAssetSize: 150000
   },

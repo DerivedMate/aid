@@ -8,7 +8,7 @@ const dict: Locale = {
   home: {
     toAbout: {
       title: 'Aid',
-      subtitle: 'Mejor. Más rápidamente. Más seguro.',
+      subtitle: 'Mejor. Más rápido. Más seguro.',
       body: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates, soluta.'
     }
   },

@@ -21,6 +21,8 @@ import { Link as RouterLink, RouteComponentProps } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { AnyRecord } from '@/@types/common'
 import { State } from '@/store/reducers'
+import { Locale } from '@/locale/model'
+import { Routes } from '@/app.routes'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -80,13 +82,15 @@ interface IState {
 
 interface StateProps {
   loggedIn: boolean
+  locale: Locale
 }
 interface DispatchProps {
   logIn: (info: UserInfo) => void
 }
 
 const mapState = (state: State): StateProps => ({
-  loggedIn: state.user.loggedIn
+  loggedIn: state.user.loggedIn,
+  locale: state.lang.dict
 })
 const mapDispatch = (dispatch: Dispatch): DispatchProps => ({
   logIn: info => dispatch(logIn(info))
@@ -187,12 +191,14 @@ const SignUp = (props: RouteComponentProps<AnyRecord> & StateProps & DispatchPro
       data: ''
     })
 
-  const { loggedIn } = props
+  const { loggedIn, locale } = props
 
   return (
     <>
       <Helmet>
-        <title>Sign Up [{String(loggedIn)}]</title>
+        <title>
+          {locale.signUp.signUp} [{String(loggedIn)}]
+        </title>
       </Helmet>
       <Container component='main' maxWidth='xs'>
         <CssBaseline />
@@ -208,7 +214,7 @@ const SignUp = (props: RouteComponentProps<AnyRecord> & StateProps & DispatchPro
             </RouterLink>
           </Avatar>
           <Typography component='h1' variant='h5'>
-            Sign Up
+            {locale.signUp.signUp}
           </Typography>
           <form className={classes.form}>
             <TextField
@@ -217,7 +223,7 @@ const SignUp = (props: RouteComponentProps<AnyRecord> & StateProps & DispatchPro
               required
               fullWidth
               id='name'
-              label='First Name'
+              label={locale.signUp.firstName}
               name='name'
               autoFocus
               onChange={makeOnChange('name')}
@@ -228,7 +234,7 @@ const SignUp = (props: RouteComponentProps<AnyRecord> & StateProps & DispatchPro
               required
               fullWidth
               id='lastname'
-              label='Last Name'
+              label={locale.signUp.lastName}
               name='lastname'
               onChange={makeOnChange('lastname')}
             />
@@ -238,7 +244,7 @@ const SignUp = (props: RouteComponentProps<AnyRecord> & StateProps & DispatchPro
               required
               fullWidth
               id='email'
-              label='Email Address'
+              label={locale.signUp.email}
               name='email'
               autoComplete='email'
               onChange={makeOnChange('email')}
@@ -249,7 +255,7 @@ const SignUp = (props: RouteComponentProps<AnyRecord> & StateProps & DispatchPro
               required
               fullWidth
               name='password'
-              label='Password'
+              label={locale.signUp.password}
               type='password'
               id='password'
               autoComplete='current-password'
@@ -263,17 +269,17 @@ const SignUp = (props: RouteComponentProps<AnyRecord> & StateProps & DispatchPro
               className={classes.submit}
               onClick={onSubmit}
             >
-              Sign Up
+              {locale.signUp.signUp}
             </Button>
             <Grid container justify='space-between'>
               <Grid item>
                 <Link href='/' variant='body2'>
-                  Forgot password?
+                  {locale.signUp.forgotPassword}
                 </Link>
               </Grid>
               <Grid item>
-                <Link href='/' variant='body2'>
-                  Already have an account? Sign In!
+                <Link href={Routes.SignIn} variant='body2'>
+                  {locale.signUp.alreadyAccount}
                 </Link>
               </Grid>
             </Grid>

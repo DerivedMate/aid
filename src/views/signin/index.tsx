@@ -23,6 +23,8 @@ import { connect } from 'react-redux'
 import { Link as RouterLink, RouteComponentProps } from 'react-router-dom'
 import { State } from '@/store/reducers'
 import { AnyRecord } from 'dns'
+import { Locale } from '@/locale/model'
+import { Routes } from '@/app.routes'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -76,13 +78,15 @@ interface IState {
 
 interface StateProps {
   loggedIn: boolean
+  locale: Locale
 }
 interface DispatchProps {
   logIn: (info: UserInfo) => void
 }
 
 const mapState = (state: State): StateProps => ({
-  loggedIn: state.user.loggedIn
+  loggedIn: state.user.loggedIn,
+  locale: state.lang.dict
 })
 const mapDispatch = (dispatch: Dispatch): DispatchProps => ({
   logIn: info => dispatch(logIn(info))
@@ -179,12 +183,14 @@ const SignIn = (props: RouteComponentProps<AnyRecord> & StateProps & DispatchPro
       data: ''
     })
 
-  const { loggedIn } = props
+  const { loggedIn, locale } = props
 
   return (
     <>
       <Helmet>
-        <title>Sign In [{String(loggedIn)}]</title>
+        <title>
+          {locale.signIn.signIn} [{String(loggedIn)}]
+        </title>
       </Helmet>
       <Container component='main' maxWidth='xs'>
         <CssBaseline />
@@ -200,7 +206,7 @@ const SignIn = (props: RouteComponentProps<AnyRecord> & StateProps & DispatchPro
             </RouterLink>
           </Avatar>
           <Typography component='h1' variant='h5'>
-            Sign in
+            {locale.signIn.signIn}
           </Typography>
           <form className={classes.form}>
             <TextField
@@ -209,7 +215,7 @@ const SignIn = (props: RouteComponentProps<AnyRecord> & StateProps & DispatchPro
               required
               fullWidth
               id='email'
-              label='Email Address'
+              label={locale.signIn.email}
               name='email'
               autoComplete='email'
               autoFocus
@@ -221,13 +227,13 @@ const SignIn = (props: RouteComponentProps<AnyRecord> & StateProps & DispatchPro
               required
               fullWidth
               name='password'
-              label='Password'
+              label={locale.signIn.password}
               type='password'
               id='password'
               autoComplete='current-password'
               onChange={makeOnChange(ActionType.Password)}
             />
-            <FormControlLabel control={<Checkbox value='remember' color='primary' />} label='Remember me' />
+            <FormControlLabel control={<Checkbox value='remember' color='primary' />} label={locale.signIn.remember} />
             <Button
               type='button'
               fullWidth
@@ -236,17 +242,17 @@ const SignIn = (props: RouteComponentProps<AnyRecord> & StateProps & DispatchPro
               className={classes.submit}
               onClick={onSubmit}
             >
-              Sign In
+              {locale.signIn.signIn}
             </Button>
             <Grid container justify='space-between'>
               <Grid item>
                 <Link href='/' variant='body2'>
-                  Forgot password?
+                  {locale.signIn.forgotPassword}
                 </Link>
               </Grid>
               <Grid item>
-                <Link href='/' variant='body2'>
-                  Don&apos;t have an account? Sign Up
+                <Link href={Routes.SignUp} variant='body2'>
+                  {locale.signIn.noAccount}
                 </Link>
               </Grid>
             </Grid>

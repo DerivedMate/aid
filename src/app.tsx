@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet'
 import ErrorBoundary from '@/components/error-boundary'
 import { ConnectedRouter } from 'connected-react-router'
 import { Provider } from 'react-redux'
-import Routes from './app.routes'
+import RoutesElem from './app.routes'
 import configureStore from './store/configStore'
 import Wrapper from './components/wrapper'
 
@@ -26,7 +26,7 @@ const App = ({ history, store }: IProps): ReactElement => {
       <Provider store={store}>
         <ConnectedRouter history={history}>
           <Wrapper>
-            <Routes auth={auth} />
+            <RoutesElem auth={auth} />
           </Wrapper>
         </ConnectedRouter>
       </Provider>
