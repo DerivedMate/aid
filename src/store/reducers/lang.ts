@@ -1,20 +1,14 @@
 import getDict from '@/locale'
-import { Lang, langOfString } from '@/locale/model'
+import englishDict from '@/locale/english.dict'
+import { Lang } from '@/locale/model'
 import { LangAction, LangActionType, LangState } from '../actions/lang'
 
-export const DEFAULT_STATE: LangState = (() => {
-  const langs = window.navigator.languages.filter(l => !/-/.test(l))
-  const avLangs = [Lang.Polish, Lang.Spanish, Lang.English].map(String)
-  const lang = langOfString(langs.find(l => avLangs.includes(l)) || 'pl')
-  debugger
+const DEFAULT_LANG_STATE = {
+  lang: Lang.English,
+  dict: englishDict
+}
 
-  return {
-    lang,
-    dict: getDict(lang)
-  }
-})()
-
-const langReducer = (state: LangState = DEFAULT_STATE, action: LangAction): LangState => {
+const langReducer = (state: LangState = DEFAULT_LANG_STATE, action: LangAction): LangState => {
   switch (action.type) {
     case LangActionType.ChangeLang:
       return { ...state, lang: action.lang, dict: getDict(action.lang) }

@@ -1,6 +1,6 @@
 export enum UserActionType {
-  LogIn,
-  LogOut
+  LogIn = '@Action:User:LogIn',
+  LogOut = '@Action:User:LogOut'
 }
 interface UserActionLogIn {
   type: UserActionType.LogIn

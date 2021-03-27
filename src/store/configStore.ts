@@ -9,7 +9,11 @@ export const history = createBrowserHistory()
 
 export default function configureStore(preloadedState?: SubState): Store<SubState, Action> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const composeEnhancer: typeof compose = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+  const composeEnhancer: typeof compose =
+    ((window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ &&
+      (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ trace: true, traceLimit: 25 })) ||
+    compose
+  // : typeof compose = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
   const store = createStore(
     createRootReducer(history),
     preloadedState,

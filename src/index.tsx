@@ -3,23 +3,27 @@ import { render } from 'react-dom'
 
 import App from '@/app'
 import configureStore, { history } from './store/configStore'
-import { DEFAULT_STATE as langState } from './store/reducers/lang'
 import authUser from './store/async/authUser'
+import { logIn } from './store/actions/user'
+import { Lang } from './locale/model'
+import englishDict from './locale/english.dict'
+import { initLangState } from './store/reducers'
 
 const DOM_NODE: HTMLElement = document.querySelector('.appWrapper')
 
 const store = configureStore({
-  user:
-    process.env.NODE_ENV !== 'production'
-      ? {
-          loggedIn: true,
-          info: { name: 'Mi Nombre', lastname: 'Apellido', email: 'e@mail.com' }
-        }
-      : { loggedIn: false },
-  lang: langState
+  user: { loggedIn: false },
+  lang: {
+    lang: Lang.English,
+    dict: englishDict
+  }
 })
 
+initLangState(store)
 authUser(store)
+if (process.env['NODE_ENV'] === 'development') {
+  store.dispatch(logIn({ name: 'Mi Nombre', lastname: 'Apellido', email: 'e@mail.com' }))
+}
 
 render(
   <>

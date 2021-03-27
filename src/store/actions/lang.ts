@@ -1,7 +1,7 @@
 import { Lang, Locale } from '@/locale/model'
 
 export enum LangActionType {
-  ChangeLang
+  ChangeLang = '@Action:Lang:ChangeLang'
 }
 
 export interface LangActionChangeLang {
