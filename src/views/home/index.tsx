@@ -1,7 +1,7 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
-import { Button, Card, CardActions, CardContent, Grid, Typography } from '@material-ui/core'
+import { Button, Card, CardActions, CardContent, Grid, makeStyles, Typography } from '@material-ui/core'
 
 import { Locale } from '@/locale/model'
 import { State } from '@/store/reducers'
@@ -9,7 +9,6 @@ import { connect } from 'react-redux'
 import { ignore } from '@/helpers/func'
 import { AnyRecord } from '@/@types/common'
 import { Routes } from '@/app.routes'
-import styles from './home.module.scss'
 
 interface StateProps {
   locale: Locale
@@ -19,13 +18,57 @@ const mapState = (state: State): StateProps => ({
   locale: state.lang.dict
 })
 
+const styles_ = makeStyles(theme => ({
+  fullCard: {
+    [theme.breakpoints.down('sm')]: {
+      width: '100%'
+    },
+    [theme.breakpoints.up('sm')]: {
+      width: '500px'
+    }
+  },
+
+  container: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+
+  styledLink: {
+    padding: theme.spacing(1),
+    textDecoration: 'none'
+  },
+
+  buttonBox: {
+    marginTop: theme.spacing(1)
+  },
+
+  gridButton: {
+    alignContent: 'space-around',
+    height: '2rem'
+  },
+
+  button: {
+    width: '100%'
+  },
+
+  buttonLink: {
+    color: theme.palette.primary.main,
+    textDecoration: 'none',
+    height: 'fit-content',
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(1)
+  }
+}))
+
 const Home = ({ locale }: StateProps): React.ReactElement => {
+  const styles = styles_()
   return (
     <>
       <Helmet>
         <title>Home</title>
       </Helmet>
-      <div /* className={styles.container} */>
+      <div className={styles.container}>
         <Card variant='elevation' className={styles.fullCard}>
           <CardContent>
             <Typography variant='h4'>{locale.home.toAbout.title}</Typography>

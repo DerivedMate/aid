@@ -51,9 +51,9 @@ const AuthNav = ({ locale, route }: NavProps): React.ReactElement => (
     />
     <BottomNavigationAction
       label={locale.menu.home}
-      value={Routes.Home}
+      value={Routes.Dashboard}
       component={Link}
-      to={Routes.Home}
+      to={Routes.Dashboard}
       icon={<HomeIcon />}
     />
     <BottomNavigationAction

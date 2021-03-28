@@ -13,6 +13,15 @@ const dict: Locale = {
     }
   },
 
+  dashboard: {
+    toSupervised: {
+      title: 'Supervised',
+      body:
+        'Here you will find information regarding the location, health details, and the medicine taken by your wards',
+      button: 'Go to supervised'
+    }
+  },
+
   menu: {
     home: 'Home',
     about: 'About',

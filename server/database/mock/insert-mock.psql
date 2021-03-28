@@ -1,0 +1,132 @@
+\c aid;
+
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+do $$
+declare
+  v_supervisor_id UUID := '8f07ed92-38c9-4502-ae8d-bb8fb582c709';
+  r supervised%rowtype;
+  m medicine%rowtype;
+  v_supervision_id UUID; -- TODO: See if you actually need it
+  v_supervised_name varchar(255);
+  date_offset int := 0;
+begin
+  -- Clean tables
+    truncate supervisor, supervised, supervision, medicine, take, info, position;
+
+  -- Mock Supervisor
+  insert into supervisor 
+    ( supervisor_id
+    , email
+    , password
+    , name
+    , lastname
+    )
+   values      
+    ( v_supervisor_id
+    , 'e@mail.com'
+    , crypt('toor', gen_salt('bf'))
+    , 'Mi Nombre'
+    , 'Apellido'
+    );
+
+  
+  -- Mock supervised
+  insert into supervised 
+    ( device_id
+    , auth
+    )
+  values 
+    ( uuid_generate_v4()
+    , md5(random()::text)
+    ),
+    ( uuid_generate_v4()
+    , md5(random()::text)
+    ),
+    ( uuid_generate_v4()
+    , md5(random()::text)
+    );
+
+  -- Loop supervised
+  for r in 
+    select * from supervised
+  loop
+
+    -- Link the supervised and the supervisor
+    insert into supervision 
+      ( supervisor_id
+      , supervised_id
+      )
+    values
+      ( v_supervisor_id
+      , r.supervised_id
+      )
+    returning supervision_id into v_supervision_id;
+
+    -- Mock Supervised Info
+    insert into info 
+      ( supervised_id
+      , name
+      , lastname
+      , hc_number
+      , blood_type
+      )
+    values 
+      ( r.supervised_id
+      , 'Alex ' || substring((r.supervised_id :: varchar(255)) from 9 for 4)
+      , 'Nowak'
+      , 'mock_hc_number'
+      , 'AB+'
+      )
+    returning name into v_supervised_name;
+
+    -- Mock position
+    insert into position 
+      ( supervised_id
+      , pos
+      )
+    values
+      ( r.supervised_id
+      , point '(1, 1)'
+      );
+
+    -- Mock medicine
+    insert into medicine 
+      ( supervised_id
+      , name
+      , amount
+      , unit
+      )
+    values
+      ( r.supervised_id
+      , 'Ibuprofen' || v_supervised_name
+      , 1
+      , 'pill'
+      ),
+      ( r.supervised_id
+      , 'Paracetamol'
+      , 2
+      , 'pill'
+      );
+
+    <<med_loop>>
+    for m in
+      select * from medicine med where med.supervised_id = r.supervised_id
+    loop
+
+      insert into take 
+        ( medicine_id
+        , date
+        )
+      values
+        ( m.medicine_id
+        , now() + interval '1' day * date_offset
+        );
+      
+      date_offset := date_offset + 1;
+
+    end loop med_loop;
+  end loop;
+
+end $$;

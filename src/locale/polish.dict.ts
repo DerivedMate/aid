@@ -13,6 +13,14 @@ const dict: Locale = {
     }
   },
 
+  dashboard: {
+    toSupervised: {
+      title: 'Podopieczni',
+      body: 'Tu znajdziesz informację dotyczące lokalizacji, danych medycznych i leków Twoich podopiecznych.',
+      button: 'Przejdź do podopiecznych'
+    }
+  },
+
   menu: {
     home: 'Strona G.',
     about: 'O Aplik.',

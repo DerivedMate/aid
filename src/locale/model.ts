@@ -13,6 +13,14 @@ export interface Locale {
     }
   }
 
+  dashboard: {
+    toSupervised: {
+      title: string
+      body: string
+      button: string
+    }
+  }
+
   menu: {
     home: string
     about: string

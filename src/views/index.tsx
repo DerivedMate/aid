@@ -16,3 +16,5 @@ export const About = loadable(() => import(/* webpackChunkName: 'about' */ './ab
 export const SignIn = loadable(() => import(/* webpackChunkName: 'signin' */ './signin'), loadableOptions)
 
 export const SignUp = loadable(() => import(/* webpackChunkName: 'signin' */ './signup'), loadableOptions)
+
+export const Dashboard = loadable(() => import(/* webpackChunkName: 'dashboard' */ './dashboard'), loadableOptions)
