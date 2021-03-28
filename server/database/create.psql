@@ -33,8 +33,12 @@ grant all privileges on table supervised to aidclient;
 
 create table if not exists supervision (
   supervision_id UUID default uuid_generate_v4(),
-  supervisor_id UUID not null,
-  supervised_id UUID not null,
+  supervisor_id UUID not null 
+    references supervisor (supervisor_id) 
+    on delete cascade,
+  supervised_id UUID not null 
+    references supervised (supervised_id) 
+    on delete cascade,
   primary key (supervision_id)
 );
 grant all privileges on table supervision to aidclient;
@@ -43,17 +47,22 @@ grant all privileges on table supervision to aidclient;
 -- User-specific info
 create table if not exists medicine (
   medicine_id UUID default uuid_generate_v4(),
-  supervised_id UUID not null,
+  supervised_id UUID not null
+    references supervised (supervised_id) 
+    on delete cascade,
   name varchar(255) not null,
   amount int default 1,
   unit varchar(255) default '',
+  current boolean default true,
   primary key (medicine_id)
 );
 grant all privileges on table medicine to aidclient;
 
 create table if not exists take (
   take_id UUID default uuid_generate_v4(),
-  medicine_id UUID not null,
+  medicine_id UUID not null
+    references medicine (medicine_id) 
+    on delete cascade,
   date timestamp,
   primary key (take_id)
 );
@@ -61,7 +70,9 @@ grant all privileges on table take to aidclient;
 
 create table if not exists info (
   info_id UUID default uuid_generate_v4(),
-  supervised_id UUID not null,
+  supervised_id UUID not null
+    references supervised (supervised_id) 
+    on delete cascade,
   name varchar(255) not null,
   lastname varchar(255) not null,
   hc_number varchar(255) not null,
@@ -72,7 +83,9 @@ grant all privileges on table info to aidclient;
 
 create table if not exists position (
   position_id UUID default uuid_generate_v4(),
-  supervised_id UUID not null unique,
+  supervised_id UUID not null unique
+    references supervised (supervised_id) 
+    on delete cascade,
   pos point,
   primary key (position_id)
 );

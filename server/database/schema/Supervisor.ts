@@ -1,32 +1,12 @@
 import { query } from '../db'
-import { Hashed, UUID, QError } from '../types'
-
-export interface Supervisor {
-  supervisor_id: UUID
-  email: string
-  password: Hashed
-  name: string
-  lastname: string
-}
-
-export interface SupervisorNoPass {
-  supervisor_id: UUID
-  email: string
-  name: string
-  lastname: string
-}
-
-export interface RegistrationCredentials {
-  email: string
-  password: string
-  name: string
-  lastname: string
-}
-
-export interface RetrievalCredentials {
-  email: string
-  password: string
-}
+import { QError } from '../types'
+import { UUID } from '../../../shared/query/columnTypes'
+import {
+  RegistrationCredentials,
+  RetrievalCredentials,
+  Supervisor,
+  SupervisorNoPass
+} from '../../../shared/query/supervisor'
 
 export const registerSupervisor = ({
   email,

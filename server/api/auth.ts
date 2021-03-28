@@ -1,17 +1,7 @@
 import { EndPoint } from './_common'
 import { Express } from 'express-serve-static-core'
-import { getSupervisorSessionData, SupervisorNoPass } from '../database/schema/Supervisor'
-
-interface isAuthSuccess {
-  isAuth: true
-  data: SupervisorNoPass
-}
-
-interface isAuthFail {
-  isAuth: false
-}
-
-type isAuthReturn = isAuthFail | isAuthSuccess
+import { getSupervisorSessionData } from '../database/schema/Supervisor'
+import { isAuthReturn } from '../../shared/api/auth'
 
 class Auth extends EndPoint {
   mount(s: Express, prefix: string) {

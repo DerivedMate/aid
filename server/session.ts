@@ -1,5 +1,5 @@
 import 'express'
-import { UUID } from './database/types'
+import { UUID } from '../shared/query/columnTypes'
 import session = require('express-session')
 import pgConnect = require('connect-pg-simple')
 import { getPool } from './database/db'
