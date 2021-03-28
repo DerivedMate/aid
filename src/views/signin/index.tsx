@@ -25,6 +25,7 @@ import { State } from '@/store/reducers'
 import { AnyRecord } from 'dns'
 import { Locale } from '@/locale/model'
 import { Routes } from '@/app.routes'
+import { getApiBase } from '@/helpers/url'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -133,7 +134,7 @@ const SignIn = (props: RouteComponentProps<AnyRecord> & StateProps & DispatchPro
       return
     }
 
-    fetch(`${window.location.port === '3000' ? 'https://localhost:3001' : ''}/api/signin`, {
+    fetch(`${getApiBase()}/api/signin`, {
       method: 'POST',
       body: JSON.stringify({
         email: state.email,

@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import { ignore } from '@/helpers/func'
 import { AnyRecord } from '@/@types/common'
 import { Routes } from '@/app.routes'
+import { listed } from '@/styles/ts/common'
 
 interface StateProps {
   locale: Locale
@@ -18,27 +19,7 @@ const mapState = (state: State): StateProps => ({
   locale: state.lang.dict
 })
 
-const styles_ = makeStyles(theme => ({
-  fullCard: {
-    [theme.breakpoints.down('sm')]: {
-      width: '100%'
-    },
-    [theme.breakpoints.up('sm')]: {
-      width: '500px'
-    }
-  },
-
-  container: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-
-  styledLink: {
-    padding: theme.spacing(1),
-    textDecoration: 'none'
-  }
-}))
+const styles_ = listed
 
 const Dashboard = ({ locale }: StateProps): React.ReactElement => {
   const styles = styles_()

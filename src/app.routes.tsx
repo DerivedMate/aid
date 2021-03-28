@@ -5,7 +5,8 @@ import {
   SignIn as SignInRoute,
   SignUp as SignUpRoute,
   About as AboutRoute,
-  Dashboard as DashboardRoute
+  Dashboard as DashboardRoute,
+  Supervised as SupervisedRoute
 } from '@/views'
 import { Redirect, Switch } from 'react-router-dom'
 import { DeGuardedRoute, GuardedRoute } from './components/guarded-route'
@@ -65,6 +66,13 @@ export const routes = ({ auth }: IProps): React.ReactElement => {
           path={Routes.Dashboard}
           key='dashboard_/dashboard'
           component={DashboardRoute}
+        />
+        <GuardedRoute
+          auth={auth}
+          guarded
+          path={Routes.Supervised}
+          key='supervised_/supervised'
+          component={SupervisedRoute}
         />
         <GuardedRoute auth={auth} path='/404' key='notFound_/404' component={NotFoundRoute} />
         <Redirect to='/404' />

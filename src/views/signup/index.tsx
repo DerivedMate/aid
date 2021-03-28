@@ -23,6 +23,7 @@ import { AnyRecord } from '@/@types/common'
 import { State } from '@/store/reducers'
 import { Locale } from '@/locale/model'
 import { Routes } from '@/app.routes'
+import { getApiBase } from '@/helpers/url'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -140,7 +141,7 @@ const SignUp = (props: RouteComponentProps<AnyRecord> & StateProps & DispatchPro
       return
     }
 
-    fetch(`${window.location.port === '3000' ? 'https://localhost:3001' : ''}/api/signup`, {
+    fetch(`${getApiBase()}/api/signup`, {
       method: 'POST',
       body: JSON.stringify({
         email: state.credentials.email,

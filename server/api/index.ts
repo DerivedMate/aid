@@ -2,6 +2,7 @@ import { Express } from 'express-serve-static-core'
 import { instance as signin } from './signin'
 import { instance as signup } from './signup'
 import { instance as auth } from './auth'
+import { instance as supervised } from './supervised'
 
 export const init_api = (server: Express) => {
   if (process.env['NODE_ENV'] === 'development')
@@ -9,5 +10,5 @@ export const init_api = (server: Express) => {
       res.setHeader('Access-Control-Allow-Origin', '*')
       next()
     })
-  ;[signup, signin, auth].forEach(endpoint => endpoint.mount(server, '/api'))
+  ;[signup, signin, auth, supervised].forEach(endpoint => endpoint.mount(server, '/api'))
 }

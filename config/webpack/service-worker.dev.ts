@@ -16,7 +16,8 @@ const webpackConfig: webpack.Configuration = {
     extensions: ['.js', '.ts'],
     modules: ['src', 'node_modules'],
     alias: {
-      '@': path.resolve(rootDir, 'src')
+      '@': path.resolve(rootDir, 'src'),
+      '%': path.resolve(rootDir, 'shared')
     }
   },
   output: {
