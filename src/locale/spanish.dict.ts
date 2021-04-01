@@ -47,6 +47,25 @@ const dict: Locale = {
     signUp: 'Registrarse',
     forgotPassword: '¿Ha olvidado su contraseña?',
     alreadyAccount: '¿Ya tiene used una cuenta?'
+  },
+
+  supervised: {
+    list: {
+      pageTitle: 'Lista de Supervisados',
+      item: {
+        healthDetail: 'Datos de Salud',
+        location: 'Ubicación',
+        medications: 'Medicinas'
+      }
+    },
+
+    add: {
+      title: 'Agregar un(a) Supervisado/a',
+      body:
+        'Inserte el número de identificación, el cual se puede encontrar en la parte trasera del dispositivo o en la tarjeta de garantía.',
+      fieldLabel: 'Número de Identificación',
+      button: 'Agregar'
+    }
   }
 }
 

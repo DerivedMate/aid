@@ -47,6 +47,24 @@ const dict: Locale = {
     signUp: 'Sign up',
     forgotPassword: 'Forgot your password?',
     alreadyAccount: 'Already have an account?'
+  },
+
+  supervised: {
+    list: {
+      pageTitle: 'List of Wards',
+      item: {
+        healthDetail: 'Health Details',
+        location: 'Location',
+        medications: 'Medications'
+      }
+    },
+
+    add: {
+      title: 'Add a ward',
+      body: 'Insert the device ID, which can be found on the back side of the device or on the warranty card.',
+      fieldLabel: 'Device ID',
+      button: 'Add'
+    }
   }
 }
 

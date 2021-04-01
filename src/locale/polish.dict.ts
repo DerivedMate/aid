@@ -46,6 +46,24 @@ const dict: Locale = {
     signUp: 'Zarejestruj się',
     forgotPassword: 'Zapomniałeś/aś hasła?',
     alreadyAccount: 'Masz już konto?'
+  },
+
+  supervised: {
+    list: {
+      pageTitle: 'Lista podopiecznych',
+      item: {
+        healthDetail: 'Info. Zdrowotne',
+        location: 'Położenie',
+        medications: 'Leki'
+      }
+    },
+
+    add: {
+      title: 'Dodaj podopiecznego/ną',
+      body: 'Wprowadź id urządzenia, które znajduje się z tyłu urządzenia / na karcie gwarancyjnej.',
+      fieldLabel: 'Id urządzenia',
+      button: 'Dodaj'
+    }
   }
 }
 

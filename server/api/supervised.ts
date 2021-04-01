@@ -1,7 +1,8 @@
 import { EndPoint, MOCK_USER_ID } from './_common'
 import { Express } from 'express-serve-static-core'
-import { getSupervisedList } from '../database/schema/Supervised'
-import { SupervisedListResult } from '../../shared/api/supervised'
+import { createSupervision, getSupervisedList } from '../database/schema/Supervised'
+import { SupervisedListResult, AddSupervisedReqBody, AddSupervisedRes } from '../../shared/api/supervised'
+import { validateUUID } from '../database/types'
 
 class Supervised extends EndPoint {
   mount(s: Express, prefix: string) {
@@ -31,6 +32,49 @@ class Supervised extends EndPoint {
               supervised: [],
               message: String(e)
             } as SupervisedListResult)
+          )
+        )
+    })
+
+    s.post(`${prefix}/supervised/add`, (req, res) => {
+      if (process.env['NODE_ENV'] === 'development') req.session.user_id = MOCK_USER_ID
+
+      const { device_id } = req.body as AddSupervisedReqBody
+      const supervisor_id = req.session.user_id
+
+      debugger
+
+      if (!supervisor_id)
+        return res.status(403).send(
+          JSON.stringify({
+            ok: false,
+            message: `Access denied: no supervisor id provided`
+          } as AddSupervisedRes)
+        )
+
+      if (!validateUUID(device_id)) {
+        return res.status(400).send(
+          JSON.stringify({
+            ok: false,
+            message: `Invalid device id (UUID): ${device_id}`
+          } as AddSupervisedRes)
+        )
+      }
+
+      createSupervision(supervisor_id, device_id)
+        .then(() =>
+          res.send(
+            JSON.stringify({
+              ok: true
+            } as AddSupervisedRes)
+          )
+        )
+        .catch(e =>
+          res.status(500).send(
+            JSON.stringify({
+              ok: false,
+              message: e
+            } as AddSupervisedRes)
           )
         )
     })

@@ -8,6 +8,8 @@ class Auth extends EndPoint {
     s.get(`${prefix}/isauth`, (req, res) => {
       if (process.env['NODE_ENV'] === 'development') req.session.user_id = MOCK_USER_ID
 
+      console.info('AUthing')
+
       if (req.session.user_id) {
         getSupervisorSessionData(req.session.user_id)
           .then(data => {

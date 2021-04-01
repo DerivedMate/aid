@@ -47,6 +47,24 @@ export interface Locale {
     forgotPassword: string
     alreadyAccount: string
   }
+
+  supervised: {
+    list: {
+      pageTitle: string
+      item: {
+        healthDetail: string
+        location: string
+        medications: string
+      }
+    }
+
+    add: {
+      title: string
+      body: string
+      fieldLabel: string
+      button: string
+    }
+  }
 }
 
 export enum Lang {

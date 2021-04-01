@@ -11,9 +11,15 @@ export const listed = makeStyles(theme => ({
   },
 
   container: {
+    position: 'relative',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'space-between',
+    flexDirection: 'column',
+    height: '100%',
+    overflowY: 'scroll',
+    scrollPadding: 0,
+    scrollbarWidth: 'thin'
   },
 
   styledLink: {
@@ -24,6 +30,23 @@ export const listed = makeStyles(theme => ({
   camouflagedLink: {
     textDecoration: 'none',
     color: theme.palette.text.primary
+  },
+
+  buttonedTopLinkPositive: {
+    [theme.breakpoints.up('xs')]: {
+      backgroundColor: '#29e594',
+      position: 'absolute',
+      '&:hover': {
+        backgroundColor: '#66eca9'
+      },
+      bottom: theme.spacing(4)
+    },
+    [theme.breakpoints.down('sm')]: {
+      right: theme.spacing(4)
+    },
+    [theme.breakpoints.up('sm')]: {
+      right: `calc(50% - ${theme.spacing(3)}px)`
+    }
   },
 
   topItem: {

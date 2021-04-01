@@ -6,7 +6,7 @@
   "scripts": {
     "start": "cross-env TS_NODE_PROJECT=\"tsconfig.webpack.json\" NODE_ENV=\"development\" webpack-dev-server --color --watch --hot --stdin --config config/webpack/app.dev.ts",
     "start:prod": "cross-env NODE_ENV=\"production\" ts-node server/index.ts",
-    "server:dev": "NODE_ENV=\"development\" nodemon --exec \"kill -9 `lsof -t -i:3001`; ts-node\" ./server/index.ts",
+    "server:dev": "NODE_ENV=\"development\" nodemon --watch server --exec \"kill -9 `lsof -t -i:3001`; ts-node\" ./server/index.ts",
     "build": "cross-env TS_NODE_PROJECT=\"tsconfig.webpack.json\" NODE_ENV=\"production\" webpack --progress --colors --config config/webpack/app.prod.ts --fix",
     "postbuild": "npm run build:sw:prod",
     "build:sw:prod": "cross-env TS_NODE_PROJECT=\"tsconfig.webpack.json\" NODE_ENV=\"production\" webpack --progress --colors --config config/webpack/service-worker.prod.ts && ts-node config/service-worker/inject-manifest.ts",

@@ -34,6 +34,6 @@ export const createSupervision = (supervisor_id: UUID, device_id: UUID): Promise
       `,
     [supervisor_id, device_id]
   ).then(r => {
-    console.dir(r.rows)
+    console.dir(r)
     return r.rows[0] as UUID
   })

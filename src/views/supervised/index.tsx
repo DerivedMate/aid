@@ -7,7 +7,7 @@ import { getApiBase } from '@/helpers/url'
 import { Locale } from '@/locale/model'
 import { State } from '@/store/reducers'
 import { listed } from '@/styles/ts/common'
-import { Collapse, List, ListItem, ListItemIcon, ListItemText, makeStyles } from '@material-ui/core'
+import { Collapse, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
 import LocationOnIcon from '@material-ui/icons/LocationOn'
 import LocalHospitalIcon from '@material-ui/icons/LocalHospital'
 import InfoIcon from '@material-ui/icons/Info'
@@ -15,6 +15,7 @@ import React, { useEffect, useReducer, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
+import AddPopUp from './addPopup'
 
 interface StateProps {
   locale: Locale
@@ -54,6 +55,7 @@ const mapState = (state: State) => ({
 const styles_ = listed
 
 const Supervised = ({ locale }: StateProps) => {
+  // Main state
   const [state, dispatch] = useReducer(
     (state: LocalState, action: LocalAction) => {
       switch (action.type) {
@@ -68,9 +70,10 @@ const Supervised = ({ locale }: StateProps) => {
     { stage: Stage.Loading, supervised: [], message: '' }
   )
 
+  const [fn, refetch] = useState([true])
+  const onPopUpResult = () => refetch([!fn[0]])
   useEffect(() => {
     fetch(`${getApiBase()}/api/supervised/list`).then(r => {
-      debugger
       if (!r.ok && r.bodyUsed)
         r.text().then(j =>
           dispatch({
@@ -79,10 +82,12 @@ const Supervised = ({ locale }: StateProps) => {
           })
         )
       else if (!r.ok)
-        dispatch({
-          type: LocalActionType.LoadFail,
-          message: r.statusText
-        })
+        r.text().then(j =>
+          dispatch({
+            type: LocalActionType.LoadFail,
+            message: j
+          })
+        )
       else
         r.text().then(j =>
           dispatch({
@@ -91,8 +96,9 @@ const Supervised = ({ locale }: StateProps) => {
           })
         )
     })
-  }, [])
+  }, fn)
 
+  // Open tab state
   const [openNr, setOpenNr] = useState(-1)
   const handleClick = (v: number) => () => {
     if (v === openNr) setOpenNr(-1)
@@ -104,7 +110,7 @@ const Supervised = ({ locale }: StateProps) => {
   return (
     <>
       <Helmet>
-        <title>Supervised List</title>
+        <title>{locale.supervised.list.pageTitle}</title>
       </Helmet>
       <div className={styles.container}>
         {state.stage === Stage.Loading ? (
@@ -112,7 +118,7 @@ const Supervised = ({ locale }: StateProps) => {
         ) : (
           <List component='ul' className={styles.fullCard}>
             {state.supervised.map(({ name, lastname }, i) => (
-              <ListItem className={styles.fullCard}>
+              <ListItem className={styles.fullCard} key={i}>
                 <List className={styles.fullCard}>
                   <ListItem button onClick={handleClick(i)} className={styles.topItem}>
                     <ListItemText primary={name} secondary={lastname} />
@@ -123,19 +129,28 @@ const Supervised = ({ locale }: StateProps) => {
                         <ListItemIcon>
                           <InfoIcon />
                         </ListItemIcon>
-                        <ListItemText primary='Health details' className={styles.camouflagedLink} />
+                        <ListItemText
+                          primary={locale.supervised.list.item.healthDetail}
+                          className={styles.camouflagedLink}
+                        />
                       </ListItem>
                       <ListItem component={Link} to={Routes.Dashboard}>
                         <ListItemIcon>
                           <LocationOnIcon />
                         </ListItemIcon>
-                        <ListItemText primary='Location' className={styles.camouflagedLink} />
+                        <ListItemText
+                          primary={locale.supervised.list.item.location}
+                          className={styles.camouflagedLink}
+                        />
                       </ListItem>
                       <ListItem component={Link} to={Routes.Dashboard}>
                         <ListItemIcon>
                           <LocalHospitalIcon />
                         </ListItemIcon>
-                        <ListItemText primary='Medicine' className={styles.camouflagedLink} />
+                        <ListItemText
+                          primary={locale.supervised.list.item.medications}
+                          className={styles.camouflagedLink}
+                        />
                       </ListItem>
                     </List>
                   </Collapse>
@@ -145,6 +160,14 @@ const Supervised = ({ locale }: StateProps) => {
           </List>
         )}
       </div>
+      <AddPopUp
+        open={false}
+        title='[PH] title'
+        body='[PH] Some text'
+        fieldLabel='[PH] Device id'
+        button='[PH] submit'
+        onResult={onPopUpResult}
+      />
     </>
   )
 }
