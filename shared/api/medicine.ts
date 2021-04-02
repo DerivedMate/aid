@@ -16,3 +16,16 @@ interface MedicineResAllFail {
 }
 
 export type MedicineResAll = MedicineResAllFail | MedicineResAllSuccess
+
+// TODO: Merge if needed
+interface MedicineResUpdateFail {
+  ok: false
+  message: string
+}
+
+interface MedicineResUpdateSuccess {
+  ok: true
+  message: string
+}
+
+export type MedicineResUpdate = MedicineResUpdateSuccess | MedicineResUpdateFail

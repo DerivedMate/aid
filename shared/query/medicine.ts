@@ -8,3 +8,11 @@ export interface Medicine {
   unit: string
   current: boolean
 }
+
+export interface MedicineUpdateReq {
+  supervised_id: UUID
+  medicine_id: UUID
+  name: string
+  amount: number
+  unit: string
+}

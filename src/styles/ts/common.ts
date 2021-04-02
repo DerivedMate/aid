@@ -32,6 +32,19 @@ export const listed = makeStyles(theme => ({
     color: theme.palette.text.primary
   },
 
+  camouflagedLinkDanger: {
+    textDecoration: 'none',
+    color: theme.palette.error.light
+  },
+
+  listItemDanger: {
+    textDecoration: 'none',
+    color: theme.palette.error.light,
+    '& .MuiListItemIcon-root': {
+      color: theme.palette.error.light
+    }
+  },
+
   buttonedTopLinkPositive: {
     [theme.breakpoints.up('xs')]: {
       backgroundColor: '#29e594',

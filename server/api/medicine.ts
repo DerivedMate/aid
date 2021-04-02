@@ -1,13 +1,15 @@
 import { EndPoint } from './_common'
 import { Express } from 'express-serve-static-core'
-import { MedicineResAll } from '../../shared/api/medicine'
+import { MedicineResAll, MedicineResUpdate } from '../../shared/api/medicine'
 import { validateUUID } from '../database/types'
 import { mockDev } from '../security'
-import { getAllMedicine } from '../database/schema/Medicine'
+import { getAllMedicine, updateMedicine } from '../database/schema/Medicine'
+import { MedicineUpdateReq } from '../../shared/query/medicine'
+import { AuthSupervision } from '../database/schema/Supervision'
 
 class Endpoint extends EndPoint {
   mount(s: Express, prefix: string) {
-    s.get(`${prefix}/medicine/all`, (req, res) => {
+    s.post(`${prefix}/medicine/all`, (req, res) => {
       mockDev(req)
       console.info(`[med. request]: ${req.session.user_id}`)
 
@@ -35,6 +37,45 @@ class Endpoint extends EndPoint {
               ok: false,
               message: String(e)
             } as MedicineResAll)
+          )
+        )
+    })
+
+    s.put(`${prefix}/medicine/edit`, async (req, res) => {
+      mockDev(req)
+
+      const supervisor_id = req.session.user_id
+      const medicine = req.body as MedicineUpdateReq
+
+      if (!supervisor_id) return res.sendStatus(403)
+
+      const isSupervisorAuth = await AuthSupervision(medicine.supervised_id, supervisor_id)
+        .then(r => r.ok)
+        .catch(() => false)
+
+      if (!isSupervisorAuth)
+        res.status(403).send(
+          JSON.stringify({
+            ok: false,
+            message: 'Unauthorized edition'
+          } as MedicineResUpdate)
+        )
+
+      updateMedicine(medicine)
+        .then(r =>
+          res.status(r ? 201 : 500).send(
+            JSON.stringify({
+              ok: r,
+              message: 'Edited'
+            } as MedicineResUpdate)
+          )
+        )
+        .catch(e =>
+          res.status(500).send(
+            JSON.stringify({
+              ok: false,
+              message: String(e)
+            } as MedicineResUpdate)
           )
         )
     })

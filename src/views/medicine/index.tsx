@@ -7,11 +7,11 @@ import { Locale } from '@/locale/model'
 import { State } from '@/store/reducers'
 import { AppBar, IconButton, makeStyles, Tab, Tabs, Toolbar, Typography } from '@material-ui/core'
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft'
-import { TabPanel } from '@material-ui/lab'
 import React, { ReactElement, useEffect, useReducer, useState } from 'react'
 import { connect } from 'react-redux'
 import { useParams } from 'react-router'
 import { Link } from 'react-router-dom'
+import AllMedicine from './all'
 
 interface MatchProps {
   supervised_id: string
@@ -69,6 +69,7 @@ const localStyles_ = makeStyles(theme => ({
     display: 'grid',
     gridTemplateAreas: `'header' 'tabs' 'content'`,
     gridTemplateRows: `auto auto 1fr`,
+    height: '100%',
     [theme.breakpoints.up('sm')]: {
       width: '500px',
       margin: '0 auto'
@@ -103,11 +104,19 @@ const localStyles_ = makeStyles(theme => ({
   TabsRoot: {
     backgroundColor: theme.palette.grey[100],
     boxShadow: theme.shadows[1],
-    color: theme.palette.grey[700]
+    color: theme.palette.grey[700],
+    gridArea: 'tabs'
   },
 
   TabsList: {
     width: '100%'
+  },
+
+  ContentRoot: {
+    width: '100%',
+    height: '100%',
+    gridArea: 'content',
+    paddingTop: theme.spacing(2)
   }
 }))
 
@@ -257,6 +266,9 @@ export const Elem = ({ locale }: DispatchProps): ReactElement => {
               <Tab value={2} label='[PH] Left' />
             </Tabs>
           </AppBar>
+          <section className={localStyles.ContentRoot}>
+            {tabNr === 0 ? <AllMedicine supervised_id={supervised_id} /> : <></>}
+          </section>
         </div>
       </>
     )
