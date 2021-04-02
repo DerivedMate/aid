@@ -1,12 +1,17 @@
 import { SupervisionAuthReqBody, SupervisionAuthRes } from '%/api/auth'
+import { SupervisedListDisplay } from '%/query/supervised'
+import { Routes } from '@/app.routes'
 import Loader from '@/components/loader'
 import { getApiBase } from '@/helpers/url'
 import { Locale } from '@/locale/model'
 import { State } from '@/store/reducers'
-import { Typography } from '@material-ui/core'
-import React, { ReactElement, useEffect, useReducer } from 'react'
+import { AppBar, IconButton, makeStyles, Tab, Tabs, Toolbar, Typography } from '@material-ui/core'
+import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft'
+import { TabPanel } from '@material-ui/lab'
+import React, { ReactElement, useEffect, useReducer, useState } from 'react'
 import { connect } from 'react-redux'
 import { useParams } from 'react-router'
+import { Link } from 'react-router-dom'
 
 interface MatchProps {
   supervised_id: string
@@ -28,6 +33,7 @@ enum LocalActionType {
 // Actions
 interface LocalActionIntoAuthorized {
   type: LocalActionType.IntoAuthorized
+  supervised: SupervisedListDisplay
 }
 
 interface LocalActionIntoAuthError {
@@ -47,6 +53,7 @@ interface LocalState {
   stage: Stage
   message: string
   status: number
+  supervised: SupervisedListDisplay | null
 }
 
 interface DispatchProps {
@@ -57,9 +64,57 @@ const mapProps = (state: State): DispatchProps => ({
   locale: state.lang.dict
 })
 
+const localStyles_ = makeStyles(theme => ({
+  root: {
+    display: 'grid',
+    gridTemplateAreas: `'header' 'tabs' 'content'`,
+    gridTemplateRows: `auto auto 1fr`,
+    [theme.breakpoints.up('sm')]: {
+      width: '500px',
+      margin: '0 auto'
+    }
+  },
+
+  topBar: {
+    backgroundColor: theme.palette.grey[200],
+    boxShadow: theme.shadows[2],
+    gridArea: 'header'
+  },
+
+  topBarTitle: {
+    color: theme.palette.text.primary,
+    marginRight: theme.spacing(3)
+  },
+
+  topBarSpace: {
+    flexGrow: 1
+  },
+
+  topBarFirstName: {
+    color: theme.palette.text.primary,
+    textAlign: 'right'
+  },
+
+  topBarSecondName: {
+    color: theme.palette.text.secondary,
+    textAlign: 'right'
+  },
+
+  TabsRoot: {
+    backgroundColor: theme.palette.grey[100],
+    boxShadow: theme.shadows[1],
+    color: theme.palette.grey[700]
+  },
+
+  TabsList: {
+    width: '100%'
+  }
+}))
+
 // URL: .../medicine/:supervised_id
 export const Elem = ({ locale }: DispatchProps): ReactElement => {
   const { supervised_id } = useParams<MatchProps>()
+  const localStyles = localStyles_()
 
   const [state, dispatch] = useReducer(
     (state: LocalState, action: LocalAction) => {
@@ -69,7 +124,7 @@ export const Elem = ({ locale }: DispatchProps): ReactElement => {
         case LocalActionType.IntoAuthError:
           return { ...state, stage: Stage.AuthError, message: action.message, status: action.status }
         case LocalActionType.IntoAuthorized:
-          return { ...state, stage: Stage.Authorized, status: 200 }
+          return { ...state, stage: Stage.Authorized, status: 200, supervised: action.supervised }
         default:
           return state
       }
@@ -77,7 +132,8 @@ export const Elem = ({ locale }: DispatchProps): ReactElement => {
     {
       stage: Stage.Authorizing,
       message: '',
-      status: 200
+      status: 200,
+      supervised: null
     }
   )
 
@@ -119,27 +175,33 @@ export const Elem = ({ locale }: DispatchProps): ReactElement => {
           )
 
       r.text().then(j => {
-        const { ok, isAuth, message } = JSON.parse(j) as SupervisionAuthRes
-        if (!isAuth && ok)
+        const res = JSON.parse(j) as SupervisionAuthRes
+        if (!res.isAuth && res.ok)
           return dispatch({
             type: LocalActionType.IntoAuthDenied,
-            message
+            message: res.message
           })
 
-        if (!isAuth && !ok)
+        if (!res.isAuth && !res.ok)
           return dispatch({
             type: LocalActionType.IntoAuthError,
-            message,
+            message: res.message,
             status: r.status
           })
 
-        if (isAuth)
+        if (res.isAuth)
           return dispatch({
-            type: LocalActionType.IntoAuthorized
+            type: LocalActionType.IntoAuthorized,
+            supervised: res.supervised
           })
       })
     })
   }, [])
+
+  const [tabNr, changeTabNr] = useState(0)
+  const handleTabChange = (_: React.ChangeEvent<{}>, v: number) => {
+    changeTabNr(v)
+  }
 
   if (state.stage === Stage.Authorizing) return <Loader title='[PH] Authorizing' />
 
@@ -157,7 +219,47 @@ export const Elem = ({ locale }: DispatchProps): ReactElement => {
       </Typography>
     )
 
-  if (state.stage === Stage.Authorized) return <Typography variant='h5'>[PH] Authorized</Typography>
+  if (state.stage === Stage.Authorized)
+    return (
+      <>
+        <div className={localStyles.root}>
+          <AppBar component='header' position='static' className={localStyles.topBar}>
+            <Toolbar>
+              <IconButton edge='start' component={Link} to={Routes.Supervised}>
+                <KeyboardArrowLeftIcon />
+              </IconButton>
+              <Typography variant='h6' className={localStyles.topBarTitle}>
+                [PH] Medicine
+              </Typography>
+              <div className={localStyles.topBarSpace} />
+              <div>
+                <Typography variant='h6' className={localStyles.topBarFirstName}>
+                  {state.supervised.name}
+                </Typography>
+                <Typography variant='subtitle2' className={localStyles.topBarSecondName}>
+                  {state.supervised.lastname}
+                </Typography>
+              </div>
+            </Toolbar>
+          </AppBar>
+          <AppBar position='static' className={localStyles.TabsRoot}>
+            <Tabs
+              value={tabNr}
+              onChange={handleTabChange}
+              indicatorColor='primary'
+              variant='fullWidth'
+              scrollButtons='auto'
+              aria-label='[PH] Medicine tabs'
+              className={localStyles.TabsList}
+            >
+              <Tab value={0} label='[PH] All' />
+              <Tab value={1} label='[PH] Taken' />
+              <Tab value={2} label='[PH] Left' />
+            </Tabs>
+          </AppBar>
+        </div>
+      </>
+    )
 }
 
 export default connect<DispatchProps>(mapProps)(Elem)

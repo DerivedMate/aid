@@ -63,10 +63,11 @@ class Auth extends EndPoint {
 
       AuthSupervision(supervised_id, supervisor_id)
         .then(r =>
-          res.status(r ? 200 : 403).send(
+          res.status(r.ok ? 200 : 403).send(
             JSON.stringify({
               ok: true,
-              isAuth: r
+              isAuth: r.ok,
+              supervised: r.ok ? r.supervised : null
             } as SupervisionAuthRes)
           )
         )

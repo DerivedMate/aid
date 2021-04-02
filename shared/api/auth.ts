@@ -1,4 +1,5 @@
 import { UUID } from '%/query/columnTypes'
+import { SupervisedListDisplay } from '%/query/supervised'
 import { SupervisorNoPass } from 'shared/query/supervisor'
 
 export interface IsAuthSuccess {
@@ -16,8 +17,17 @@ export interface SupervisionAuthReqBody {
   supervised_id: UUID
 }
 
-export interface SupervisionAuthRes {
+interface SupervisionAuthResNoAuth {
   ok: boolean
-  isAuth: boolean
+  isAuth: false
   message?: string
 }
+
+interface SupervisionAuthResAuth {
+  ok: true
+  isAuth: true
+  supervised: SupervisedListDisplay
+  message?: string
+}
+
+export type SupervisionAuthRes = SupervisionAuthResNoAuth | SupervisionAuthResAuth
