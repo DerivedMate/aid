@@ -141,7 +141,7 @@ const SignUp = (props: RouteComponentProps<AnyRecord> & StateProps & DispatchPro
       return
     }
 
-    fetch(`${getApiBase()}/api/signup`, {
+    fetch(`${getApiBase()}/signup`, {
       method: 'POST',
       body: JSON.stringify({
         email: state.credentials.email,

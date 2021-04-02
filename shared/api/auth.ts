@@ -1,12 +1,23 @@
+import { UUID } from '%/query/columnTypes'
 import { SupervisorNoPass } from 'shared/query/supervisor'
 
-export interface isAuthSuccess {
+export interface IsAuthSuccess {
   isAuth: true
   data: SupervisorNoPass
 }
 
-export interface isAuthFail {
+export interface IsAuthFail {
   isAuth: false
 }
 
-export type isAuthReturn = isAuthFail | isAuthSuccess
+export type IsAuthReturn = IsAuthFail | IsAuthSuccess
+
+export interface SupervisionAuthReqBody {
+  supervised_id: UUID
+}
+
+export interface SupervisionAuthRes {
+  ok: boolean
+  isAuth: boolean
+  message?: string
+}

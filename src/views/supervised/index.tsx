@@ -1,6 +1,6 @@
 import { SupervisedListFail, SupervisedListSuccess } from '%/api/supervised'
 import { SupervisedListDisplay } from '%/query/supervised'
-import { Routes } from '@/app.routes'
+import { makeMedicineUrl, Routes } from '@/app.routes'
 import Loader from '@/components/loader'
 import { ignore } from '@/helpers/func'
 import { getApiBase } from '@/helpers/url'
@@ -73,29 +73,36 @@ const Supervised = ({ locale }: StateProps) => {
   const [fn, refetch] = useState([true])
   const onPopUpResult = () => refetch([!fn[0]])
   useEffect(() => {
-    fetch(`${getApiBase()}/api/supervised/list`).then(r => {
-      if (!r.ok && r.bodyUsed)
-        r.text().then(j =>
-          dispatch({
-            type: LocalActionType.LoadFail,
-            message: (JSON.parse(j) as SupervisedListFail).message
-          })
-        )
-      else if (!r.ok)
-        r.text().then(j =>
-          dispatch({
-            type: LocalActionType.LoadFail,
-            message: j
-          })
-        )
-      else
-        r.text().then(j =>
-          dispatch({
-            type: LocalActionType.Load,
-            data: (JSON.parse(j) as SupervisedListSuccess).supervised
-          })
-        )
-    })
+    fetch(`${getApiBase()}/supervised/list`)
+      .then(r => {
+        if (!r.ok && r.bodyUsed)
+          r.text().then(j =>
+            dispatch({
+              type: LocalActionType.LoadFail,
+              message: (JSON.parse(j) as SupervisedListFail).message
+            })
+          )
+        else if (!r.ok)
+          r.text().then(j =>
+            dispatch({
+              type: LocalActionType.LoadFail,
+              message: j
+            })
+          )
+        else
+          r.text().then(j =>
+            dispatch({
+              type: LocalActionType.Load,
+              data: (JSON.parse(j) as SupervisedListSuccess).supervised
+            })
+          )
+      })
+      .catch(e =>
+        dispatch({
+          type: LocalActionType.LoadFail,
+          message: String(e)
+        })
+      )
   }, fn)
 
   // Open tab state
@@ -117,7 +124,7 @@ const Supervised = ({ locale }: StateProps) => {
           <Loader />
         ) : (
           <List component='ul' className={styles.fullCard}>
-            {state.supervised.map(({ name, lastname }, i) => (
+            {state.supervised.map(({ name, lastname, supervised_id }, i) => (
               <ListItem className={styles.fullCard} key={i}>
                 <List className={styles.fullCard}>
                   <ListItem button onClick={handleClick(i)} className={styles.topItem}>
@@ -143,7 +150,7 @@ const Supervised = ({ locale }: StateProps) => {
                           className={styles.camouflagedLink}
                         />
                       </ListItem>
-                      <ListItem component={Link} to={Routes.Dashboard}>
+                      <ListItem component={Link} to={makeMedicineUrl(supervised_id)}>
                         <ListItemIcon>
                           <LocalHospitalIcon />
                         </ListItemIcon>
@@ -162,10 +169,10 @@ const Supervised = ({ locale }: StateProps) => {
       </div>
       <AddPopUp
         open={false}
-        title='[PH] title'
-        body='[PH] Some text'
-        fieldLabel='[PH] Device id'
-        button='[PH] submit'
+        title={locale.supervised.add.title}
+        body={locale.supervised.add.body}
+        fieldLabel={locale.supervised.add.fieldLabel}
+        button={locale.supervised.add.button}
         onResult={onPopUpResult}
       />
     </>

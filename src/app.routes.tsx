@@ -6,10 +6,12 @@ import {
   SignUp as SignUpRoute,
   About as AboutRoute,
   Dashboard as DashboardRoute,
-  Supervised as SupervisedRoute
+  Supervised as SupervisedRoute,
+  Medicine as MedicineRoute
 } from '@/views'
 import { Redirect, Switch } from 'react-router-dom'
 import { DeGuardedRoute, GuardedRoute } from './components/guarded-route'
+import { UUID } from '%/query/columnTypes'
 
 export enum Routes {
   // General
@@ -22,8 +24,11 @@ export enum Routes {
   // Logged in
   Supervised = '/supervised',
   Account = '/account',
-  Dashboard = '/dashboard'
+  Dashboard = '/dashboard',
+  MedicineBase = '/medicine'
 }
+
+export const makeMedicineUrl = (supervised_id: UUID): string => `${Routes.MedicineBase}/${supervised_id}`
 
 interface IProps {
   auth: boolean
@@ -73,6 +78,13 @@ export const routes = ({ auth }: IProps): React.ReactElement => {
           path={Routes.Supervised}
           key='supervised_/supervised'
           component={SupervisedRoute}
+        />
+        <GuardedRoute
+          auth={auth}
+          guarded
+          path={`${Routes.MedicineBase}/:supervised_id`}
+          key='medicine_/medicine'
+          component={MedicineRoute}
         />
         <GuardedRoute auth={auth} path='/404' key='notFound_/404' component={NotFoundRoute} />
         <Redirect to='/404' />

@@ -39,7 +39,8 @@ create table if not exists supervision (
   supervised_id UUID not null 
     references supervised (supervised_id) 
     on delete cascade,
-  primary key (supervision_id)
+  primary key (supervision_id),
+  unique (supervisor_id, supervised_id)
 );
 grant all privileges on table supervision to aidclient;
 

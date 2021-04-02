@@ -1,13 +1,14 @@
-import { EndPoint, MOCK_USER_ID } from './_common'
+import { EndPoint } from './_common'
 import { Express } from 'express-serve-static-core'
 import { createSupervision, getSupervisedList } from '../database/schema/Supervised'
 import { SupervisedListResult, AddSupervisedReqBody, AddSupervisedRes } from '../../shared/api/supervised'
 import { validateUUID } from '../database/types'
+import { mockDev } from '../security'
 
 class Supervised extends EndPoint {
   mount(s: Express, prefix: string) {
     s.get(`${prefix}/supervised/list`, (req, res) => {
-      if (process.env['NODE_ENV'] === 'development') req.session.user_id = MOCK_USER_ID
+      mockDev(req)
 
       if (!req.session.user_id) {
         return res.sendStatus(403)
@@ -37,7 +38,7 @@ class Supervised extends EndPoint {
     })
 
     s.post(`${prefix}/supervised/add`, (req, res) => {
-      if (process.env['NODE_ENV'] === 'development') req.session.user_id = MOCK_USER_ID
+      mockDev(req)
 
       const { device_id } = req.body as AddSupervisedReqBody
       const supervisor_id = req.session.user_id

@@ -1,4 +1,6 @@
+import { Request } from 'express'
 import { Express } from 'express-serve-static-core'
+import { MOCK_USER_ID } from '../api/_common'
 const helmet = require('helmet')
 const hpp = require('hpp')
 const cors = require('cors')
@@ -116,4 +118,8 @@ export const initSecurity = (server: Express) => {
     )
     next()
   })
+}
+
+export const mockDev = (req: Request): void => {
+  if (process.env['NODE_ENV'] === 'development') req.session.user_id = MOCK_USER_ID
 }

@@ -125,7 +125,7 @@ const Elem = ({ onResult, body, title, button, fieldLabel, open }: LocalProps): 
       type: ActionType.IntoWaiting
     })
 
-    fetch(`${getApiBase()}/api/supervised/add`, {
+    fetch(`${getApiBase()}/supervised/add`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -212,7 +212,9 @@ const Elem = ({ onResult, body, title, button, fieldLabel, open }: LocalProps): 
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleSubmitClick}>{button}</Button>
+          <Button disabled={state.device_id === ''} onClick={handleSubmitClick}>
+            {button}
+          </Button>
         </DialogActions>
       </Dialog>
     )

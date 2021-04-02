@@ -3,17 +3,17 @@ import { Store } from 'redux'
 import { Action } from '../actions'
 import { logIn } from '../actions/user'
 import { SubState } from '../reducers'
-import { isAuthReturn } from '%/api/auth'
+import { IsAuthReturn } from '%/api/auth'
 
 const authUser = (store: Store<SubState, Action>): Promise<void> =>
-  fetch(`${getApiBase()}/api/isauth`)
+  fetch(`${getApiBase()}/isauth`)
     .then(r => {
       if (!r.ok) throw new Error('API ERROR')
 
       return r.text()
     })
     .then(t => {
-      const d = JSON.parse(t) as isAuthReturn
+      const d = JSON.parse(t) as IsAuthReturn
 
       if (d.isAuth) {
         const { email, name, lastname } = d.data
