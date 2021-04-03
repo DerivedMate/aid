@@ -15,6 +15,7 @@ import { MedicineReqAllBody, MedicineResAll } from '%/api/medicine'
 import EditPopup from './editPopUp'
 import TakePopup from './takeConfirmPopup'
 import DeletePopup from './medicineDeletePopup'
+import AddPopup from './addPopup'
 
 enum Stage {
   Loading = '@Medicine:All:Stage:Loading',
@@ -229,6 +230,12 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
           supervised_id={supervised_id}
         />
       )}
+      <AddPopup
+        onResult={() => setRefetchFlag(!refetchFlag)}
+        title='[PH] Add medicine'
+        body='[PH] Body'
+        supervised_id={supervised_id}
+      />
     </div>
   )
 }

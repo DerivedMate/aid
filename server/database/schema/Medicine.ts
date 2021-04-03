@@ -131,3 +131,21 @@ export const deleteMedicine = (medicine_id: UUID): Promise<boolean> =>
       `,
     [medicine_id]
   ).then(r => r.rowCount === 1)
+
+export const createMedicine = (supervised_id: UUID, name: string, unit: string, amount: number): Promise<boolean> =>
+  query(
+    `
+      insert into medicine 
+        ( supervised_id
+        , name
+        , unit
+        , amount
+        )
+      values 
+        ( $1
+        , $2
+        , $3
+        , $4::INTEGER
+        )`,
+    [supervised_id, name, unit, String(amount)]
+  ).then(r => r.rowCount === 1)

@@ -78,3 +78,27 @@ interface MedicineDeleteResDenied extends MedicineDeleteResAny {
 }
 
 export type MedicineDeleteRes = MedicineDeleteResAny | MedicineDeleteResError | MedicineDeleteResDenied
+
+export interface MedicineCreateReqBody {
+  supervised_id: UUID
+  name: string
+  unit: string
+  amount: number
+}
+
+interface MedicineCreateResAny {
+  ok: boolean
+  isAuth: boolean
+}
+
+interface MedicineCreateResError extends MedicineCreateResAny {
+  ok: false
+  message: string
+}
+
+interface MedicineCreateResDenied extends MedicineCreateResAny {
+  isAuth: false
+  isSupervisedValid: boolean
+}
+
+export type MedicineCreateRes = MedicineCreateResAny | MedicineCreateResError | MedicineCreateResDenied

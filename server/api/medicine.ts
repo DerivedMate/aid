@@ -6,11 +6,14 @@ import {
   MedicineGetTakenRes,
   MedicineGetTakenReqBody,
   MedicineDeleteReqBody,
-  MedicineDeleteRes
+  MedicineDeleteRes,
+  MedicineCreateReqBody,
+  MedicineCreateRes
 } from '../../shared/api/medicine'
 import { validateUUID } from '../database/types'
 import { mockDev } from '../security'
 import {
+  createMedicine,
   deleteMedicine,
   getAllMedicine,
   getTakenMedicine,
@@ -180,6 +183,59 @@ class Endpoint extends EndPoint {
               isAuth: true,
               message: String(e)
             } as MedicineDeleteRes)
+          )
+        )
+    })
+
+    s.put(`${prefix}/medicine/create`, async (req, res) => {
+      mockDev(req)
+
+      const supervisor_id = req.session.user_id
+      const { supervised_id, name, unit, amount } = req.body as MedicineCreateReqBody
+
+      if (!supervisor_id) return res.sendStatus(403)
+
+      const isSupervisedValid = validateUUID(supervised_id)
+
+      if (!isSupervisedValid)
+        return res.status(403).send(
+          JSON.stringify({
+            ok: false,
+            isAuth: false,
+            isSupervisedValid
+          } as MedicineCreateRes)
+        )
+
+      const isAuth = await AuthSupervision(supervised_id, supervisor_id).catch(e => {
+        console.error(`[medicine/create connectionAuthError] ${e}`)
+        return false
+      })
+
+      if (!isAuth)
+        return res.status(403).send(
+          JSON.stringify({
+            ok: false,
+            isAuth: false,
+            isSupervisedValid
+          } as MedicineCreateRes)
+        )
+
+      return createMedicine(supervised_id, name, unit, amount)
+        .then(r =>
+          res.status(r ? 201 : 406).send(
+            JSON.stringify({
+              ok: r,
+              isAuth: true
+            } as MedicineCreateRes)
+          )
+        )
+        .catch(e =>
+          res.status(500).send(
+            JSON.stringify({
+              ok: false,
+              isAuth: true,
+              message: String(e)
+            } as MedicineCreateRes)
           )
         )
     })
