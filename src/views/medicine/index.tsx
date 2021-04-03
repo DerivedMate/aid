@@ -12,6 +12,7 @@ import { connect } from 'react-redux'
 import { useParams } from 'react-router'
 import { Link } from 'react-router-dom'
 import AllMedicine from './all'
+import TakenMedicine from './taken'
 
 interface MatchProps {
   supervised_id: string
@@ -267,7 +268,13 @@ export const Elem = ({ locale }: DispatchProps): ReactElement => {
             </Tabs>
           </AppBar>
           <section className={localStyles.ContentRoot}>
-            {tabNr === 0 ? <AllMedicine supervised_id={supervised_id} /> : <></>}
+            {tabNr === 0 ? (
+              <AllMedicine supervised_id={supervised_id} />
+            ) : tabNr === 1 ? (
+              <TakenMedicine supervised_id={supervised_id} />
+            ) : (
+              <></>
+            )}
           </section>
         </div>
       </>

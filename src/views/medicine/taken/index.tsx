@@ -1,6 +1,12 @@
-import { MedicineReqAllBody, MedicineResAll } from '%/api/medicine'
+import {
+  MedicineDate,
+  MedicineGetTakenReqBody,
+  MedicineGetTakenRes,
+  MedicineReqAllBody,
+  MedicineResAll
+} from '%/api/medicine'
 import { UUID } from '%/query/columnTypes'
-import { Medicine } from '%/query/medicine'
+import { Medicine, MedicineTake } from '%/query/medicine'
 import Loader from '@/components/loader'
 import { getApiBase } from '@/helpers/url'
 import { Locale } from '@/locale/model'
@@ -12,8 +18,6 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
 import React, { useEffect, useReducer, useState } from 'react'
 import { connect } from 'react-redux'
-import EditPopup from './editPopUp'
-import TakePopup from './takeConfirmPopup'
 
 enum Stage {
   Loading = '@Medicine:All:Stage:Loading',
@@ -25,7 +29,8 @@ interface LocalState {
   stage: Stage
   message: string
   status: number
-  medicines: Medicine[]
+  medicines: MedicineTake[]
+  date: MedicineDate
 }
 
 interface LocalProps {
@@ -38,7 +43,8 @@ interface DispatchProps {
 
 enum LocalActionType {
   IntoLoadingFail = '@Medicine:All:Action:IntoLoadingFail',
-  IntoDisplay = '@Medicine:All:Action:IntoDisplay'
+  IntoDisplay = '@Medicine:All:Action:IntoDisplay',
+  ChangeDate = '@Medicine:All:Action:ChangeDate'
 }
 
 interface LocalActionIntoLoadingFail {
@@ -49,10 +55,15 @@ interface LocalActionIntoLoadingFail {
 
 interface LocalActionIntoDisplay {
   type: LocalActionType.IntoDisplay
-  medicines: Medicine[]
+  medicines: MedicineTake[]
 }
 
-type LocalAction = LocalActionIntoLoadingFail | LocalActionIntoDisplay
+interface LocalActionChangeData {
+  type: LocalActionType.ChangeDate
+  date: MedicineDate
+}
+
+type LocalAction = LocalActionIntoLoadingFail | LocalActionIntoDisplay | LocalActionChangeData
 
 const mapProps = (state: State): DispatchProps => ({
   locale: state.lang.dict
@@ -62,6 +73,8 @@ const styles_ = listed
 
 const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.ReactElement => {
   const styles = styles_()
+  const today = new Date()
+
   const [state, dispatch] = useReducer(
     (state: LocalState, action: LocalAction) => {
       switch (action.type) {
@@ -69,6 +82,8 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
           return { ...state, stage: Stage.LoadingFail, message: action.message, status: action.status }
         case LocalActionType.IntoDisplay:
           return { ...state, stage: Stage.Display, medicines: action.medicines }
+        case LocalActionType.ChangeDate:
+
         default:
           return state
       }
@@ -77,28 +92,34 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
       stage: Stage.Loading,
       message: '',
       status: 200,
-      medicines: []
+      medicines: [],
+      date: {
+        year: today.getFullYear(),
+        month: today.getMonth() + 1,
+        day: today.getDate()
+      }
     }
   )
 
   const [refetchFlag, setRefetchFlag] = useState([0])
   useEffect(() => {
-    fetch(`${getApiBase()}/medicine/all`, {
+    fetch(`${getApiBase()}/medicine/taken`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        supervised_id
-      } as MedicineReqAllBody)
+        supervised_id,
+        date: state.date
+      } as MedicineGetTakenReqBody)
     }).then(r => {
       r.text().then(j => {
-        const res = JSON.parse(j) as MedicineResAll
+        const res = JSON.parse(j) as MedicineGetTakenRes
 
         if (r.ok && res.ok)
           return dispatch({
             type: LocalActionType.IntoDisplay,
-            medicines: res.medicine
+            medicines: res.medicines
           })
 
         return dispatch({
@@ -119,24 +140,19 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
     setOpenListItem(v === openListItemNr ? -1 : v)
   }
 
-  const [editOpen, setEditOpen] = useState(false)
-  const [currentMedicine, setCurrentMedicine] = useState(state.medicines.length > 0 ? state.medicines[0] : null)
-
-  const handleEditClick = (i: number) => () => {
-    setCurrentMedicine(state.medicines[i])
-    setEditOpen(true)
-  }
-
-  const [takeOpen, setTakeOpen] = useState(false)
-  const handleTakeClick = (i: number) => () => {
-    setCurrentMedicine(state.medicines[i])
-    setTakeOpen(true)
-  }
-
   if (state.stage === Stage.Loading)
     return (
       <div className={styles.container}>
         <Loader title='[PH] Loading medicines' />
+      </div>
+    )
+
+  if (state.stage === Stage.LoadingFail)
+    return (
+      <div className={styles.container}>
+        {state.message}
+        <br />
+        {state.status}
       </div>
     )
 
@@ -149,26 +165,20 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
               [PH] No medicine found
             </Typography>
           ) : (
-            state.medicines.map(({ medicine_id, name, amount, unit, current }, i) => (
+            state.medicines.map(({ medicine_id, name, amount, unit, current, year, month, day }, i) => (
               <ListItem className={styles.fullCard} key={i}>
                 <List className={styles.fullCard}>
                   <ListItem button onClick={handleListClick(i)} className={styles.topItem}>
-                    <ListItemText primary={name} secondary={`${amount} ${unit}`} />
+                    <ListItemText
+                      primary={name}
+                      secondary={`${amount} ${unit}. ${year}-${String(month).padStart(2, '0')}-${String(day).padStart(
+                        2,
+                        '0'
+                      )}`}
+                    />
                   </ListItem>
                   <Collapse in={openListItemNr === i} timeout='auto' unmountOnExit>
                     <List component='ul' className={styles.subItem}>
-                      <ListItem button onClick={handleTakeClick(i)}>
-                        <ListItemIcon>
-                          <LocalHospitalIcon />
-                        </ListItemIcon>
-                        <ListItemText primary='[PH] Take' className={styles.camouflagedLink} />
-                      </ListItem>
-                      <ListItem button onClick={handleEditClick(i)}>
-                        <ListItemIcon>
-                          <EditIcon />
-                        </ListItemIcon>
-                        <ListItemText primary='[PH] Edit' className={styles.camouflagedLink} />
-                      </ListItem>
                       <ListItem button className={styles.listItemDanger}>
                         <ListItemIcon>
                           <DeleteIcon />
@@ -182,26 +192,6 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
             ))
           )}
         </List>
-        {editOpen && (
-          <EditPopup
-            handleClose={() => {
-              setEditOpen(false)
-            }}
-            onResult={handleEditResult}
-            body='[PH] body'
-            title='[PH] Edit medicine'
-            medicine={currentMedicine}
-          />
-        )}
-        {takeOpen && (
-          <TakePopup
-            handleClose={() => {
-              setTakeOpen(false)
-            }}
-            supervised_id={supervised_id}
-            medicine_id={currentMedicine.medicine_id}
-          />
-        )}
       </div>
     )
 }

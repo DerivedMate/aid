@@ -13,7 +13,11 @@ export const getSupervisedList = (supervisor_id: UUID): Promise<SupervisedListDi
       supervision sn
     inner join supervised sd using (supervised_id)
     inner join info i using (supervised_id)
-    where sn.supervisor_id = $1;
+    where sn.supervisor_id = $1
+    order by 
+      i.lastname ASC,
+      i.name ASC
+    ;
     `,
     [supervisor_id]
   ).then(r => r.rows as SupervisedListDisplay[])

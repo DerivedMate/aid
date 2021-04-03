@@ -171,14 +171,18 @@ const Elem = ({
           ok: r.ok,
           message
         })
+
+        onResult()
       })
-      .catch(e =>
+      .catch(e => {
         dispatch({
           type: ActionType.IntoResult,
           ok: false,
           message: String(e)
         })
-      )
+
+        onResult()
+      })
   }
 
   const handleOpenClick = () => {

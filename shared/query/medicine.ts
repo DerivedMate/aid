@@ -16,3 +16,19 @@ export interface MedicineUpdateReq {
   amount: number
   unit: string
 }
+
+export interface MedicineGetTakenQueryReq {
+  supervisor_id: UUID
+  supervised_id: UUID
+  date: {
+    year: number
+    month: number
+    day: number
+  }
+}
+
+export interface MedicineTake extends Medicine {
+  year: string
+  month: string
+  day: string
+}

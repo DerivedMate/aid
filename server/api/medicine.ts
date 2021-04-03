@@ -1,9 +1,14 @@
 import { EndPoint } from './_common'
 import { Express } from 'express-serve-static-core'
-import { MedicineResAll, MedicineResUpdate } from '../../shared/api/medicine'
+import {
+  MedicineResAll,
+  MedicineResUpdate,
+  MedicineGetTakenRes,
+  MedicineGetTakenReqBody
+} from '../../shared/api/medicine'
 import { validateUUID } from '../database/types'
 import { mockDev } from '../security'
-import { getAllMedicine, updateMedicine } from '../database/schema/Medicine'
+import { getAllMedicine, getTakenMedicine, updateMedicine } from '../database/schema/Medicine'
 import { MedicineUpdateReq } from '../../shared/query/medicine'
 import { AuthSupervision } from '../database/schema/Supervision'
 
@@ -37,6 +42,41 @@ class Endpoint extends EndPoint {
               ok: false,
               message: String(e)
             } as MedicineResAll)
+          )
+        )
+    })
+
+    s.post(`${prefix}/medicine/taken`, (req, res) => {
+      mockDev(req)
+
+      const supervisor_id = req.session.user_id
+      const b = req.body as MedicineGetTakenReqBody
+
+      if (!supervisor_id) return res.sendStatus(403)
+
+      const isValidSupervised = validateUUID(b.supervised_id)
+      if (!isValidSupervised)
+        return res.status(400).send(JSON.stringify({ ok: false, isValidSupervised } as MedicineGetTakenRes))
+
+      getTakenMedicine({
+        supervisor_id,
+        supervised_id: b.supervised_id,
+        date: b.date
+      })
+        .then(r =>
+          res.send(
+            JSON.stringify({
+              ok: true,
+              medicines: r
+            } as MedicineGetTakenRes)
+          )
+        )
+        .catch(e =>
+          res.status(500).send(
+            JSON.stringify({
+              ok: false,
+              message: String(e)
+            } as MedicineGetTakenRes)
           )
         )
     })
