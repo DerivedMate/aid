@@ -4,11 +4,19 @@ import {
   MedicineResAll,
   MedicineResUpdate,
   MedicineGetTakenRes,
-  MedicineGetTakenReqBody
+  MedicineGetTakenReqBody,
+  MedicineDeleteReqBody,
+  MedicineDeleteRes
 } from '../../shared/api/medicine'
 import { validateUUID } from '../database/types'
 import { mockDev } from '../security'
-import { getAllMedicine, getTakenMedicine, updateMedicine } from '../database/schema/Medicine'
+import {
+  deleteMedicine,
+  getAllMedicine,
+  getTakenMedicine,
+  updateMedicine,
+  validateSupervisionMedicineConnection
+} from '../database/schema/Medicine'
 import { MedicineUpdateReq } from '../../shared/query/medicine'
 import { AuthSupervision } from '../database/schema/Supervision'
 
@@ -116,6 +124,62 @@ class Endpoint extends EndPoint {
               ok: false,
               message: String(e)
             } as MedicineResUpdate)
+          )
+        )
+    })
+
+    s.delete(`${prefix}/medicine/delete`, async (req, res) => {
+      mockDev(req)
+
+      const supervisor_id = req.session.user_id
+      const { supervised_id, medicine_id } = req.body as MedicineDeleteReqBody
+
+      if (!supervisor_id) return res.sendStatus(403)
+
+      const isSupervisedValid = validateUUID(supervised_id),
+        isMedicineValid = validateUUID(medicine_id)
+
+      if (!isSupervisedValid || !isMedicineValid)
+        return res.status(403).send(
+          JSON.stringify({
+            ok: false,
+            isAuth: false,
+            isMedicineValid,
+            isSupervisedValid
+          } as MedicineDeleteRes)
+        )
+
+      const isAuth = await validateSupervisionMedicineConnection(supervisor_id, supervised_id, medicine_id).catch(e => {
+        console.error(`[medicine/delete connectionAuthError] ${e}`)
+        return false
+      })
+
+      if (!isAuth)
+        return res.status(403).send(
+          JSON.stringify({
+            ok: false,
+            isAuth: false,
+            isMedicineValid,
+            isSupervisedValid
+          } as MedicineDeleteRes)
+        )
+
+      return deleteMedicine(medicine_id)
+        .then(r =>
+          res.status(r ? 200 : 406).send(
+            JSON.stringify({
+              ok: r,
+              isAuth: true
+            } as MedicineDeleteRes)
+          )
+        )
+        .catch(e =>
+          res.status(500).send(
+            JSON.stringify({
+              ok: false,
+              isAuth: true,
+              message: String(e)
+            } as MedicineDeleteRes)
           )
         )
     })

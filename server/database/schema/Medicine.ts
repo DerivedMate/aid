@@ -121,3 +121,13 @@ export const validateSupervisionMedicineConnection = (
       `,
     [supervisor_id, supervised_id, medicine_id]
   ).then(r => r.rows.length > 0)
+
+export const deleteMedicine = (medicine_id: UUID): Promise<boolean> =>
+  query(
+    `
+      update medicine
+      set current = 'f'
+      where medicine_id = $1;
+      `,
+    [medicine_id]
+  ).then(r => r.rowCount === 1)

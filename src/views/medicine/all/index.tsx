@@ -14,6 +14,7 @@ import { UUID } from '%/query/columnTypes'
 import { MedicineReqAllBody, MedicineResAll } from '%/api/medicine'
 import EditPopup from './editPopUp'
 import TakePopup from './takeConfirmPopup'
+import DeletePopup from './medicineDeletePopup'
 
 enum Stage {
   Loading = '@Medicine:All:Stage:Loading',
@@ -132,6 +133,12 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
     setTakeOpen(true)
   }
 
+  const [deleteOpen, setDeleteOpen] = useState(false)
+  const handleDeleteClick = (i: number) => () => {
+    setCurrentMedicine(state.medicines[i])
+    setDeleteOpen(true)
+  }
+
   if (state.stage === Stage.Loading)
     return (
       <div className={styles.container}>
@@ -179,7 +186,7 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
                       </ListItemIcon>
                       <ListItemText primary='[PH] Edit' className={styles.camouflagedLink} />
                     </ListItem>
-                    <ListItem button className={styles.listItemDanger}>
+                    <ListItem button className={styles.listItemDanger} onClick={handleDeleteClick(i)}>
                       <ListItemIcon>
                         <DeleteIcon />
                       </ListItemIcon>
@@ -210,6 +217,16 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
           }}
           supervised_id={supervised_id}
           medicine_id={currentMedicine.medicine_id}
+        />
+      )}
+      {deleteOpen && (
+        <DeletePopup
+          handleClose={() => {
+            setDeleteOpen(false)
+          }}
+          onResult={handleEditResult}
+          medicine_id={currentMedicine.medicine_id}
+          supervised_id={supervised_id}
         />
       )}
     </div>

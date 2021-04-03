@@ -57,3 +57,24 @@ interface MedicineGetTakenResError {
 }
 
 export type MedicineGetTakenRes = MedicineGetTakenResDenied | MedicineGetTakenResSuccess | MedicineGetTakenResError
+
+export interface MedicineDeleteReqBody {
+  supervised_id: UUID
+  medicine_id: UUID
+}
+
+interface MedicineDeleteResAny {
+  ok: boolean
+  isAuth: boolean
+}
+
+interface MedicineDeleteResError extends MedicineDeleteResAny {
+  message: string
+}
+
+interface MedicineDeleteResDenied extends MedicineDeleteResAny {
+  isSupervisedValid: boolean
+  isMedicineValid: boolean
+}
+
+export type MedicineDeleteRes = MedicineDeleteResAny | MedicineDeleteResError | MedicineDeleteResDenied

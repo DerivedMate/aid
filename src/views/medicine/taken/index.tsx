@@ -133,7 +133,7 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
       setCurrentTakeId('')
     } else {
       setOpenListItem(v)
-      setCurrentTakeId(state.medicines[v].take_id)
+      setCurrentTakeId(v in state.medicines ? state.medicines[v].take_id : '')
     }
   }
 
