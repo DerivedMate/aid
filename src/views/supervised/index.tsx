@@ -1,5 +1,7 @@
-import { SupervisedListFail, SupervisedListSuccess } from '%/api/supervised'
-import { SupervisedListDisplay } from '%/query/supervised'
+import React, { useEffect, useReducer, useState } from 'react'
+import { Helmet } from 'react-helmet'
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import { makeMedicineUrl, Routes } from '@/app.routes'
 import Loader from '@/components/loader'
 import { ignore } from '@/helpers/func'
@@ -11,10 +13,8 @@ import { Collapse, List, ListItem, ListItemIcon, ListItemText } from '@material-
 import LocationOnIcon from '@material-ui/icons/LocationOn'
 import LocalHospitalIcon from '@material-ui/icons/LocalHospital'
 import InfoIcon from '@material-ui/icons/Info'
-import React, { useEffect, useReducer, useState } from 'react'
-import { Helmet } from 'react-helmet'
-import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { SupervisedListFail, SupervisedListSuccess } from '%/api/supervised'
+import { SupervisedListDisplay } from '%/query/supervised'
 import AddPopUp from './addPopup'
 
 interface StateProps {
@@ -52,26 +52,25 @@ const mapState = (state: State) => ({
   locale: state.lang.dict
 })
 
-const styles_ = listed
-
 const Supervised = ({ locale }: StateProps) => {
   // Main state
   const [state, dispatch] = useReducer(
-    (state: LocalState, action: LocalAction) => {
+    (prev: LocalState, action: LocalAction) => {
       switch (action.type) {
         case LocalActionType.Load:
-          return { ...state, stage: Stage.Loaded, supervised: action.data }
+          return { ...prev, stage: Stage.Loaded, supervised: action.data }
         case LocalActionType.LoadFail:
-          return { ...state, message: action.message }
+          return { ...prev, message: action.message }
         default:
-          return state
+          return prev
       }
     },
     { stage: Stage.Loading, supervised: [], message: '' }
   )
 
-  const [fn, refetch] = useState([true])
-  const onPopUpResult = () => refetch([!fn[0]])
+  const [fn, refetch] = useState(true)
+  const onPopUpResult = () => refetch(!fn)
+
   useEffect(() => {
     fetch(`${getApiBase()}/supervised/list`)
       .then(r => {
@@ -103,7 +102,7 @@ const Supervised = ({ locale }: StateProps) => {
           message: String(e)
         })
       )
-  }, fn)
+  }, [fn])
 
   // Open tab state
   const [openNr, setOpenNr] = useState(-1)
@@ -112,7 +111,7 @@ const Supervised = ({ locale }: StateProps) => {
     else setOpenNr(v)
   }
 
-  const styles = styles_()
+  const styles = listed()
 
   return (
     <>
@@ -125,7 +124,7 @@ const Supervised = ({ locale }: StateProps) => {
         ) : (
           <List component='ul' className={styles.fullCard}>
             {state.supervised.map(({ name, lastname, supervised_id }, i) => (
-              <ListItem className={styles.fullCard} key={i}>
+              <ListItem className={styles.fullCard} key={supervised_id}>
                 <List className={styles.fullCard}>
                   <ListItem button onClick={handleClick(i)} className={styles.topItem}>
                     <ListItemText primary={name} secondary={lastname} />

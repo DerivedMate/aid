@@ -79,7 +79,9 @@
     "react/static-property-placement": ["warn", "static public field"],
     "react/jsx-uses-react": "error",
     "react/jsx-props-no-spreading": "off",
-    "@typescript-eslint/no-floating-promises": "off"
+    "@typescript-eslint/no-floating-promises": "off",
+    "import/extensions": "off",
+    "@typescript-eslint/naming-convention": "off"
   },
   "globals": {
     "window": true,

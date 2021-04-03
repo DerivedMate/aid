@@ -1,23 +1,15 @@
-import {
-  MedicineDate,
-  MedicineGetTakenReqBody,
-  MedicineGetTakenRes,
-  MedicineReqAllBody,
-  MedicineResAll
-} from '%/api/medicine'
-import { UUID } from '%/query/columnTypes'
-import { Medicine, MedicineTake } from '%/query/medicine'
 import Loader from '@/components/loader'
 import { getApiBase } from '@/helpers/url'
 import { Locale } from '@/locale/model'
 import { State } from '@/store/reducers'
 import { listed } from '@/styles/ts/common'
 import { Collapse, List, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core'
-import LocalHospitalIcon from '@material-ui/icons/LocalHospital'
 import DeleteIcon from '@material-ui/icons/Delete'
-import EditIcon from '@material-ui/icons/Edit'
 import React, { useEffect, useReducer, useState } from 'react'
 import { connect } from 'react-redux'
+import { MedicineTake } from '%/query/medicine'
+import { UUID } from '%/query/columnTypes'
+import { MedicineDate, MedicineGetTakenReqBody, MedicineGetTakenRes } from '%/api/medicine'
 
 enum Stage {
   Loading = '@Medicine:All:Stage:Loading',
@@ -69,23 +61,21 @@ const mapProps = (state: State): DispatchProps => ({
   locale: state.lang.dict
 })
 
-const styles_ = listed
-
 const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.ReactElement => {
-  const styles = styles_()
+  const styles = listed()
   const today = new Date()
 
   const [state, dispatch] = useReducer(
-    (state: LocalState, action: LocalAction) => {
+    (prev: LocalState, action: LocalAction): LocalState => {
       switch (action.type) {
         case LocalActionType.IntoLoadingFail:
-          return { ...state, stage: Stage.LoadingFail, message: action.message, status: action.status }
+          return { ...prev, stage: Stage.LoadingFail, message: action.message, status: action.status }
         case LocalActionType.IntoDisplay:
-          return { ...state, stage: Stage.Display, medicines: action.medicines }
+          return { ...prev, stage: Stage.Display, medicines: action.medicines }
         case LocalActionType.ChangeDate:
-
+          return { ...prev, date: action.date }
         default:
-          return state
+          return prev
       }
     },
     {
@@ -101,7 +91,6 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
     }
   )
 
-  const [refetchFlag, setRefetchFlag] = useState([0])
   useEffect(() => {
     fetch(`${getApiBase()}/medicine/taken`, {
       method: 'POST',
@@ -129,14 +118,10 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
         })
       })
     })
-  }, refetchFlag)
-
-  const handleEditResult = () => {
-    setRefetchFlag([refetchFlag[0] + 1])
-  }
+  }, [state.date, supervised_id])
 
   const [openListItemNr, setOpenListItem] = useState(-1)
-  const handleListClick = (v: number) => (_: React.ChangeEvent<{}>): void => {
+  const handleListClick = (v: number) => (): void => {
     setOpenListItem(v === openListItemNr ? -1 : v)
   }
 
@@ -156,44 +141,44 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
       </div>
     )
 
-  if (state.stage === Stage.Display)
-    return (
-      <div className={styles.container}>
-        <List component='ul' className={styles.fullCard}>
-          {state.medicines.length === 0 ? (
-            <Typography variant='h5' color='textSecondary'>
-              [PH] No medicine found
-            </Typography>
-          ) : (
-            state.medicines.map(({ medicine_id, name, amount, unit, current, year, month, day }, i) => (
-              <ListItem className={styles.fullCard} key={i}>
-                <List className={styles.fullCard}>
-                  <ListItem button onClick={handleListClick(i)} className={styles.topItem}>
-                    <ListItemText
-                      primary={name}
-                      secondary={`${amount} ${unit}. ${year}-${String(month).padStart(2, '0')}-${String(day).padStart(
-                        2,
-                        '0'
-                      )}`}
-                    />
-                  </ListItem>
-                  <Collapse in={openListItemNr === i} timeout='auto' unmountOnExit>
-                    <List component='ul' className={styles.subItem}>
-                      <ListItem button className={styles.listItemDanger}>
-                        <ListItemIcon>
-                          <DeleteIcon />
-                        </ListItemIcon>
-                        <ListItemText primary='[PH] Delete' color='warning' />
-                      </ListItem>
-                    </List>
-                  </Collapse>
-                </List>
-              </ListItem>
-            ))
-          )}
-        </List>
-      </div>
-    )
+  // if (state.stage === Stage.Display)
+  return (
+    <div className={styles.container}>
+      <List component='ul' className={styles.fullCard}>
+        {state.medicines.length === 0 ? (
+          <Typography variant='h5' color='textSecondary'>
+            [PH] No medicine found
+          </Typography>
+        ) : (
+          state.medicines.map(({ medicine_id, name, amount, unit, year, month, day }, i) => (
+            <ListItem className={styles.fullCard} key={medicine_id}>
+              <List className={styles.fullCard}>
+                <ListItem button onClick={handleListClick(i)} className={styles.topItem}>
+                  <ListItemText
+                    primary={name}
+                    secondary={`${amount} ${unit}. ${year}-${String(month).padStart(2, '0')}-${String(day).padStart(
+                      2,
+                      '0'
+                    )}`}
+                  />
+                </ListItem>
+                <Collapse in={openListItemNr === i} timeout='auto' unmountOnExit>
+                  <List component='ul' className={styles.subItem}>
+                    <ListItem button className={styles.listItemDanger}>
+                      <ListItemIcon>
+                        <DeleteIcon />
+                      </ListItemIcon>
+                      <ListItemText primary='[PH] Delete' color='warning' />
+                    </ListItem>
+                  </List>
+                </Collapse>
+              </List>
+            </ListItem>
+          ))
+        )}
+      </List>
+    </div>
+  )
 }
 
 export default connect<DispatchProps>(mapProps)(Elem)

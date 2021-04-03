@@ -1,12 +1,12 @@
 import { AnyAction, combineReducers, Reducer, Store } from 'redux'
 import { History } from 'history'
 import { RouterState, connectRouter } from 'connected-react-router'
+import { Lang, langOfString } from '@/locale/model'
 import userReducer from './user'
 import { User as UserState } from '../actions/user'
 import { changeLang, LangState } from '../actions/lang'
 import langReducer from './lang'
 import { Action } from '../actions'
-import { Lang, langOfString } from '@/locale/model'
 
 const rootReducer = (history: History): Reducer<SubState, AnyAction> =>
   combineReducers({

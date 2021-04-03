@@ -1,15 +1,11 @@
 import React from 'react'
-
-// import { ReactComponent as LoaderSVG } from '@/images/loader.svg'
-
-import styles from './loader.module.scss'
 import { Backdrop, CircularProgress, makeStyles, Typography } from '@material-ui/core'
 
 interface IProps {
   title?: string
 }
 
-const styles_ = makeStyles(theme => ({
+const makeLocalStyles = makeStyles(theme => ({
   backdrop: {
     zIndex: 100000000,
     color: '#ffffff',
@@ -24,11 +20,15 @@ const styles_ = makeStyles(theme => ({
   }
 }))
 
-export default function Loader({ title }: IProps): JSX.Element {
-  const styles = styles_()
+const defaultProps: IProps = {
+  title: ''
+}
+
+export default function Loader({ title }: IProps = defaultProps): JSX.Element {
+  const styles = makeLocalStyles()
 
   return (
-    <Backdrop open={true} className={styles.backdrop}>
+    <Backdrop open className={styles.backdrop}>
       <CircularProgress color='inherit' />
       {title && (
         <Typography variant='h5' className={styles.text}>

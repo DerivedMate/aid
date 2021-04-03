@@ -1,4 +1,3 @@
-import { UUID } from '%/query/columnTypes'
 import Loader from '@/components/loader'
 import { getApiBase } from '@/helpers/url'
 import {
@@ -9,13 +8,10 @@ import {
   DialogTitle,
   DialogActions,
   Button,
-  Snackbar,
-  IconButton
+  Snackbar
 } from '@material-ui/core'
 import Alert from '@material-ui/lab/Alert'
 import React, { ChangeEventHandler, useReducer } from 'react'
-import AddIcon from '@material-ui/icons/Add'
-import { listed } from '@/styles/ts/common'
 import { Locale } from '@/locale/model'
 import { State } from '@/store/reducers'
 import { connect } from 'react-redux'
@@ -94,40 +90,28 @@ const defaultState: LocalState = {
   amount: 0
 }
 
-const styles_ = listed
-
-const Elem = ({
-  onResult,
-  body,
-  title,
-  locale,
-  handleClose,
-  medicine
-}: LocalProps & DispatchProps): React.ReactElement => {
-  const styles = styles_()
-
+const Elem = ({ onResult, body, title, handleClose, medicine }: LocalProps & DispatchProps): React.ReactElement => {
   const { name, unit, amount } = medicine
 
   const [state, dispatch] = useReducer(
-    (state: LocalState = defaultState, action: Action) => {
+    (prev: LocalState = defaultState, action: Action) => {
       switch (action.type) {
         case ActionType.onInput:
-          return { ...state, [action.key]: action.data }
+          return { ...prev, [action.key]: action.data }
         case ActionType.IntoWaiting:
-          return { ...state, stage: Stage.Waiting }
+          return { ...prev, stage: Stage.Waiting }
         case ActionType.IntoResult:
-          debugger
           return {
-            ...state,
+            ...prev,
             stage: Stage.Result,
             device_id: '',
-            ok: (action as ActionIntoResult).ok,
-            message: (action as ActionIntoResult).message
+            ok: action.ok,
+            message: action.message
           }
         case ActionType.IntoDisplayed:
-          return { ...state, stage: Stage.Displayed }
+          return { ...prev, stage: Stage.Displayed }
         default:
-          return state
+          return prev
       }
     },
     { ...defaultState, stage: Stage.Displayed, name, unit, amount }
@@ -163,7 +147,7 @@ const Elem = ({
         const message: string = await r
           .text()
           .then(JSON.parse)
-          .then(j => ('message' in j ? j.message : r.statusText))
+          .then((j: MedicineResUpdate) => j.message || r.statusText)
           .catch(e => `${String(e)}; (${r.status}) ${r.statusText}`)
 
         dispatch({
@@ -185,12 +169,6 @@ const Elem = ({
       })
   }
 
-  const handleOpenClick = () => {
-    dispatch({
-      type: ActionType.IntoDisplayed
-    })
-  }
-
   const saveDisabled = state.name === '' || state.unit === ''
 
   if (state.stage === Stage.Waiting) return <Loader />
@@ -207,51 +185,52 @@ const Elem = ({
         </Alert>
       </Snackbar>
     )
-  if (state.stage === Stage.Displayed)
-    return (
-      <Dialog open onClose={handleClose}>
-        <DialogTitle>{title}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>{body}</DialogContentText>
-          <TextField
-            margin='dense'
-            id='name'
-            label='[PH] Name'
-            type='text'
-            fullWidth
-            required
-            onChange={handleChange('name')}
-            value={state.name}
-          />
-          <TextField
-            margin='dense'
-            id='unit'
-            label='[PH] Unit'
-            type='text'
-            fullWidth
-            required
-            onChange={handleChange('unit')}
-            value={state.unit}
-          />
-          <TextField
-            margin='dense'
-            id='amount'
-            label='[PH] Amount'
-            type='number'
-            fullWidth
-            required
-            onChange={handleChange('amount')}
-            value={state.amount}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button color='secondary'>[PH] Delete</Button>
-          <Button disabled={saveDisabled} onClick={handleSubmitClick}>
-            [PH] Save
-          </Button>
-        </DialogActions>
-      </Dialog>
-    )
+
+  // if (state.stage === Stage.Displayed)
+  return (
+    <Dialog open onClose={handleClose}>
+      <DialogTitle>{title}</DialogTitle>
+      <DialogContent>
+        <DialogContentText>{body}</DialogContentText>
+        <TextField
+          margin='dense'
+          id='name'
+          label='[PH] Name'
+          type='text'
+          fullWidth
+          required
+          onChange={handleChange('name')}
+          value={state.name}
+        />
+        <TextField
+          margin='dense'
+          id='unit'
+          label='[PH] Unit'
+          type='text'
+          fullWidth
+          required
+          onChange={handleChange('unit')}
+          value={state.unit}
+        />
+        <TextField
+          margin='dense'
+          id='amount'
+          label='[PH] Amount'
+          type='number'
+          fullWidth
+          required
+          onChange={handleChange('amount')}
+          value={state.amount}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button color='secondary'>[PH] Delete</Button>
+        <Button disabled={saveDisabled} onClick={handleSubmitClick}>
+          [PH] Save
+        </Button>
+      </DialogActions>
+    </Dialog>
+  )
 }
 
 export default connect<DispatchProps>(mapProps)(Elem)

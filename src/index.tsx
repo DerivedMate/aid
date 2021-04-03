@@ -21,7 +21,7 @@ const store = configureStore({
 
 initLangState(store)
 authUser(store)
-if (process.env['NODE_ENV'] === 'development') {
+if (process.env.NODE_ENV === 'development') {
   store.dispatch(logIn({ name: 'Mi Nombre', lastname: 'Apellido', email: 'e@mail.com' }))
 }
 

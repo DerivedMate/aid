@@ -1,4 +1,3 @@
-import { UUID } from '%/query/columnTypes'
 import Loader from '@/components/loader'
 import { getApiBase } from '@/helpers/url'
 import {
@@ -16,6 +15,7 @@ import Alert from '@material-ui/lab/Alert'
 import React, { ChangeEventHandler, useReducer } from 'react'
 import AddIcon from '@material-ui/icons/Add'
 import { listed } from '@/styles/ts/common'
+import { UUID } from '%/query/columnTypes'
 
 enum Stage {
   Displayed = '@Supervised:AddPopUp:Displayed',
@@ -82,32 +82,29 @@ const defaultState: LocalState = {
   device_id: ''
 }
 
-const styles_ = listed
-
 const Elem = ({ onResult, body, title, button, fieldLabel, open }: LocalProps): React.ReactElement => {
-  const styles = styles_()
+  const styles = listed()
   const [state, dispatch] = useReducer(
-    (state: LocalState = defaultState, action: Action) => {
+    (prev: LocalState = defaultState, action: Action): LocalState => {
       switch (action.type) {
         case ActionType.onInput:
-          return { ...state, device_id: action.data }
+          return { ...prev, device_id: action.data }
         case ActionType.IntoWaiting:
-          return { ...state, stage: Stage.Waiting }
+          return { ...prev, stage: Stage.Waiting }
         case ActionType.IntoResult:
-          debugger
           return {
-            ...state,
+            ...prev,
             stage: Stage.Result,
             device_id: '',
-            ok: (action as ActionIntoResult).ok,
-            message: (action as ActionIntoResult).message
+            ok: action.ok,
+            message: action.message
           }
         case ActionType.IntoHidden:
-          return { ...state, stage: Stage.Hidden, device_id: '', open: false }
+          return { ...prev, stage: Stage.Hidden, device_id: '', open: false }
         case ActionType.IntoDisplayed:
-          return { ...state, stage: Stage.Displayed, open: true }
+          return { ...prev, stage: Stage.Displayed, open: true }
         default:
-          return state
+          return prev
       }
     },
     { ...defaultState, open, stage: open ? Stage.Displayed : Stage.Hidden }
@@ -135,7 +132,6 @@ const Elem = ({ onResult, body, title, button, fieldLabel, open }: LocalProps): 
       })
     })
       .then(r => {
-        debugger
         if (r.ok) {
           dispatch({
             type: ActionType.IntoResult,
@@ -153,7 +149,6 @@ const Elem = ({ onResult, body, title, button, fieldLabel, open }: LocalProps): 
         }
       })
       .catch(e => {
-        debugger
         dispatch({
           type: ActionType.IntoResult,
           ok: false,
@@ -194,30 +189,30 @@ const Elem = ({ onResult, body, title, button, fieldLabel, open }: LocalProps): 
         </Alert>
       </Snackbar>
     )
-  if (state.stage === Stage.Displayed)
-    return (
-      <Dialog open onClose={handleClose}>
-        <DialogTitle>{title}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>{body}</DialogContentText>
-          <TextField
-            autoFocus
-            margin='dense'
-            id='device_id'
-            label={fieldLabel}
-            type='text'
-            fullWidth
-            required
-            onChange={handleChange}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button disabled={state.device_id === ''} onClick={handleSubmitClick}>
-            {button}
-          </Button>
-        </DialogActions>
-      </Dialog>
-    )
+  // if (state.stage === Stage.Displayed)
+  return (
+    <Dialog open onClose={handleClose}>
+      <DialogTitle>{title}</DialogTitle>
+      <DialogContent>
+        <DialogContentText>{body}</DialogContentText>
+        <TextField
+          autoFocus
+          margin='dense'
+          id='device_id'
+          label={fieldLabel}
+          type='text'
+          fullWidth
+          required
+          onChange={handleChange}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button disabled={state.device_id === ''} onClick={handleSubmitClick}>
+          {button}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  )
 }
 
 export default Elem

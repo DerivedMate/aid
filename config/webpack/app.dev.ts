@@ -36,7 +36,7 @@ const webpackConfig: webpack.Configuration = {
   devtool: 'eval-source-map',
   resolve: {
     extensions: ['*', '.js', '.jsx', '.ts', '.tsx', '.css', '.scss', '.png', '.gif', '.jpeg', '.jpg', '.svg'],
-    modules: ['src', 'node_modules'],
+    modules: ['src', 'node_modules', 'shared'],
     alias: {
       '@': path.resolve(rootDir, 'src'),
       '%': path.resolve(rootDir, 'shared')

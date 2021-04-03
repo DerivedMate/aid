@@ -18,7 +18,7 @@ const mapState = (state: State): StateProps => ({
   locale: state.lang.dict
 })
 
-const styles_ = makeStyles(theme => ({
+const makeLocalStyles = makeStyles(theme => ({
   fullCard: {
     [theme.breakpoints.down('sm')]: {
       width: '100%'
@@ -62,7 +62,8 @@ const styles_ = makeStyles(theme => ({
 }))
 
 const Home = ({ locale }: StateProps): React.ReactElement => {
-  const styles = styles_()
+  const styles = makeLocalStyles()
+
   return (
     <>
       <Helmet>

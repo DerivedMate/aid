@@ -1,5 +1,3 @@
-import { SupervisionAuthReqBody, SupervisionAuthRes } from '%/api/auth'
-import { SupervisedListDisplay } from '%/query/supervised'
 import { Routes } from '@/app.routes'
 import Loader from '@/components/loader'
 import { getApiBase } from '@/helpers/url'
@@ -11,6 +9,8 @@ import React, { ReactElement, useEffect, useReducer, useState } from 'react'
 import { connect } from 'react-redux'
 import { useParams } from 'react-router'
 import { Link } from 'react-router-dom'
+import { SupervisedListDisplay } from '%/query/supervised'
+import { SupervisionAuthReqBody, SupervisionAuthRes } from '%/api/auth'
 import AllMedicine from './all'
 import TakenMedicine from './taken'
 
@@ -65,7 +65,7 @@ const mapProps = (state: State): DispatchProps => ({
   locale: state.lang.dict
 })
 
-const localStyles_ = makeStyles(theme => ({
+const makeLocalStyles = makeStyles(theme => ({
   root: {
     display: 'grid',
     gridTemplateAreas: `'header' 'tabs' 'content'`,
@@ -124,19 +124,19 @@ const localStyles_ = makeStyles(theme => ({
 // URL: .../medicine/:supervised_id
 export const Elem = ({ locale }: DispatchProps): ReactElement => {
   const { supervised_id } = useParams<MatchProps>()
-  const localStyles = localStyles_()
+  const localStyles = makeLocalStyles()
 
   const [state, dispatch] = useReducer(
-    (state: LocalState, action: LocalAction) => {
+    (prev: LocalState, action: LocalAction) => {
       switch (action.type) {
         case LocalActionType.IntoAuthDenied:
-          return { ...state, stage: Stage.AuthDenied, message: action.message, status: 403 }
+          return { ...prev, stage: Stage.AuthDenied, message: action.message, status: 403 }
         case LocalActionType.IntoAuthError:
-          return { ...state, stage: Stage.AuthError, message: action.message, status: action.status }
+          return { ...prev, stage: Stage.AuthError, message: action.message, status: action.status }
         case LocalActionType.IntoAuthorized:
-          return { ...state, stage: Stage.Authorized, status: 200, supervised: action.supervised }
+          return { ...prev, stage: Stage.Authorized, status: 200, supervised: action.supervised }
         default:
-          return state
+          return prev
       }
     },
     {
@@ -184,32 +184,36 @@ export const Elem = ({ locale }: DispatchProps): ReactElement => {
             })
           )
 
-      r.text().then(j => {
-        const res = JSON.parse(j) as SupervisionAuthRes
-        if (!res.isAuth && res.ok)
-          return dispatch({
-            type: LocalActionType.IntoAuthDenied,
-            message: res.message
-          })
+      return r
+        .text()
+        .then(JSON.parse)
+        .then((res: SupervisionAuthRes) => {
+          if (!res.isAuth && res.ok)
+            return dispatch({
+              type: LocalActionType.IntoAuthDenied,
+              message: res.message
+            })
 
-        if (!res.isAuth && !res.ok)
-          return dispatch({
-            type: LocalActionType.IntoAuthError,
-            message: res.message,
-            status: r.status
-          })
+          if (!res.isAuth && !res.ok)
+            return dispatch({
+              type: LocalActionType.IntoAuthError,
+              message: res.message,
+              status: r.status
+            })
 
-        if (res.isAuth)
-          return dispatch({
-            type: LocalActionType.IntoAuthorized,
-            supervised: res.supervised
-          })
-      })
+          if (res.isAuth)
+            return dispatch({
+              type: LocalActionType.IntoAuthorized,
+              supervised: res.supervised
+            })
+
+          return {}
+        })
     })
-  }, [])
+  }, [supervised_id])
 
   const [tabNr, changeTabNr] = useState(0)
-  const handleTabChange = (_: React.ChangeEvent<{}>, v: number) => {
+  const handleTabChange = (_: unknown, v: number) => {
     changeTabNr(v)
   }
 
@@ -229,56 +233,51 @@ export const Elem = ({ locale }: DispatchProps): ReactElement => {
       </Typography>
     )
 
-  if (state.stage === Stage.Authorized)
-    return (
-      <>
-        <div className={localStyles.root}>
-          <AppBar component='header' position='static' className={localStyles.topBar}>
-            <Toolbar>
-              <IconButton edge='start' component={Link} to={Routes.Supervised}>
-                <KeyboardArrowLeftIcon />
-              </IconButton>
-              <Typography variant='h6' className={localStyles.topBarTitle}>
-                [PH] Medicine
+  // if (state.stage === Stage.Authorized)
+  return (
+    <>
+      <div className={localStyles.root}>
+        <AppBar component='header' position='static' className={localStyles.topBar}>
+          <Toolbar>
+            <IconButton edge='start' component={Link} to={Routes.Supervised}>
+              <KeyboardArrowLeftIcon />
+            </IconButton>
+            <Typography variant='h6' className={localStyles.topBarTitle}>
+              [PH] Medicine
+            </Typography>
+            <div className={localStyles.topBarSpace} />
+            <div>
+              <Typography variant='h6' className={localStyles.topBarFirstName}>
+                {state.supervised.name}
               </Typography>
-              <div className={localStyles.topBarSpace} />
-              <div>
-                <Typography variant='h6' className={localStyles.topBarFirstName}>
-                  {state.supervised.name}
-                </Typography>
-                <Typography variant='subtitle2' className={localStyles.topBarSecondName}>
-                  {state.supervised.lastname}
-                </Typography>
-              </div>
-            </Toolbar>
-          </AppBar>
-          <AppBar position='static' className={localStyles.TabsRoot}>
-            <Tabs
-              value={tabNr}
-              onChange={handleTabChange}
-              indicatorColor='primary'
-              variant='fullWidth'
-              scrollButtons='auto'
-              aria-label='[PH] Medicine tabs'
-              className={localStyles.TabsList}
-            >
-              <Tab value={0} label='[PH] All' />
-              <Tab value={1} label='[PH] Taken' />
-              <Tab value={2} label='[PH] Left' />
-            </Tabs>
-          </AppBar>
-          <section className={localStyles.ContentRoot}>
-            {tabNr === 0 ? (
-              <AllMedicine supervised_id={supervised_id} />
-            ) : tabNr === 1 ? (
-              <TakenMedicine supervised_id={supervised_id} />
-            ) : (
-              <></>
-            )}
-          </section>
-        </div>
-      </>
-    )
+              <Typography variant='subtitle2' className={localStyles.topBarSecondName}>
+                {state.supervised.lastname}
+              </Typography>
+            </div>
+          </Toolbar>
+        </AppBar>
+        <AppBar position='static' className={localStyles.TabsRoot}>
+          <Tabs
+            value={tabNr}
+            onChange={handleTabChange}
+            indicatorColor='primary'
+            variant='fullWidth'
+            scrollButtons='auto'
+            aria-label='[PH] Medicine tabs'
+            className={localStyles.TabsList}
+          >
+            <Tab value={0} label='[PH] All' />
+            <Tab value={1} label='[PH] Taken' />
+            <Tab value={2} label='[PH] Left' />
+          </Tabs>
+        </AppBar>
+        <section className={localStyles.ContentRoot}>
+          {tabNr === 0 && <AllMedicine supervised_id={supervised_id} />}
+          {tabNr === 1 && <TakenMedicine supervised_id={supervised_id} />}
+        </section>
+      </div>
+    </>
+  )
 }
 
 export default connect<DispatchProps>(mapProps)(Elem)

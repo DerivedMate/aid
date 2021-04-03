@@ -1,5 +1,3 @@
-import { CreateTakeReqBody, CreateTakeRes } from '%/api/take'
-import { UUID } from '%/query/columnTypes'
 import Loader from '@/components/loader'
 import { getApiBase } from '@/helpers/url'
 import { Locale } from '@/locale/model'
@@ -8,6 +6,8 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar } f
 import { Alert } from '@material-ui/lab'
 import React, { useReducer } from 'react'
 import { connect } from 'react-redux'
+import { UUID } from '%/query/columnTypes'
+import { CreateTakeReqBody, CreateTakeRes } from '%/api/take'
 
 enum Stage {
   Display = '@Medicine:All:Take:Stage:Display',
@@ -57,14 +57,14 @@ const mapProps = (state: State): DispatchProps => ({
 
 const Elem = ({ handleClose, supervised_id, medicine_id, locale }: LocalProps & DispatchProps): React.ReactElement => {
   const [state, dispatch] = useReducer(
-    (state: LocalState, action: LocalAction) => {
+    (prev: LocalState, action: LocalAction) => {
       switch (action.type) {
         case LocalActionType.IntoWaiting:
-          return { ...state, stage: Stage.Waiting }
+          return { ...prev, stage: Stage.Waiting }
         case LocalActionType.IntoResult:
-          return { ...state, stage: Stage.Result, ok: action.ok, status: action.status, message: action.message }
+          return { ...prev, stage: Stage.Result, ok: action.ok, status: action.status, message: action.message }
         default:
-          return state
+          return prev
       }
     },
     {
@@ -137,21 +137,21 @@ const Elem = ({ handleClose, supervised_id, medicine_id, locale }: LocalProps & 
       </Snackbar>
     )
 
-  if (state.stage === Stage.Display)
-    return (
-      <Dialog open onClose={handleClose}>
-        <DialogTitle>[PH] title</DialogTitle>
-        <DialogContent>[PH] content</DialogContent>
-        <DialogActions>
-          <Button color='secondary' onClick={handleClose}>
-            [PH] cancel
-          </Button>
-          <Button color='primary' onClick={handleClick}>
-            [PH] confirm
-          </Button>
-        </DialogActions>
-      </Dialog>
-    )
+  // if (state.stage === Stage.Display)
+  return (
+    <Dialog open onClose={handleClose}>
+      <DialogTitle>[PH] title</DialogTitle>
+      <DialogContent>[PH] content</DialogContent>
+      <DialogActions>
+        <Button color='secondary' onClick={handleClose}>
+          [PH] cancel
+        </Button>
+        <Button color='primary' onClick={handleClick}>
+          [PH] confirm
+        </Button>
+      </DialogActions>
+    </Dialog>
+  )
 }
 
 export default connect<DispatchProps>(mapProps)(Elem)

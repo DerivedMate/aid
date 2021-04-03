@@ -19,10 +19,9 @@ const mapState = (state: State): StateProps => ({
   locale: state.lang.dict
 })
 
-const styles_ = listed
-
 const Dashboard = ({ locale }: StateProps): React.ReactElement => {
-  const styles = styles_()
+  const styles = listed()
+
   return (
     <>
       <Helmet>
