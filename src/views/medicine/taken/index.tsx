@@ -10,6 +10,7 @@ import { connect } from 'react-redux'
 import { MedicineTake } from '%/query/medicine'
 import { UUID } from '%/query/columnTypes'
 import { MedicineDate, MedicineGetTakenReqBody, MedicineGetTakenRes } from '%/api/medicine'
+import TakeDeletePopup from './takeDeletePopup'
 
 enum Stage {
   Loading = '@Medicine:All:Stage:Loading',
@@ -91,6 +92,9 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
     }
   )
 
+  const [refetchFlag, setRefetchFlag] = useState(false)
+  const refetch = () => setRefetchFlag(!refetchFlag)
+
   useEffect(() => {
     fetch(`${getApiBase()}/medicine/taken`, {
       method: 'POST',
@@ -118,11 +122,28 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
         })
       })
     })
-  }, [state.date, supervised_id])
+  }, [state.date, supervised_id, refetchFlag])
+
+  const [currentTakeId, setCurrentTakeId] = useState('')
 
   const [openListItemNr, setOpenListItem] = useState(-1)
   const handleListClick = (v: number) => (): void => {
-    setOpenListItem(v === openListItemNr ? -1 : v)
+    if (v === openListItemNr) {
+      setOpenListItem(-1)
+      setCurrentTakeId('')
+    } else {
+      setOpenListItem(v)
+      setCurrentTakeId(state.medicines[v].take_id)
+    }
+  }
+
+  const [deleteOpen, setDeleteOpen] = useState(false)
+  const handleCloseDelete = () => {
+    setDeleteOpen(false)
+  }
+
+  const handleDeleteClick = () => {
+    setDeleteOpen(true)
   }
 
   if (state.stage === Stage.Loading)
@@ -150,8 +171,8 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
             [PH] No medicine found
           </Typography>
         ) : (
-          state.medicines.map(({ medicine_id, name, amount, unit, year, month, day }, i) => (
-            <ListItem className={styles.fullCard} key={medicine_id}>
+          state.medicines.map(({ take_id, name, amount, unit, year, month, day }, i) => (
+            <ListItem className={styles.fullCard} key={take_id}>
               <List className={styles.fullCard}>
                 <ListItem button onClick={handleListClick(i)} className={styles.topItem}>
                   <ListItemText
@@ -164,7 +185,7 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
                 </ListItem>
                 <Collapse in={openListItemNr === i} timeout='auto' unmountOnExit>
                   <List component='ul' className={styles.subItem}>
-                    <ListItem button className={styles.listItemDanger}>
+                    <ListItem button className={styles.listItemDanger} onClick={handleDeleteClick}>
                       <ListItemIcon>
                         <DeleteIcon />
                       </ListItemIcon>
@@ -177,6 +198,9 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
           ))
         )}
       </List>
+      {deleteOpen && (
+        <TakeDeletePopup take_id={currentTakeId || ''} handleClose={handleCloseDelete} onResult={refetch} />
+      )}
     </div>
   )
 }

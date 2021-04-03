@@ -26,3 +26,20 @@ interface CreateTakeResResult {
 }
 
 export type CreateTakeRes = CreateTakeResInvalid | CreateTakeResDenied | CreateTakeResResult | CreateTakeResError
+
+export interface DeleteTakeReqBody {
+  take_id: UUID
+}
+
+interface DeleteTakeResError {
+  ok: false
+  isAuth: boolean
+  message: string
+}
+
+interface DeleteTakeResAny {
+  ok: boolean
+  isAuth: boolean
+}
+
+export type DeleteTakeRes = DeleteTakeResAny | DeleteTakeResError

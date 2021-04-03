@@ -45,7 +45,8 @@ export const getTakenMedicine = ({
         m.current,
         date_part('year', t.date) as year,
         date_part('month', t.date) as month,
-        date_part('day', t.date) as day
+        date_part('day', t.date) as day,
+        t.take_id
       from 
         take t, 
         supervision sn, 
