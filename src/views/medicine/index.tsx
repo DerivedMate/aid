@@ -68,10 +68,12 @@ const mapProps = (state: State): DispatchProps => ({
 
 const makeLocalStyles = makeStyles(theme => ({
   root: {
-    display: 'grid',
-    gridTemplateAreas: `'header' 'tabs' 'content'`,
-    gridTemplateRows: `auto auto 1fr`,
+    // display: 'grid',
+    // gridTemplateAreas: `'header' 'tabs' 'content'`,
+    // gridTemplateRows: `auto auto 1fr`,
     height: '100%',
+    width: '100%',
+    overflow: 'hidden',
     [theme.breakpoints.up('sm')]: {
       width: '500px',
       margin: '0 auto'
@@ -81,7 +83,7 @@ const makeLocalStyles = makeStyles(theme => ({
   topBar: {
     backgroundColor: theme.palette.grey[200],
     boxShadow: theme.shadows[2],
-    gridArea: 'header'
+    width: '100%'
   },
 
   topBarTitle: {
@@ -107,7 +109,7 @@ const makeLocalStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.grey[100],
     boxShadow: theme.shadows[1],
     color: theme.palette.grey[700],
-    gridArea: 'tabs'
+    width: '100%'
   },
 
   TabsList: {
@@ -118,7 +120,11 @@ const makeLocalStyles = makeStyles(theme => ({
     width: '100%',
     height: '100%',
     gridArea: 'content',
-    paddingTop: theme.spacing(2)
+    paddingTop: theme.spacing(2),
+    overflow: 'auto hidden',
+    [theme.breakpoints.up('sm')]: {
+      width: '500px'
+    }
   }
 }))
 

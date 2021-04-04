@@ -117,13 +117,19 @@ export const getLeftMedicine = (supervised_id: UUID, date: MedicineDate): Promis
             from (
               select DISTINCT t.medicine_id
               from take t
-              where t.date::date = '2021-04-04'::date
+              where t.date::date = $5::date
               ) A
             inner join medicine m using (medicine_id)
             ) and
           m.supervised_id = $1
         `,
-    [supervised_id, String(date.year), String(date.month), String(date.day)]
+    [
+      supervised_id,
+      String(date.year),
+      String(date.month),
+      String(date.day),
+      `${date.year}-${String(date.month).padStart(2, '0')}-${String(date.day).padStart(2, '0')}`
+    ]
   ).then(r => r.rows as MedicineLeft[])
 
 export const updateMedicine = ({ medicine_id, name, unit, amount }: MedicineUpdateReq): Promise<boolean> =>
