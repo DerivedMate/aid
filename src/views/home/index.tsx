@@ -31,7 +31,8 @@ const makeLocalStyles = makeStyles(theme => ({
   container: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    flexDirection: 'column'
   },
 
   styledLink: {
