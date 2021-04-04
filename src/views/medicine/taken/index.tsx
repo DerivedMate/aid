@@ -5,6 +5,8 @@ import { State } from '@/store/reducers'
 import { listed } from '@/styles/ts/common'
 import { Collapse, List, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete'
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers'
+import DateFnsUtils from '@date-io/date-fns'
 import React, { useEffect, useReducer, useState } from 'react'
 import { connect } from 'react-redux'
 import { MedicineTake } from '%/query/medicine'
@@ -124,6 +126,8 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
     })
   }, [state.date, supervised_id, refetchFlag])
 
+  useEffect(() => {}, [refetchFlag])
+
   const [currentTakeId, setCurrentTakeId] = useState('')
 
   const [openListItemNr, setOpenListItem] = useState(-1)
@@ -146,6 +150,21 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
     setDeleteOpen(true)
   }
 
+  const [rawDate, setRawDate] = useState(new Date())
+  const handleDateChange = (d: Date | null) => {
+    if (d) {
+      setRawDate(d)
+      dispatch({
+        type: LocalActionType.ChangeDate,
+        date: {
+          year: d.getFullYear(),
+          month: d.getMonth() + 1,
+          day: d.getDate()
+        }
+      })
+    }
+  }
+
   if (state.stage === Stage.Loading)
     return (
       <div className={styles.container}>
@@ -165,6 +184,21 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
   // if (state.stage === Stage.Display)
   return (
     <div className={styles.container}>
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <KeyboardDatePicker
+          disableToolbar
+          variant='inline'
+          format='yyyy/MM/dd'
+          margin='normal'
+          id='date-picker-inline'
+          label='Date picker inline'
+          value={rawDate}
+          onChange={handleDateChange}
+          KeyboardButtonProps={{
+            'aria-label': 'change date'
+          }}
+        />
+      </MuiPickersUtilsProvider>
       <List component='ul' className={styles.fullCard}>
         {state.medicines.length === 0 ? (
           <Typography variant='h5' color='textSecondary'>

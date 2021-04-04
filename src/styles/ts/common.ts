@@ -14,7 +14,7 @@ export const listed = makeStyles(theme => ({
     position: 'relative',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     flexDirection: 'column',
     height: '100%',
     overflowY: 'scroll',
