@@ -1,6 +1,12 @@
 import { MedicineDate } from '../../../shared/api/medicine'
 import { UUID } from '../../../shared/query/columnTypes'
-import { MedicineUpdateReq, Medicine, MedicineGetTakenQueryReq, MedicineTake } from '../../../shared/query/medicine'
+import {
+  MedicineUpdateReq,
+  Medicine,
+  MedicineGetTakenQueryReq,
+  MedicineTake,
+  MedicineLeft
+} from '../../../shared/query/medicine'
 import { query } from '../db'
 
 export const getAllMedicine = (supervised_id: UUID, supervisor_id: UUID): Promise<Medicine[]> =>
@@ -89,6 +95,36 @@ export const getTakenMedicineDates = (supervised_id: UUID): Promise<MedicineDate
     `,
     [supervised_id]
   ).then(r => r.rows as MedicineDate[])
+
+export const getLeftMedicine = (supervised_id: UUID, date: MedicineDate): Promise<MedicineLeft[]> =>
+  query(
+    `
+        select 
+          m.medicine_id,
+          m.supervised_id,
+          m.name,
+          m.amount,
+          m.unit,
+          m.current,
+          $2 as year,
+          $3 as month,
+          $4 as day
+        from medicine m
+        where 
+          m.medicine_id NOT IN (
+            select
+              m.medicine_id
+            from (
+              select DISTINCT t.medicine_id
+              from take t
+              where t.date::date = '2021-04-04'::date
+              ) A
+            inner join medicine m using (medicine_id)
+            ) and
+          m.supervised_id = $1
+        `,
+    [supervised_id, String(date.year), String(date.month), String(date.day)]
+  ).then(r => r.rows as MedicineLeft[])
 
 export const updateMedicine = ({ medicine_id, name, unit, amount }: MedicineUpdateReq): Promise<boolean> =>
   query(

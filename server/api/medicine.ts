@@ -8,7 +8,9 @@ import {
   MedicineDeleteReqBody,
   MedicineDeleteRes,
   MedicineCreateReqBody,
-  MedicineCreateRes
+  MedicineCreateRes,
+  MedicineGetLeftRes,
+  MedicineGetLeftReqBody
 } from '../../shared/api/medicine'
 import { validateUUID } from '../database/types'
 import { mockDev } from '../security'
@@ -16,6 +18,7 @@ import {
   createMedicine,
   deleteMedicine,
   getAllMedicine,
+  getLeftMedicine,
   getTakenMedicine,
   updateMedicine,
   validateSupervisionMedicineConnection
@@ -88,6 +91,37 @@ class Endpoint extends EndPoint {
               ok: false,
               message: String(e)
             } as MedicineGetTakenRes)
+          )
+        )
+    })
+
+    s.post(`${prefix}/medicine/left`, (req, res) => {
+      mockDev(req)
+
+      const supervisor_id = req.session.user_id
+      const b = req.body as MedicineGetLeftReqBody
+
+      if (!supervisor_id) return res.sendStatus(403)
+
+      const isValidSupervised = validateUUID(b.supervised_id)
+      if (!isValidSupervised)
+        return res.status(400).send(JSON.stringify({ ok: false, isValidSupervised } as MedicineGetLeftRes))
+
+      getLeftMedicine(b.supervised_id, b.date)
+        .then(r =>
+          res.send(
+            JSON.stringify({
+              ok: true,
+              medicines: r
+            } as MedicineGetLeftRes)
+          )
+        )
+        .catch(e =>
+          res.status(500).send(
+            JSON.stringify({
+              ok: false,
+              message: String(e)
+            } as MedicineGetLeftRes)
           )
         )
     })

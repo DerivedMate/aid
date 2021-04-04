@@ -22,7 +22,14 @@
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "typeRoots": ["./node_modules/@types", "./src/@types", "./config/@types"],
+    "typeRoots": [
+      "./server/@types",
+      "./node_modules/@types",
+      "./src/@types",
+      "./config/@types",
+      "./shared/query",
+      "./shared/api"
+    ],
     "lib": ["WebWorker", "DOM"],
     "paths": {
       "@/*": ["./src/*"],

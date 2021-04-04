@@ -154,9 +154,7 @@ const Elem = ({
       <DialogTitle>{locale.medicine.all.delete.title}</DialogTitle>
       <DialogContent>{locale.medicine.all.delete.body(name)}</DialogContent>
       <DialogActions>
-        <Button color='secondary' onClick={handleClose}>
-          {locale.medicine.common.button.cancel}
-        </Button>
+        <Button onClick={handleClose}>{locale.medicine.common.button.cancel}</Button>
         <Button color='primary' onClick={handleClick}>
           {locale.medicine.common.button.confirm}
         </Button>

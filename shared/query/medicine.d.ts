@@ -33,3 +33,9 @@ export interface MedicineTake extends Medicine {
   day: string
   take_id: UUID
 }
+
+export interface MedicineLeft extends Medicine {
+  year: string
+  month: string
+  day: string
+}

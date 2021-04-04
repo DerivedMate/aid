@@ -1,15 +1,8 @@
 import 'express'
-import { UUID } from '../shared/query/columnTypes'
 import session = require('express-session')
 import pgConnect = require('connect-pg-simple')
 import { getPool } from './database/db'
 import { Express } from 'express-serve-static-core'
-
-declare module 'express-session' {
-  interface SessionData {
-    user_id: UUID
-  }
-}
 
 export const init_session = (server: Express, credentials: { key: string; cert?: string }) => {
   server.use(

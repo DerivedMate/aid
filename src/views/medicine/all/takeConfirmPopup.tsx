@@ -46,6 +46,7 @@ interface LocalProps {
   name: string
 
   handleClose: () => void
+  onResult?: () => void
 }
 
 interface DispatchProps {
@@ -58,6 +59,7 @@ const mapProps = (state: State): DispatchProps => ({
 
 const Elem = ({
   handleClose,
+  onResult,
   supervised_id,
   medicine_id,
   name,
@@ -126,6 +128,7 @@ const Elem = ({
           status: 500
         })
       })
+      .finally(() => onResult && onResult())
   }
 
   if (state.stage === Stage.Waiting) return <Loader />

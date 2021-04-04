@@ -13,6 +13,7 @@ import { SupervisedListDisplay } from '%/query/supervised'
 import { SupervisionAuthReqBody, SupervisionAuthRes } from '%/api/auth'
 import AllMedicine from './all'
 import TakenMedicine from './taken'
+import LeftMedicine from './left'
 
 interface MatchProps {
   supervised_id: string
@@ -274,6 +275,7 @@ export const Elem = ({ locale }: DispatchProps): ReactElement => {
         <section className={localStyles.ContentRoot}>
           {tabNr === 0 && <AllMedicine supervised_id={supervised_id} />}
           {tabNr === 1 && <TakenMedicine supervised_id={supervised_id} />}
+          {tabNr === 2 && <LeftMedicine supervised_id={supervised_id} />}
         </section>
       </div>
     </>

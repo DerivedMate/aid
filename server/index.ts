@@ -1,3 +1,4 @@
+/// <reference types="./@types/session" />
 const path = require('path')
 import express = require('express')
 import { readFileSync } from 'fs'

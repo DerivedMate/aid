@@ -102,3 +102,22 @@ interface MedicineCreateResDenied extends MedicineCreateResAny {
 }
 
 export type MedicineCreateRes = MedicineCreateResAny | MedicineCreateResError | MedicineCreateResDenied
+
+interface MedicineGetLeftResDenied {
+  ok: false
+  isValidSupervised: boolean
+}
+
+interface MedicineGetLeftResSuccess {
+  ok: true
+  medicines: MedicineTake[]
+}
+
+interface MedicineGetLeftResError {
+  ok: false
+  message: string
+}
+
+export type MedicineGetLeftRes = MedicineGetLeftResDenied | MedicineGetLeftResSuccess | MedicineGetLeftResError
+
+export type MedicineGetLeftReqBody = MedicineGetTakenReqBody

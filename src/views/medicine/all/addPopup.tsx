@@ -248,7 +248,7 @@ const Elem = ({ onResult, supervised_id, locale }: LocalProps & DispatchProps): 
         />
       </DialogContent>
       <DialogActions>
-        <Button color='secondary'>{locale.medicine.common.button.cancel}</Button>
+        <Button onClick={handleClose}>{locale.medicine.common.button.cancel}</Button>
         <Button disabled={saveDisabled} onClick={handleSubmitClick}>
           {locale.medicine.common.button.add}
         </Button>
