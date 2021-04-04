@@ -68,9 +68,9 @@ const mapProps = (state: State): DispatchProps => ({
 
 const makeLocalStyles = makeStyles(theme => ({
   root: {
-    // display: 'grid',
-    // gridTemplateAreas: `'header' 'tabs' 'content'`,
-    // gridTemplateRows: `auto auto 1fr`,
+    display: 'grid',
+    gridTemplateAreas: `'header' 'tabs' 'content'`,
+    gridTemplateRows: `auto auto 1fr`,
     height: '100%',
     width: '100%',
     overflow: 'hidden',

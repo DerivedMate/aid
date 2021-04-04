@@ -17,7 +17,8 @@ export const listed = makeStyles(theme => ({
     justifyContent: 'flex-start',
     flexDirection: 'column',
     height: '100%',
-    overflowY: 'scroll',
+    overflowY: 'auto',
+    overflowX: 'hidden',
     scrollPadding: 0,
     scrollbarWidth: 'thin'
   },
