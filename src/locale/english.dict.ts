@@ -65,6 +65,56 @@ const dict: Locale = {
       fieldLabel: 'Device ID',
       button: 'Add'
     }
+  },
+
+  medicine: {
+    common: {
+      topBar: {
+        title: 'Medications'
+      },
+      tabs: {
+        all: 'All',
+        taken: 'Taken',
+        left: 'Left'
+      },
+      button: {
+        take: 'Take',
+        edit: 'Edit',
+        delete: 'Delete',
+        cancel: 'Cancel',
+        confirm: 'Confirm',
+        save: 'Save',
+        add: 'Add'
+      },
+      take: {
+        title: 'Take Medication',
+        body: n => `Are you sure you want to take: ${n}?`
+      }
+    },
+
+    all: {
+      edit: {
+        title: 'Edit Medication',
+        body: 'Here you can edit details of a given medication.',
+        name: 'Name',
+        unit: 'Unit',
+        amount: 'Amount'
+      },
+      delete: {
+        title: 'Delete Medication',
+        body: n => `Are you sure you want to delete: ${n}?`
+      },
+      add: {
+        title: 'Add Medication',
+        body: 'Insert the information about a new medication.'
+      }
+    },
+    taken: {
+      delete: {
+        title: 'Delete a take',
+        body: n => `Are you sure you want to delete a take of: ${n}`
+      }
+    }
   }
 }
 

@@ -44,6 +44,7 @@ type LocalAction = _LocalActionIntoResult | _LocalActionIntoWaiting
 interface LocalProps {
   supervised_id: UUID
   medicine_id: UUID
+  name: string
 
   handleClose: () => void
   onResult: () => void
@@ -61,6 +62,7 @@ const Elem = ({
   handleClose,
   supervised_id,
   medicine_id,
+  name,
   onResult,
   locale
 }: LocalProps & DispatchProps): React.ReactElement => {
@@ -149,14 +151,14 @@ const Elem = ({
   // if (state.stage === Stage.Display)
   return (
     <Dialog open onClose={handleClose}>
-      <DialogTitle>[PH] title</DialogTitle>
-      <DialogContent>[PH] content</DialogContent>
+      <DialogTitle>{locale.medicine.all.delete.title}</DialogTitle>
+      <DialogContent>{locale.medicine.all.delete.body(name)}</DialogContent>
       <DialogActions>
         <Button color='secondary' onClick={handleClose}>
-          [PH] cancel
+          {locale.medicine.common.button.cancel}
         </Button>
         <Button color='primary' onClick={handleClick}>
-          [PH] confirm
+          {locale.medicine.common.button.confirm}
         </Button>
       </DialogActions>
     </Dialog>

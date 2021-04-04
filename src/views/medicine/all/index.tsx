@@ -179,19 +179,19 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
                       <ListItemIcon>
                         <LocalHospitalIcon />
                       </ListItemIcon>
-                      <ListItemText primary='[PH] Take' className={styles.camouflagedLink} />
+                      <ListItemText primary={locale.medicine.common.button.take} className={styles.camouflagedLink} />
                     </ListItem>
                     <ListItem button onClick={handleEditClick(i)}>
                       <ListItemIcon>
                         <EditIcon />
                       </ListItemIcon>
-                      <ListItemText primary='[PH] Edit' className={styles.camouflagedLink} />
+                      <ListItemText primary={locale.medicine.common.button.edit} className={styles.camouflagedLink} />
                     </ListItem>
                     <ListItem button className={styles.listItemDanger} onClick={handleDeleteClick(i)}>
                       <ListItemIcon>
                         <DeleteIcon />
                       </ListItemIcon>
-                      <ListItemText primary='[PH] Delete' color='warning' />
+                      <ListItemText primary={locale.medicine.common.button.delete} color='warning' />
                     </ListItem>
                   </List>
                 </Collapse>
@@ -206,8 +206,6 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
             setEditOpen(false)
           }}
           onResult={handleEditResult}
-          body='[PH] body'
-          title='[PH] Edit medicine'
           medicine={currentMedicine}
         />
       )}
@@ -218,6 +216,7 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
           }}
           supervised_id={supervised_id}
           medicine_id={currentMedicine.medicine_id}
+          name={currentMedicine.name}
         />
       )}
       {deleteOpen && (
@@ -227,15 +226,11 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
           }}
           onResult={handleEditResult}
           medicine_id={currentMedicine.medicine_id}
+          name={currentMedicine.name}
           supervised_id={supervised_id}
         />
       )}
-      <AddPopup
-        onResult={() => setRefetchFlag(!refetchFlag)}
-        title='[PH] Add medicine'
-        body='[PH] Body'
-        supervised_id={supervised_id}
-      />
+      <AddPopup onResult={() => setRefetchFlag(!refetchFlag)} supervised_id={supervised_id} />
     </div>
   )
 }

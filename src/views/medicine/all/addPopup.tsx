@@ -39,8 +39,6 @@ interface LocalState {
 
 interface LocalProps {
   supervised_id: UUID
-  title: string
-  body: string
 
   onResult: () => void
 }
@@ -98,7 +96,7 @@ const defaultState: LocalState = {
   amount: 0
 }
 
-const Elem = ({ onResult, supervised_id, body, title }: LocalProps & DispatchProps): React.ReactElement => {
+const Elem = ({ onResult, supervised_id, locale }: LocalProps & DispatchProps): React.ReactElement => {
   const styles = listed()
   const [state, dispatch] = useReducer(
     (prev: LocalState = defaultState, action: Action) => {
@@ -215,13 +213,13 @@ const Elem = ({ onResult, supervised_id, body, title }: LocalProps & DispatchPro
   // if (state.stage === Stage.Displayed)
   return (
     <Dialog open onClose={handleClose}>
-      <DialogTitle>{title}</DialogTitle>
+      <DialogTitle>{locale.medicine.all.add.title}</DialogTitle>
       <DialogContent>
-        <DialogContentText>{body}</DialogContentText>
+        <DialogContentText>{locale.medicine.all.add.body}</DialogContentText>
         <TextField
           margin='dense'
           id='name'
-          label='[PH] Name'
+          label={locale.medicine.all.edit.name}
           type='text'
           fullWidth
           required
@@ -231,7 +229,7 @@ const Elem = ({ onResult, supervised_id, body, title }: LocalProps & DispatchPro
         <TextField
           margin='dense'
           id='unit'
-          label='[PH] Unit'
+          label={locale.medicine.all.edit.unit}
           type='text'
           fullWidth
           required
@@ -241,7 +239,7 @@ const Elem = ({ onResult, supervised_id, body, title }: LocalProps & DispatchPro
         <TextField
           margin='dense'
           id='amount'
-          label='[PH] Amount'
+          label={locale.medicine.all.edit.amount}
           type='number'
           fullWidth
           required
@@ -250,9 +248,9 @@ const Elem = ({ onResult, supervised_id, body, title }: LocalProps & DispatchPro
         />
       </DialogContent>
       <DialogActions>
-        <Button color='secondary'>[PH] Delete</Button>
+        <Button color='secondary'>{locale.medicine.common.button.cancel}</Button>
         <Button disabled={saveDisabled} onClick={handleSubmitClick}>
-          [PH] Save
+          {locale.medicine.common.button.add}
         </Button>
       </DialogActions>
     </Dialog>

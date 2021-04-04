@@ -43,6 +43,7 @@ type LocalAction = _LocalActionIntoResult | _LocalActionIntoWaiting
 interface LocalProps {
   medicine_id: UUID
   supervised_id: UUID
+  name: string
 
   handleClose: () => void
 }
@@ -55,7 +56,13 @@ const mapProps = (state: State): DispatchProps => ({
   locale: state.lang.dict
 })
 
-const Elem = ({ handleClose, supervised_id, medicine_id, locale }: LocalProps & DispatchProps): React.ReactElement => {
+const Elem = ({
+  handleClose,
+  supervised_id,
+  medicine_id,
+  name,
+  locale
+}: LocalProps & DispatchProps): React.ReactElement => {
   const [state, dispatch] = useReducer(
     (prev: LocalState, action: LocalAction) => {
       switch (action.type) {
@@ -140,14 +147,12 @@ const Elem = ({ handleClose, supervised_id, medicine_id, locale }: LocalProps & 
   // if (state.stage === Stage.Display)
   return (
     <Dialog open onClose={handleClose}>
-      <DialogTitle>[PH] title</DialogTitle>
-      <DialogContent>[PH] content</DialogContent>
+      <DialogTitle>{locale.medicine.common.take.title}</DialogTitle>
+      <DialogContent>{locale.medicine.common.take.body(name)}</DialogContent>
       <DialogActions>
-        <Button color='secondary' onClick={handleClose}>
-          [PH] cancel
-        </Button>
+        <Button onClick={handleClose}>{locale.medicine.common.button.cancel}</Button>
         <Button color='primary' onClick={handleClick}>
-          [PH] confirm
+          {locale.medicine.common.button.confirm}
         </Button>
       </DialogActions>
     </Dialog>

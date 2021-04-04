@@ -189,7 +189,7 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
                       <ListItemIcon>
                         <DeleteIcon />
                       </ListItemIcon>
-                      <ListItemText primary='[PH] Delete' color='warning' />
+                      <ListItemText primary={locale.medicine.common.button.delete} color='warning' />
                     </ListItem>
                   </List>
                 </Collapse>
@@ -199,7 +199,12 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
         )}
       </List>
       {deleteOpen && (
-        <TakeDeletePopup take_id={currentTakeId || ''} handleClose={handleCloseDelete} onResult={refetch} />
+        <TakeDeletePopup
+          name={openListItemNr in state.medicines ? state.medicines[openListItemNr].name : ''}
+          take_id={currentTakeId || ''}
+          handleClose={handleCloseDelete}
+          onResult={refetch}
+        />
       )}
     </div>
   )

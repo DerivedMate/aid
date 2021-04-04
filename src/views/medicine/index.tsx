@@ -243,7 +243,7 @@ export const Elem = ({ locale }: DispatchProps): ReactElement => {
               <KeyboardArrowLeftIcon />
             </IconButton>
             <Typography variant='h6' className={localStyles.topBarTitle}>
-              [PH] Medicine
+              {locale.medicine.common.topBar.title}
             </Typography>
             <div className={localStyles.topBarSpace} />
             <div>
@@ -266,9 +266,9 @@ export const Elem = ({ locale }: DispatchProps): ReactElement => {
             aria-label='[PH] Medicine tabs'
             className={localStyles.TabsList}
           >
-            <Tab value={0} label='[PH] All' />
-            <Tab value={1} label='[PH] Taken' />
-            <Tab value={2} label='[PH] Left' />
+            <Tab value={0} label={locale.medicine.common.tabs.all} />
+            <Tab value={1} label={locale.medicine.common.tabs.taken} />
+            <Tab value={2} label={locale.medicine.common.tabs.left} />
           </Tabs>
         </AppBar>
         <section className={localStyles.ContentRoot}>

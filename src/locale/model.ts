@@ -65,6 +65,56 @@ export interface Locale {
       button: string
     }
   }
+
+  medicine: {
+    common: {
+      topBar: {
+        title: string
+      }
+      tabs: {
+        all: string
+        taken: string
+        left: string
+      }
+      button: {
+        take: string
+        edit: string
+        delete: string
+        cancel: string
+        confirm: string
+        save: string
+        add: string
+      }
+      take: {
+        title: string
+        body: (name: string) => string
+      }
+    }
+
+    all: {
+      edit: {
+        title: string
+        body: string
+        name: string
+        unit: string
+        amount: string
+      }
+      delete: {
+        title: string
+        body: (name: string) => string
+      }
+      add: {
+        title: string
+        body: string
+      }
+    }
+    taken: {
+      delete: {
+        title: string
+        body: (name: string) => string
+      }
+    }
+  }
 }
 
 export enum Lang {

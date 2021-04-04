@@ -66,6 +66,56 @@ const dict: Locale = {
       fieldLabel: 'Número de Identificación',
       button: 'Agregar'
     }
+  },
+
+  medicine: {
+    common: {
+      topBar: {
+        title: 'Medicinas'
+      },
+      tabs: {
+        all: 'Todas',
+        taken: 'Tomadas',
+        left: 'No Tomadas'
+      },
+      button: {
+        take: 'Tomar',
+        edit: 'Editar',
+        delete: 'Eliminar',
+        cancel: 'Cancelar',
+        confirm: 'Confirmar',
+        save: 'Guardar',
+        add: 'Añadir'
+      },
+      take: {
+        title: 'Tomar la Medicina',
+        body: name => `¿Está usted seguro/a que usted quiere tomar: ${name}?`
+      }
+    },
+
+    all: {
+      edit: {
+        title: 'Editar la Medicina',
+        body: 'Aquí usted puede editar información sobre esta medicina.',
+        name: 'El Nombre',
+        unit: 'La Unidad',
+        amount: 'La cantidad'
+      },
+      delete: {
+        title: 'Eliminar la Medicina',
+        body: name => `¿Está usted seguro/a que usted quiere eliminar: ${name}?`
+      },
+      add: {
+        title: 'Añadir una Medicina',
+        body: 'Inserte información sobre una nueva medicina.'
+      }
+    },
+    taken: {
+      delete: {
+        title: 'Eliminar la Tomada',
+        body: name => `¿Está usted seguro/a que usted quiere eliminar una tomada de: ${name}?`
+      }
+    }
   }
 }
 
