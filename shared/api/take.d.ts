@@ -3,6 +3,7 @@ import { UUID } from '%/query/columnTypes'
 export interface CreateTakeReqBody {
   supervised_id: UUID
   medicine_id: UUID
+  timeSinceEpoch: number
 }
 
 interface CreateTakeResInvalid {

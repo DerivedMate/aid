@@ -12,7 +12,7 @@ class Take extends EndPoint {
       mockDev(req)
 
       const supervisor_id = req.session.user_id
-      const { supervised_id, medicine_id } = req.body as CreateTakeReqBody
+      const { supervised_id, medicine_id, timeSinceEpoch } = req.body as CreateTakeReqBody
 
       if (!supervisor_id) return res.sendStatus(403)
       const isValidSupervised = validateUUID(supervised_id)
@@ -37,7 +37,7 @@ class Take extends EndPoint {
 
       if (!authConnection) return res.status(403).send(JSON.stringify({ ok: false, auth: false } as CreateTakeRes))
 
-      createTake(medicine_id)
+      createTake(medicine_id, timeSinceEpoch)
         .then(ok =>
           res.status(ok ? 201 : 500).send(
             JSON.stringify({

@@ -11,13 +11,7 @@ import React, { useEffect, useReducer, useState } from 'react'
 import { connect } from 'react-redux'
 import { MedicineLeft } from '%/query/medicine'
 import { UUID } from '%/query/columnTypes'
-import {
-  MedicineDate,
-  MedicineGetLeftReqBody,
-  MedicineGetLeftRes,
-  MedicineGetTakenReqBody,
-  MedicineGetTakenRes
-} from '%/api/medicine'
+import { MedicineDate, MedicineGetLeftReqBody, MedicineGetLeftRes } from '%/api/medicine'
 import TakeConfirmPopup from '../all/takeConfirmPopup'
 
 enum Stage {
@@ -196,7 +190,7 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
           format='yyyy/MM/dd'
           margin='normal'
           id='date-picker-inline'
-          label='Date picker inline'
+          label={locale.medicine.common.datePicker.label}
           value={rawDate}
           onChange={handleDateChange}
           KeyboardButtonProps={{
@@ -238,6 +232,7 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
           medicine_id={currentMedicine.medicine_id}
           name={currentMedicine.name}
           supervised_id={supervised_id}
+          date={+rawDate}
         />
       )}
     </div>

@@ -88,6 +88,9 @@ const dict: Locale = {
       take: {
         title: 'Weź lek',
         body: n => `Czy jesteś pewien/na, że chcesz wziąć lek: ${n}?`
+      },
+      datePicker: {
+        label: 'Wybierz datę'
       }
     },
 

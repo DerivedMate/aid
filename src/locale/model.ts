@@ -89,6 +89,9 @@ export interface Locale {
         title: string
         body: (name: string) => string
       }
+      datePicker: {
+        label: string
+      }
     }
 
     all: {

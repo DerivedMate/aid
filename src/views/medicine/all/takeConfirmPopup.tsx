@@ -8,6 +8,7 @@ import React, { useReducer } from 'react'
 import { connect } from 'react-redux'
 import { UUID } from '%/query/columnTypes'
 import { CreateTakeReqBody, CreateTakeRes } from '%/api/take'
+import { MedicineDate } from '%/api/medicine'
 
 enum Stage {
   Display = '@Medicine:All:Take:Stage:Display',
@@ -44,6 +45,7 @@ interface LocalProps {
   medicine_id: UUID
   supervised_id: UUID
   name: string
+  date?: number
 
   handleClose: () => void
   onResult?: () => void
@@ -63,6 +65,7 @@ const Elem = ({
   supervised_id,
   medicine_id,
   name,
+  date,
   locale
 }: LocalProps & DispatchProps): React.ReactElement => {
   const [state, dispatch] = useReducer(
@@ -96,7 +99,8 @@ const Elem = ({
       },
       body: JSON.stringify({
         medicine_id,
-        supervised_id
+        supervised_id,
+        timeSinceEpoch: date || Date.now()
       } as CreateTakeReqBody)
     })
       .then(r =>
