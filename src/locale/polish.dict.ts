@@ -62,7 +62,8 @@ const dict: Locale = {
       title: 'Dodaj podopiecznego/ną',
       body: 'Wprowadź id urządzenia, które znajduje się z tyłu urządzenia / na karcie gwarancyjnej.',
       fieldLabel: 'Id urządzenia',
-      button: 'Dodaj'
+      button: 'Dodaj',
+      success: 'Pomyślnie dodano podopiecznego/ną'
     }
   },
 
@@ -74,7 +75,8 @@ const dict: Locale = {
       tabs: {
         all: 'Wszystkie',
         taken: 'Wzięte',
-        left: 'Niewzięte'
+        left: 'Niewzięte',
+        ariaLabel: 'Zakładki Leków'
       },
       button: {
         take: 'Weź',
@@ -87,10 +89,19 @@ const dict: Locale = {
       },
       take: {
         title: 'Weź lek',
-        body: n => `Czy jesteś pewien/na, że chcesz wziąć lek: ${n}?`
+        body: (n: string): string => `Czy jesteś pewien/na, że chcesz wziąć lek: ${n}?`
       },
       datePicker: {
         label: 'Wybierz datę'
+      },
+      alter: {
+        empty: 'Niczego nie znaleziono',
+        error: (m: string): string => `Napotkano na błąd:\n${m}`,
+        authError: (m: string): string => `Odmowa dostępu:\n${m}`
+      },
+      loading: {
+        loadingMedicine: 'Ładowanie Leków',
+        authorizing: 'Autoryzacja'
       }
     },
 
@@ -104,7 +115,7 @@ const dict: Locale = {
       },
       delete: {
         title: 'Usuń Lek',
-        body: n => `Czy jesteś pewien/na, że chcesz usunąć lek: ${n}?`
+        body: (n: string): string => `Czy jesteś pewien/na, że chcesz usunąć lek: ${n}?`
       },
       add: {
         title: 'Dodaj Lek',
@@ -114,9 +125,12 @@ const dict: Locale = {
     taken: {
       delete: {
         title: 'Usuń wzięcie',
-        body: n => `Czy jesteś pewien/na, że chcesz usunąć wzięcie leku: ${n}`
+        body: (n: string): string => `Czy jesteś pewien/na, że chcesz usunąć wzięcie leku: ${n}`
       }
     }
+  },
+  account: {
+    logout: 'Wyloguj się'
   }
 }
 

@@ -64,7 +64,8 @@ const dict: Locale = {
       body:
         'Inserte el número de identificación, el cual se puede encontrar en la parte trasera del dispositivo o en la tarjeta de garantía.',
       fieldLabel: 'Número de Identificación',
-      button: 'Agregar'
+      button: 'Agregar',
+      success: 'Se añadió un(a) supervisado/a con éxito'
     }
   },
 
@@ -76,7 +77,8 @@ const dict: Locale = {
       tabs: {
         all: 'Todas',
         taken: 'Tomadas',
-        left: 'No Tomadas'
+        left: 'No Tomadas',
+        ariaLabel: 'Pestañas de Medicinas'
       },
       button: {
         take: 'Tomar',
@@ -89,10 +91,19 @@ const dict: Locale = {
       },
       take: {
         title: 'Tomar la Medicina',
-        body: name => `¿Está usted seguro/a que usted quiere tomar: ${name}?`
+        body: (n: string): string => `¿Está usted seguro/a que usted quiere tomar: ${n}?`
       },
       datePicker: {
         label: 'Escoger una Fecha'
+      },
+      alter: {
+        empty: 'No se encontró nada',
+        error: (m: string): string => `Había un error:\n${m}`,
+        authError: (m: string): string => `Acceso denegado:\n${m}`
+      },
+      loading: {
+        loadingMedicine: 'Cargando Medicinas',
+        authorizing: 'Autenticando'
       }
     },
 
@@ -106,7 +117,7 @@ const dict: Locale = {
       },
       delete: {
         title: 'Eliminar la Medicina',
-        body: name => `¿Está usted seguro/a que usted quiere eliminar: ${name}?`
+        body: (n: string): string => `¿Está usted seguro/a que usted quiere eliminar: ${n}?`
       },
       add: {
         title: 'Añadir una Medicina',
@@ -116,9 +127,13 @@ const dict: Locale = {
     taken: {
       delete: {
         title: 'Eliminar la Tomada',
-        body: name => `¿Está usted seguro/a que usted quiere eliminar una tomada de: ${name}?`
+        body: (n: string): string => `¿Está usted seguro/a que usted quiere eliminar una tomada de: ${n}?`
       }
     }
+  },
+
+  account: {
+    logout: 'Terminar sesión'
   }
 }
 

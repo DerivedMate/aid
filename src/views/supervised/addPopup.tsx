@@ -15,6 +15,9 @@ import Alert from '@material-ui/lab/Alert'
 import React, { ChangeEventHandler, useReducer } from 'react'
 import AddIcon from '@material-ui/icons/Add'
 import { listed } from '@/styles/ts/common'
+import { Locale } from '@/locale/model'
+import { State } from '@/store/reducers'
+import { connect } from 'react-redux'
 import { UUID } from '%/query/columnTypes'
 
 enum Stage {
@@ -82,7 +85,23 @@ const defaultState: LocalState = {
   device_id: ''
 }
 
-const Elem = ({ onResult, body, title, button, fieldLabel, open }: LocalProps): React.ReactElement => {
+interface DispatchProps {
+  locale: Locale
+}
+
+const mapProps = (stage: State): DispatchProps => ({
+  locale: stage.lang.dict
+})
+
+const Elem = ({
+  onResult,
+  body,
+  title,
+  button,
+  fieldLabel,
+  open,
+  locale
+}: LocalProps & DispatchProps): React.ReactElement => {
   const styles = listed()
   const [state, dispatch] = useReducer(
     (prev: LocalState = defaultState, action: Action): LocalState => {
@@ -136,7 +155,7 @@ const Elem = ({ onResult, body, title, button, fieldLabel, open }: LocalProps): 
           dispatch({
             type: ActionType.IntoResult,
             ok: true,
-            message: '[PH] Successfully added a ward'
+            message: locale.supervised.add.success
           })
           onResult()
         } else {
@@ -215,4 +234,4 @@ const Elem = ({ onResult, body, title, button, fieldLabel, open }: LocalProps): 
   )
 }
 
-export default Elem
+export default connect<DispatchProps>(mapProps)(Elem)

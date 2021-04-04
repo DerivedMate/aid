@@ -121,7 +121,8 @@ export const getLeftMedicine = (supervised_id: UUID, date: MedicineDate): Promis
               ) A
             inner join medicine m using (medicine_id)
             ) and
-          m.supervised_id = $1
+          m.supervised_id = $1 and
+          m.current = 't'
         `,
     [
       supervised_id,

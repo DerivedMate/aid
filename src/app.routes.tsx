@@ -7,11 +7,17 @@ import {
   About as AboutRoute,
   Dashboard as DashboardRoute,
   Supervised as SupervisedRoute,
-  Medicine as MedicineRoute
+  Medicine as MedicineRoute,
+  Account as AccountRoute
 } from '@/views'
 import { Redirect, Switch } from 'react-router-dom'
+import { connect } from 'react-redux'
 import { DeGuardedRoute, GuardedRoute } from './components/guarded-route'
 import { UUID } from '%/query/columnTypes'
+import { State } from './store/reducers'
+import { UserStage } from './store/actions/user'
+import Loader from './components/loader'
+import { Locale } from './locale/model'
 
 export enum Routes {
   // General
@@ -30,12 +36,23 @@ export enum Routes {
 
 export const makeMedicineUrl = (supervised_id: UUID): string => `${Routes.MedicineBase}/${supervised_id}`
 
-interface IProps {
+interface DispatchProps {
   auth: boolean
+  authorizing: boolean
+  locale: Locale
 }
 
-export const routes = ({ auth }: IProps): React.ReactElement => {
+const mapProps = (state: State): DispatchProps => ({
+  auth: state.user.loggedIn,
+  authorizing: state.user.stage === UserStage.Authorizing,
+  locale: state.lang.dict
+})
+
+export const routes = ({ auth, authorizing, locale }: DispatchProps): React.ReactElement => {
   console.log(auth)
+
+  if (authorizing) return <Loader title={locale.medicine.common.loading.authorizing} />
+
   return (
     <>
       <Switch>
@@ -86,6 +103,7 @@ export const routes = ({ auth }: IProps): React.ReactElement => {
           key='medicine_/medicine'
           component={MedicineRoute}
         />
+        <GuardedRoute auth={auth} path={Routes.Account} key='account_/account' component={AccountRoute} />
         <GuardedRoute auth={auth} path='/404' key='notFound_/404' component={NotFoundRoute} />
         <Redirect to='/404' />
       </Switch>
@@ -93,4 +111,4 @@ export const routes = ({ auth }: IProps): React.ReactElement => {
   )
 }
 
-export default routes
+export default connect<DispatchProps>(mapProps)(routes)

@@ -167,16 +167,16 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
   if (state.stage === Stage.Loading)
     return (
       <div className={styles.container}>
-        <Loader title='[PH] Loading medicines' />
+        <Loader title={locale.medicine.common.loading.loadingMedicine} />
       </div>
     )
 
   if (state.stage === Stage.LoadingFail)
     return (
       <div className={styles.container}>
-        {state.message}
-        <br />
-        {state.status}
+        <Typography align='center' variant='body2'>
+          {locale.medicine.common.alter.error(`(${state.status}) ${state.message}`)}
+        </Typography>
       </div>
     )
 
@@ -200,8 +200,8 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
       </MuiPickersUtilsProvider>
       <List component='ul' className={styles.fullCard}>
         {state.medicines.length === 0 ? (
-          <Typography variant='h5' color='textSecondary'>
-            [PH] No medicine found
+          <Typography align='center' variant='h5' color='textSecondary'>
+            {locale.medicine.common.alter.empty}
           </Typography>
         ) : (
           state.medicines.map(({ medicine_id, name, amount, unit }, i) => (

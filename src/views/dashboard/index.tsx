@@ -1,7 +1,7 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
-import { Card, CardActions, CardContent, makeStyles, Typography } from '@material-ui/core'
+import { Card, CardActions, CardContent, Typography } from '@material-ui/core'
 
 import { Locale } from '@/locale/model'
 import { State } from '@/store/reducers'

@@ -4,7 +4,7 @@ import { render } from 'react-dom'
 import App from '@/app'
 import configureStore, { history } from './store/configStore'
 import authUser from './store/async/authUser'
-import { logIn } from './store/actions/user'
+import { logIn, UserStage } from './store/actions/user'
 import { Lang } from './locale/model'
 import englishDict from './locale/english.dict'
 import { initLangState } from './store/reducers'
@@ -12,7 +12,7 @@ import { initLangState } from './store/reducers'
 const DOM_NODE: HTMLElement = document.querySelector('.appWrapper')
 
 const store = configureStore({
-  user: { loggedIn: false },
+  user: { loggedIn: false, stage: UserStage.Authorizing },
   lang: {
     lang: Lang.English,
     dict: englishDict

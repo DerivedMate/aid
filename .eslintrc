@@ -81,7 +81,9 @@
     "react/jsx-props-no-spreading": "off",
     "@typescript-eslint/no-floating-promises": "off",
     "import/extensions": "off",
-    "@typescript-eslint/naming-convention": "off"
+    "@typescript-eslint/naming-convention": "off",
+    "react/require-default-props": "off",
+    "import/prefer-default-export": "off"
   },
   "globals": {
     "window": true,

@@ -15,16 +15,12 @@ const makeLocalStyles = makeStyles(theme => ({
   },
 
   text: {
-    color: theme.palette.text.secondary,
+    color: '#fefefe',
     marginTop: theme.spacing(2)
   }
 }))
 
-const defaultProps: IProps = {
-  title: ''
-}
-
-export default function Loader({ title }: IProps = defaultProps): JSX.Element {
+export default function Loader({ title = '' }: IProps): JSX.Element {
   const styles = makeLocalStyles()
 
   return (
@@ -37,6 +33,7 @@ export default function Loader({ title }: IProps = defaultProps): JSX.Element {
       )}
     </Backdrop>
   )
+
   /*
   return (
     <div className={styles.loaderContainer}>

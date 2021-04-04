@@ -63,7 +63,8 @@ const dict: Locale = {
       title: 'Add a ward',
       body: 'Insert the device ID, which can be found on the back side of the device or on the warranty card.',
       fieldLabel: 'Device ID',
-      button: 'Add'
+      button: 'Add',
+      success: 'Successfully added a ward'
     }
   },
 
@@ -75,7 +76,8 @@ const dict: Locale = {
       tabs: {
         all: 'All',
         taken: 'Taken',
-        left: 'Left'
+        left: 'Left',
+        ariaLabel: 'Medication Tabs'
       },
       button: {
         take: 'Take',
@@ -88,10 +90,19 @@ const dict: Locale = {
       },
       take: {
         title: 'Take Medication',
-        body: n => `Are you sure you want to take: ${n}?`
+        body: (n: string): string => `Are you sure you want to take: ${n}?`
       },
       datePicker: {
         label: 'Choose a Date'
+      },
+      alter: {
+        empty: 'Nothing was found',
+        error: (m: string): string => `An error arose:\n${m}`,
+        authError: (m: string): string => `Access denied:\n${m}`
+      },
+      loading: {
+        loadingMedicine: 'Loading Medications',
+        authorizing: 'Authenticating'
       }
     },
 
@@ -105,7 +116,7 @@ const dict: Locale = {
       },
       delete: {
         title: 'Delete Medication',
-        body: n => `Are you sure you want to delete: ${n}?`
+        body: (n: string): string => `Are you sure you want to delete: ${n}?`
       },
       add: {
         title: 'Add Medication',
@@ -115,9 +126,13 @@ const dict: Locale = {
     taken: {
       delete: {
         title: 'Delete a take',
-        body: n => `Are you sure you want to delete a take of: ${n}`
+        body: (n: string): string => `Are you sure you want to delete a take of: ${n}`
       }
     }
+  },
+
+  account: {
+    logout: 'Log out'
   }
 }
 

@@ -3,9 +3,9 @@ import '@/styles/index.scss'
 import React, { ReactElement } from 'react'
 import { History } from 'history'
 import { Helmet } from 'react-helmet'
-import ErrorBoundary from '@/components/error-boundary'
-import { ConnectedRouter } from 'connected-react-router'
 import { Provider } from 'react-redux'
+import { ConnectedRouter } from 'connected-react-router'
+import ErrorBoundary from '@/components/error-boundary'
 import RoutesElem from './app.routes'
 import configureStore from './store/configStore'
 import Wrapper from './components/wrapper'
@@ -16,8 +16,6 @@ interface IProps {
 }
 
 const App = ({ history, store }: IProps): ReactElement => {
-  const auth = store.getState().user.loggedIn
-
   return (
     <ErrorBoundary>
       <Helmet defaultTitle={process.env.APP_TITLE} titleTemplate={`%s | ${process.env.APP_TITLE}`}>
@@ -26,7 +24,7 @@ const App = ({ history, store }: IProps): ReactElement => {
       <Provider store={store}>
         <ConnectedRouter history={history}>
           <Wrapper>
-            <RoutesElem auth={auth} />
+            <RoutesElem />
           </Wrapper>
         </ConnectedRouter>
       </Provider>

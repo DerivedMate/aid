@@ -7,7 +7,7 @@ import { Alert } from '@material-ui/lab'
 import React, { useReducer } from 'react'
 import { connect } from 'react-redux'
 import { UUID } from '%/query/columnTypes'
-import { CreateTakeReqBody, CreateTakeRes, DeleteTakeReqBody } from '%/api/take'
+import { CreateTakeRes } from '%/api/take'
 import { MedicineDeleteReqBody } from '%/api/medicine'
 
 enum Stage {

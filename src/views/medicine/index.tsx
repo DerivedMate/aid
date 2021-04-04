@@ -224,20 +224,18 @@ export const Elem = ({ locale }: DispatchProps): ReactElement => {
     changeTabNr(v)
   }
 
-  if (state.stage === Stage.Authorizing) return <Loader title='[PH] Authorizing' />
+  if (state.stage === Stage.Authorizing) return <Loader title={locale.medicine.common.loading.authorizing} />
 
   if (state.stage === Stage.AuthDenied)
     return (
       <Typography variant='h5'>
-        [PH] Access Denied: ({state.status}) {state.message}
+        {locale.medicine.common.alter.authError(`(${state.status}) ${state.message}`)}
       </Typography>
     )
 
   if (state.stage === Stage.AuthError)
     return (
-      <Typography variant='h5'>
-        [PH] Authentication Error: ({state.status}) {state.message}
-      </Typography>
+      <Typography variant='h5'>{locale.medicine.common.alter.error(`(${state.status}) ${state.message}`)}</Typography>
     )
 
   // if (state.stage === Stage.Authorized)
@@ -270,7 +268,7 @@ export const Elem = ({ locale }: DispatchProps): ReactElement => {
             indicatorColor='primary'
             variant='fullWidth'
             scrollButtons='auto'
-            aria-label='[PH] Medicine tabs'
+            aria-label='Medicine tabs'
             className={localStyles.TabsList}
           >
             <Tab value={0} label={locale.medicine.common.tabs.all} />

@@ -22,3 +22,5 @@ export const Dashboard = loadable(() => import(/* webpackChunkName: 'dashboard' 
 export const Supervised = loadable(() => import(/* webpackChunkName: 'supervised' */ './supervised'), loadableOptions)
 
 export const Medicine = loadable(() => import(/* webpackChunkName: 'medicine' */ './medicine'), loadableOptions)
+
+export const Account = loadable(() => import(/* webpackChunkName: 'account' */ './account'), loadableOptions)

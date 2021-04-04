@@ -8,7 +8,6 @@ import React, { useReducer } from 'react'
 import { connect } from 'react-redux'
 import { UUID } from '%/query/columnTypes'
 import { CreateTakeReqBody, CreateTakeRes } from '%/api/take'
-import { MedicineDate } from '%/api/medicine'
 
 enum Stage {
   Display = '@Medicine:All:Take:Stage:Display',
@@ -61,11 +60,11 @@ const mapProps = (state: State): DispatchProps => ({
 
 const Elem = ({
   handleClose,
-  onResult,
+  onResult = () => {},
   supervised_id,
   medicine_id,
   name,
-  date,
+  date = Date.now(),
   locale
 }: LocalProps & DispatchProps): React.ReactElement => {
   const [state, dispatch] = useReducer(

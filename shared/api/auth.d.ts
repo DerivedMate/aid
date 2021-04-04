@@ -1,6 +1,6 @@
+import { SupervisorNoPass } from 'shared/query/supervisor'
 import { UUID } from '%/query/columnTypes'
 import { SupervisedListDisplay } from '%/query/supervised'
-import { SupervisorNoPass } from 'shared/query/supervisor'
 
 export interface IsAuthSuccess {
   isAuth: true

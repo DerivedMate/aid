@@ -5,6 +5,7 @@ import { instance as auth } from './auth'
 import { instance as supervised } from './supervised'
 import { instance as medicine } from './medicine'
 import { instance as take } from './take'
+import { instance as logout } from './logout'
 
 export const init_api = (server: Express) => {
   if (process.env['NODE_ENV'] === 'development')
@@ -12,5 +13,5 @@ export const init_api = (server: Express) => {
       res.setHeader('Access-Control-Allow-Origin', '*')
       next()
     })
-  ;[signup, signin, auth, supervised, medicine, take].forEach(endpoint => endpoint.mount(server, '/api'))
+  ;[signup, signin, auth, supervised, medicine, take, logout].forEach(endpoint => endpoint.mount(server, '/api'))
 }

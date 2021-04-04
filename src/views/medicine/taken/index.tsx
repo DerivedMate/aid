@@ -168,7 +168,7 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
   if (state.stage === Stage.Loading)
     return (
       <div className={styles.container}>
-        <Loader title='[PH] Loading medicines' />
+        <Loader title={locale.medicine.common.loading.loadingMedicine} />
       </div>
     )
 
@@ -201,8 +201,8 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
       </MuiPickersUtilsProvider>
       <List component='ul' className={styles.fullCard}>
         {state.medicines.length === 0 ? (
-          <Typography variant='h5' color='textSecondary'>
-            [PH] No medicine found
+          <Typography variant='h5' align='center' color='textSecondary'>
+            {locale.medicine.common.alter.empty}
           </Typography>
         ) : (
           state.medicines.map(({ take_id, name, amount, unit, year, month, day }, i) => (

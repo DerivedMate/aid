@@ -63,6 +63,7 @@ export interface Locale {
       body: string
       fieldLabel: string
       button: string
+      success: string
     }
   }
 
@@ -75,6 +76,7 @@ export interface Locale {
         all: string
         taken: string
         left: string
+        ariaLabel: string
       }
       button: {
         take: string
@@ -91,6 +93,15 @@ export interface Locale {
       }
       datePicker: {
         label: string
+      }
+      alter: {
+        empty: string
+        error: (m: string) => string
+        authError: (m: string) => string
+      }
+      loading: {
+        loadingMedicine: string
+        authorizing: string
       }
     }
 
@@ -117,6 +128,10 @@ export interface Locale {
         body: (name: string) => string
       }
     }
+  }
+
+  account: {
+    logout: string
   }
 }
 

@@ -1,5 +1,5 @@
-import { UUID } from '%/query/columnTypes'
 import { SupervisedListDisplay } from 'shared/query/supervised'
+import { UUID } from '%/query/columnTypes'
 
 export interface SupervisedListSuccess {
   ok: true
