@@ -24,3 +24,5 @@ export const Supervised = loadable(() => import(/* webpackChunkName: 'supervised
 export const Medicine = loadable(() => import(/* webpackChunkName: 'medicine' */ './medicine'), loadableOptions)
 
 export const Account = loadable(() => import(/* webpackChunkName: 'account' */ './account'), loadableOptions)
+
+export const Location = loadable(() => import(/* webpackChunkName: 'location' */ './location'), loadableOptions)

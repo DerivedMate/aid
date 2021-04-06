@@ -119,7 +119,7 @@ const Elem = ({ onResult, handleClose, medicine, locale }: LocalProps & Dispatch
     dispatch({
       type: ActionType.onInput,
       key,
-      data: (e.currentTarget as HTMLInputElement).value.trim()
+      data: (e.currentTarget as HTMLInputElement).value
     })
   }
 
@@ -136,9 +136,9 @@ const Elem = ({ onResult, handleClose, medicine, locale }: LocalProps & Dispatch
       body: JSON.stringify({
         medicine_id: medicine.medicine_id,
         supervised_id: medicine.supervised_id,
-        name: state.name,
+        name: state.name.trim(),
         amount: state.amount,
-        unit: state.unit
+        unit: state.unit.trim()
       } as MedicineUpdateReq)
     })
       .then(async r => {

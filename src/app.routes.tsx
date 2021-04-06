@@ -8,7 +8,8 @@ import {
   Dashboard as DashboardRoute,
   Supervised as SupervisedRoute,
   Medicine as MedicineRoute,
-  Account as AccountRoute
+  Account as AccountRoute,
+  Location as LocationRoute
 } from '@/views'
 import { Redirect, Switch } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -31,10 +32,13 @@ export enum Routes {
   Supervised = '/supervised',
   Account = '/account',
   Dashboard = '/dashboard',
-  MedicineBase = '/medicine'
+  MedicineBase = '/medicine',
+  LocationBase = '/location'
 }
 
 export const makeMedicineUrl = (supervised_id: UUID): string => `${Routes.MedicineBase}/${supervised_id}`
+
+export const makeLocationUrl = (supervised_id: UUID): string => `${Routes.LocationBase}/${supervised_id}`
 
 interface DispatchProps {
   auth: boolean
@@ -102,6 +106,13 @@ export const routes = ({ auth, authorizing, locale }: DispatchProps): React.Reac
           path={`${Routes.MedicineBase}/:supervised_id`}
           key='medicine_/medicine'
           component={MedicineRoute}
+        />
+        <GuardedRoute
+          auth={auth}
+          guarded
+          path={`${Routes.LocationBase}/:supervised_id`}
+          key='location_/location'
+          component={LocationRoute}
         />
         <GuardedRoute auth={auth} path={Routes.Account} key='account_/account' component={AccountRoute} />
         <GuardedRoute auth={auth} path='/404' key='notFound_/404' component={NotFoundRoute} />

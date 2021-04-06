@@ -2,7 +2,7 @@ import React, { useEffect, useReducer, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { makeMedicineUrl, Routes } from '@/app.routes'
+import { makeLocationUrl, makeMedicineUrl, Routes } from '@/app.routes'
 import Loader from '@/components/loader'
 import { ignore } from '@/helpers/func'
 import { getApiBase } from '@/helpers/url'
@@ -140,7 +140,7 @@ const Supervised = ({ locale }: StateProps) => {
                           className={styles.camouflagedLink}
                         />
                       </ListItem>
-                      <ListItem component={Link} to={Routes.Dashboard}>
+                      <ListItem component={Link} to={makeLocationUrl(supervised_id)}>
                         <ListItemIcon>
                           <LocationOnIcon />
                         </ListItemIcon>

@@ -228,14 +228,16 @@ export const Elem = ({ locale }: DispatchProps): ReactElement => {
 
   if (state.stage === Stage.AuthDenied)
     return (
-      <Typography variant='h5'>
+      <Typography align='center' variant='h5'>
         {locale.medicine.common.alter.authError(`(${state.status}) ${state.message}`)}
       </Typography>
     )
 
   if (state.stage === Stage.AuthError)
     return (
-      <Typography variant='h5'>{locale.medicine.common.alter.error(`(${state.status}) ${state.message}`)}</Typography>
+      <Typography align='center' variant='h5'>
+        {locale.medicine.common.alter.error(`(${state.status}) ${state.message}`)}
+      </Typography>
     )
 
   // if (state.stage === Stage.Authorized)
