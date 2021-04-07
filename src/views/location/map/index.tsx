@@ -2,15 +2,16 @@ import { SupervisedListDisplay } from '%/query/supervised'
 import { Locale } from '@/locale/model'
 import { State } from '@/store/reducers'
 import { listed } from '@/styles/ts/common'
-import { List, ListItem, ListItemText, makeStyles, Snackbar } from '@material-ui/core'
+import { Collapse, List, ListItem, ListItemText, makeStyles, Snackbar, Typography } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import React, { useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { randomWalk } from './mockLocation'
-import { MapContainer, Marker, Polyline, TileLayer } from 'react-leaflet'
+import { MapContainer, Marker, Polyline, Popup, TileLayer } from 'react-leaflet'
 import { fetchDirections, geoJsonOfLeaflet, LatLong, Profile, DirectionFetchResult, leafletOfGeoJson } from './OrsApi'
 import { APIKey } from './const'
 import { LineString } from 'geojson'
+import { divIcon, Point } from 'leaflet'
 
 enum Stage {
   FetchingLocation,
@@ -31,7 +32,8 @@ enum LocalActionType {
   IntoPending,
   UpdateSupervised,
   UpdateOwn,
-  IntoShowingRoute
+  IntoShowingRoute,
+  SetSupervisedAddress
 }
 
 //#region
@@ -69,6 +71,11 @@ interface LocalActionIntoShowingRoute {
   route: LatLong[]
 }
 
+interface LocalActionTypeSetSupervisedAddress {
+  type: LocalActionType.SetSupervisedAddress
+  supervisedAddress: string
+}
+
 //#endregion
 type LocalAction =
   | LocalActionInto
@@ -78,11 +85,13 @@ type LocalAction =
   | LocalActionUpdateOwn
   | LocalActionCloseError
   | LocalActionIntoShowingRoute
+  | LocalActionTypeSetSupervisedAddress
 
 interface LocalState {
   stage: Stage
   route: LatLong[]
   supervisedLocation: LatLong
+  supervisedAddress: string
   ownLocation: LatLong
   profile: Profile
   res: {
@@ -110,8 +119,40 @@ const makeLocalStyes = makeStyles(theme => ({
   centerButton: {
     textAlign: 'center',
     boxShadow: theme.shadows[1]
+  },
+  mapPopUp: {
+    padding: theme.spacing(2)
+  },
+
+  semiFullCard: {
+    width: `calc(100% - ${theme.spacing(1)}px)`,
+    margin: `${theme.spacing(1)} ${theme.spacing(1)}`
   }
 }))
+
+const makeCustomMarker = (color: string) => {
+  const styles = `
+    background-color: ${color};
+    width: 2rem;
+    height: 2rem;
+    display: block;
+    left: -1.5rem;
+    top: -1.5rem;
+    position: relative;
+    border-radius: 2rem 2rem 0;
+    transform: rotate(45deg);
+    border: 0.5px solid #FFFFFF;
+    box-shadow: 0 0 1px 0.5px #2b2b2b;`
+
+  return divIcon({
+    className: '',
+    iconAnchor: [0, 24],
+    // @ts-ignore
+    labelAnchor: [-6, 0],
+    popupAnchor: [-6, -36],
+    html: `<span style="${styles}" />`
+  })
+}
 
 const Elem = ({ locale }: LocalProps & DispatchProps) => {
   const localStyles = makeLocalStyes()
@@ -129,7 +170,7 @@ const Elem = ({ locale }: LocalProps & DispatchProps) => {
         case LocalActionType.IntoFetchingLocation:
           return { ...prev, stage: Stage.FetchingLocation }
         case LocalActionType.IntoPending:
-          return { ...prev, stage: Stage.Pending, res: { ...prev.res, show: false } }
+          return { ...prev, stage: Stage.Pending, res: { ...prev.res, show: false }, route: [] }
         case LocalActionType.IntoRequiringLocation:
           return { ...prev, stage: Stage.RequiringLocation }
         case LocalActionType.IntoShowingRoute:
@@ -138,6 +179,8 @@ const Elem = ({ locale }: LocalProps & DispatchProps) => {
           return { ...prev, ownLocation: action.location }
         case LocalActionType.UpdateSupervised:
           return { ...prev, supervisedLocation: action.supervisedLocation }
+        case LocalActionType.SetSupervisedAddress:
+          return { ...prev, supervisedAddress: action.supervisedAddress }
         default:
           return prev
       }
@@ -145,8 +188,9 @@ const Elem = ({ locale }: LocalProps & DispatchProps) => {
     {
       stage: Stage.FetchingLocation,
       route: [],
-      supervisedLocation: PHSupervisedLocation,
-      ownLocation: PHOwnLocation,
+      supervisedLocation: null,
+      supervisedAddress: '',
+      ownLocation: null,
       profile: Profile.DrivingCar,
       res: {
         show: false,
@@ -163,9 +207,14 @@ const Elem = ({ locale }: LocalProps & DispatchProps) => {
           type: LocalActionType.UpdateSupervised,
           supervisedLocation: randomWalk(p, 0.0001)
         })
+
+        if (!state.supervisedLocation)
+          dispatch({
+            type: LocalActionType.IntoPending
+          })
       },
       5000,
-      state.supervisedLocation
+      state.supervisedLocation || PHSupervisedLocation
     )
   }, [state.supervisedLocation])
 
@@ -190,6 +239,29 @@ const Elem = ({ locale }: LocalProps & DispatchProps) => {
           })
       }
     })
+  }
+
+  const askOwn = () => {
+    dispatch({
+      type: LocalActionType.IntoRequiringLocation
+    })
+
+    navigator.geolocation.getCurrentPosition(
+      p =>
+        dispatch({
+          type: LocalActionType.UpdateOwn,
+          location: [p.coords.latitude, p.coords.longitude]
+        }),
+      e =>
+        dispatch({
+          type: LocalActionType.IntoError,
+          stage: Stage.RequiringLocationError,
+          message: e.message
+        }),
+      {
+        enableHighAccuracy: true
+      }
+    )
   }
 
   const onCalcRoute = () => {
@@ -221,8 +293,41 @@ const Elem = ({ locale }: LocalProps & DispatchProps) => {
     )
   }
 
+  const closeRoute = () =>
+    dispatch({
+      type: LocalActionType.IntoPending
+    })
+
+  /**
+   * @TODO Handle lack of `ownLocation`
+   */
+
+  const mapButtonText = (() => {
+    switch (state.stage) {
+      case Stage.FetchingLocation:
+        return "[PH] Fetching ward's location"
+      case Stage.FetchingRoute:
+        return '[PH] Fetching Route'
+      case Stage.FetchingRouteError:
+        return '[PH] Retry Fetching Route'
+      case Stage.RequiringLocation:
+        return '[PH] Accept Location Inquiry'
+      case Stage.ShowingRoute:
+        return '[PH] Recalculate Route'
+      default:
+        return '[PH] Calculate Route'
+    }
+  })()
+
+  if (state.stage === Stage.FetchingLocation)
+    return (
+      <Typography variant='h5' align='center'>
+        [PH] Fetching Ward's Location
+      </Typography>
+    )
+
   return (
-    <>
+    <div>
       <Snackbar
         anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
         open={state.res.show}
@@ -233,21 +338,43 @@ const Elem = ({ locale }: LocalProps & DispatchProps) => {
           {state.res.message}
         </Alert>
       </Snackbar>
-      <MapContainer className={localStyles.map} center={PHSupervisedLocation} zoom={13} scrollWheelZoom={false}>
+      <MapContainer className={`${localStyles.map}`} center={PHSupervisedLocation} zoom={13} scrollWheelZoom={false}>
         <TileLayer
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
         />
         <Polyline positions={state.route} pathOptions={{ color: '#2f2ff5' }} />
-        <Marker position={state.supervisedLocation} />
-        {state.ownLocation && <Marker position={state.ownLocation} />}
+        <Marker icon={makeCustomMarker('#62d9fc')} position={state.supervisedLocation}>
+          <Popup className={localStyles.mapPopUp}>
+            [PH] Supervised <br />
+            {state.supervisedAddress}
+          </Popup>
+        </Marker>
+        {state.ownLocation && (
+          <Marker icon={makeCustomMarker('#e3d091')} position={state.ownLocation}>
+            <Popup className={localStyles.mapPopUp}>[PH] Your location</Popup>
+          </Marker>
+        )}
       </MapContainer>
-      <List className={globalStyles.container}>
-        <ListItem button className={`${localStyles.centerButton} ${globalStyles.topItem}`} onClick={onCalcRoute}>
-          <ListItemText primary={state.stage === Stage.ShowingRoute ? '[PH] Recalculate route' : '[PH] Calc route'} />
+      <List className={`${globalStyles.container} ${globalStyles.fullCard}`}>
+        <ListItem
+          button
+          className={`${localStyles.centerButton} ${globalStyles.topItem} ${localStyles.semiFullCard}`}
+          onClick={onCalcRoute}
+        >
+          <ListItemText primary={mapButtonText} />
         </ListItem>
+        <Collapse in={state.stage === Stage.ShowingRoute} className={`${localStyles.semiFullCard}`}>
+          <ListItem
+            button
+            onClick={closeRoute}
+            className={`${localStyles.centerButton} ${globalStyles.listItemDanger} ${globalStyles.fullCard}`}
+          >
+            <ListItemText primary='[PH] Cancel Route' />
+          </ListItem>
+        </Collapse>
       </List>
-    </>
+    </div>
   )
 }
 
