@@ -1,12 +1,16 @@
 import { Locale } from '@/locale/model'
 import { State } from '@/store/reducers'
 import { listed } from '@/styles/ts/common'
-import { Collapse, List, ListItem, ListItemText, makeStyles, Snackbar, Typography } from '@material-ui/core'
+import { Collapse, List, ListItem, ListItemText, makeStyles, Snackbar, Tab, Tabs, Typography } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
-import React, { useEffect, useReducer } from 'react'
+import DirectionsBikeIcon from '@material-ui/icons/DirectionsBike'
+import DriveEtaIcon from '@material-ui/icons/DriveEta'
+import DirectionsWalkIcon from '@material-ui/icons/DirectionsWalk'
+import AccessibleIcon from '@material-ui/icons/Accessible'
+import React, { useEffect, useReducer, useState } from 'react'
 import { connect } from 'react-redux'
 import { MapContainer, Marker, Polyline, Popup, TileLayer } from 'react-leaflet'
-import { LineString } from 'geojson'
+import { LineString, Feature } from 'geojson'
 import { divIcon } from 'leaflet'
 import Loader from '@/components/loader'
 import { randomWalk } from './mockLocation'
@@ -35,7 +39,8 @@ enum LocalActionType {
   UpdateSupervised,
   UpdateOwn,
   IntoShowingRoute,
-  SetSupervisedAddress
+  SetSupervisedAddress,
+  ChangeProfile
 }
 
 // #region
@@ -71,11 +76,18 @@ interface LocalActionCloseError {
 interface LocalActionIntoShowingRoute {
   type: LocalActionType.IntoShowingRoute
   route: LatLong[]
+  distance: number
+  duration: number
 }
 
 interface LocalActionTypeSetSupervisedAddress {
   type: LocalActionType.SetSupervisedAddress
   supervisedAddress: string
+}
+
+interface LocalActionChangeProfile {
+  type: LocalActionType.ChangeProfile
+  profile: Profile
 }
 
 // #endregion
@@ -88,10 +100,20 @@ type LocalAction =
   | LocalActionCloseError
   | LocalActionIntoShowingRoute
   | LocalActionTypeSetSupervisedAddress
+  | LocalActionChangeProfile
+
+interface Unitful {
+  mag: number
+  unit: string
+}
 
 interface LocalState {
   stage: Stage
   route: LatLong[]
+  routePopup: {
+    distance: Unitful
+    duration: Unitful
+  }
   supervisedLocation: LatLong
   supervisedAddress: string
   ownLocation: LatLong
@@ -118,10 +140,15 @@ const makeLocalStyes = makeStyles(theme => ({
   map: {
     height: '40vh'
   },
-  centerButton: {
-    textAlign: 'center',
-    boxShadow: theme.shadows[1]
+  mapSector: {
+    marginBottom: theme.spacing(2)
   },
+
+  centerButton: {
+    textAlign: 'center'
+    // boxShadow: theme.shadows[1]
+  },
+
   mapPopUp: {
     padding: theme.spacing(2)
   },
@@ -129,6 +156,24 @@ const makeLocalStyes = makeStyles(theme => ({
   semiFullCard: {
     width: `calc(100% - ${theme.spacing(1)}px)`,
     margin: `${theme.spacing(1)} ${theme.spacing(1)}`
+  },
+
+  fullWidth: {
+    width: '100%'
+  },
+
+  rootSpread: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between'
+  },
+
+  faintGray: {
+    backgroundColor: theme.palette.grey[100]
+  },
+
+  callButton: {
+    marginTop: theme.spacing(1)
   }
 }))
 
@@ -174,13 +219,33 @@ const Elem = ({ locale, supervised }: LocalProps & DispatchProps) => {
         case LocalActionType.IntoRequiringLocation:
           return { ...prev, stage: Stage.RequiringLocation }
         case LocalActionType.IntoShowingRoute:
-          return { ...prev, stage: Stage.ShowingRoute, route: action.route }
+          const distInHigher = action.distance > 1000 // should convert to km?
+          const durInHigher = action.duration > 3600 // should convert to hours?
+
+          return {
+            ...prev,
+            stage: Stage.ShowingRoute,
+            route: action.route,
+            routePopup: {
+              ...prev.routePopup,
+              duration: {
+                mag: Math.floor((durInHigher ? action.duration / 3600 : action.duration / 60) * 100) / 100,
+                unit: durInHigher ? 'h' : 'min'
+              },
+              distance: {
+                mag: Math.floor((distInHigher ? action.distance / 1000 : action.distance) * 100) / 100,
+                unit: distInHigher ? 'km' : 'm'
+              }
+            }
+          }
         case LocalActionType.UpdateOwn:
           return { ...prev, ownLocation: action.location }
         case LocalActionType.UpdateSupervised:
           return { ...prev, supervisedLocation: action.supervisedLocation }
         case LocalActionType.SetSupervisedAddress:
           return { ...prev, supervisedAddress: action.supervisedAddress }
+        case LocalActionType.ChangeProfile:
+          return { ...prev, profile: action.profile }
         default:
           return prev
       }
@@ -188,6 +253,16 @@ const Elem = ({ locale, supervised }: LocalProps & DispatchProps) => {
     {
       stage: Stage.FetchingLocation,
       route: [],
+      routePopup: {
+        distance: {
+          mag: 0,
+          unit: 'm'
+        },
+        duration: {
+          mag: 0,
+          unit: 'm'
+        }
+      },
       supervisedLocation: null,
       supervisedAddress: '',
       ownLocation: null,
@@ -227,9 +302,13 @@ const Elem = ({ locale, supervised }: LocalProps & DispatchProps) => {
     fetchDirections(APIKey, [start, end].map(geoJsonOfLeaflet), profile).then(r => {
       switch (r.ok) {
         case DirectionFetchResult.Success:
+          const f = r.res.features[0] as Feature
+
           return dispatch({
             type: LocalActionType.IntoShowingRoute,
-            route: (r.res.features[0].geometry as LineString).coordinates.map(leafletOfGeoJson)
+            route: (f.geometry as LineString).coordinates.map(leafletOfGeoJson),
+            distance: f.properties.summary.distance as number,
+            duration: f.properties.summary.duration as number
           })
 
         default:
@@ -278,9 +357,16 @@ const Elem = ({ locale, supervised }: LocalProps & DispatchProps) => {
       type: LocalActionType.IntoPending
     })
 
-  /**
-   * @TODO Handle lack of `ownLocation`
-   */
+  const handleProfileClick = (_: unknown, v: Profile) => {
+    if (v !== state.profile) {
+      dispatch({
+        type: LocalActionType.ChangeProfile,
+        profile: v
+      })
+
+      if (state.stage === Stage.ShowingRoute) calcRoute(state.ownLocation, state.supervisedLocation, v)
+    }
+  }
 
   const mapButtonText = (() => {
     switch (state.stage) {
@@ -302,7 +388,7 @@ const Elem = ({ locale, supervised }: LocalProps & DispatchProps) => {
   if (state.stage === Stage.FetchingLocation) return <Loader title="[PH] Fetching Ward's Location" />
 
   return (
-    <div>
+    <div className={localStyles.rootSpread}>
       <Snackbar
         anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
         open={state.res.show}
@@ -313,27 +399,55 @@ const Elem = ({ locale, supervised }: LocalProps & DispatchProps) => {
           {state.res.message}
         </Alert>
       </Snackbar>
-      <MapContainer className={`${localStyles.map}`} center={PHSupervisedLocation} zoom={13} scrollWheelZoom={false}>
-        <TileLayer
-          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-        />
-        <Polyline positions={state.route} pathOptions={{ color: '#2f2ff5' }} />
-        <Marker icon={makeCustomMarker('#62d9fc')} position={state.supervisedLocation}>
-          <Popup className={localStyles.mapPopUp}>
-            <Typography variant='body1'>
-              {supervised.name} {supervised.lastname}
-            </Typography>
-            <Typography variant='body2'>{supervised.supervised_id} </Typography>
-            {state.supervisedAddress}
-          </Popup>
-        </Marker>
-        {state.ownLocation && (
-          <Marker icon={makeCustomMarker('#e3d091')} position={state.ownLocation}>
-            <Popup className={localStyles.mapPopUp}>[PH] Your location; {locale.medicine.common.button.confirm}</Popup>
+      <section className={localStyles.mapSector}>
+        <MapContainer className={`${localStyles.map}`} center={PHSupervisedLocation} zoom={13} scrollWheelZoom={false}>
+          <TileLayer
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+          />
+          <Polyline positions={state.route} pathOptions={{ color: '#2f2ff5' }}>
+            <Popup maxWidth={250} maxHeight={80}>
+              <Typography variant='body1'>
+                [PH] dist: {state.routePopup.distance.mag} {state.routePopup.distance.unit}
+              </Typography>
+              <Typography variant='body2'>
+                [PH] duration: {state.routePopup.duration.mag} {state.routePopup.duration.unit}
+              </Typography>
+            </Popup>
+          </Polyline>
+
+          <Marker icon={makeCustomMarker('#62d9fc')} position={state.supervisedLocation}>
+            <Popup className={localStyles.mapPopUp}>
+              <Typography variant='body1'>
+                {supervised.name} {supervised.lastname}
+              </Typography>
+              <Typography variant='body2'>{supervised.supervised_id} </Typography>
+              {state.supervisedAddress}
+            </Popup>
           </Marker>
-        )}
-      </MapContainer>
+          {state.ownLocation && (
+            <Marker icon={makeCustomMarker('#e3d091')} position={state.ownLocation}>
+              <Popup className={localStyles.mapPopUp}>
+                [PH] Your location; {locale.medicine.common.button.confirm}
+              </Popup>
+            </Marker>
+          )}
+        </MapContainer>
+        <Tabs
+          value={state.profile}
+          onChange={handleProfileClick}
+          indicatorColor='primary'
+          variant='fullWidth'
+          scrollButtons='auto'
+          aria-label='Profiles'
+          className={`${localStyles.fullWidth} ${globalStyles.topItem}`}
+        >
+          <Tab value={Profile.CyclingRegular} icon={<DirectionsBikeIcon />} />
+          <Tab value={Profile.DrivingCar} icon={<DriveEtaIcon />} />
+          <Tab value={Profile.FootWalking} icon={<DirectionsWalkIcon />} />
+          <Tab value={Profile.Wheelchair} icon={<AccessibleIcon />} />
+        </Tabs>
+      </section>
       <List className={`${globalStyles.container} ${globalStyles.fullCard}`}>
         <ListItem
           button
@@ -346,13 +460,13 @@ const Elem = ({ locale, supervised }: LocalProps & DispatchProps) => {
           <ListItem
             button
             onClick={closeRoute}
-            className={`${localStyles.centerButton} ${globalStyles.listItemDanger} ${globalStyles.fullCard}`}
+            className={`${localStyles.centerButton} ${globalStyles.listItemDanger} ${localStyles.faintGray}`}
           >
             <ListItemText primary='[PH] Cancel Route' />
           </ListItem>
         </Collapse>
         <CallButton
-          buttonClassName={`${localStyles.centerButton} ${globalStyles.topItem} ${localStyles.semiFullCard}`}
+          buttonClassName={`${localStyles.centerButton} ${globalStyles.topItem} ${localStyles.semiFullCard} ${localStyles.callButton}`}
         />
       </List>
     </div>

@@ -76,17 +76,18 @@ export const fetchDirections = (
       coordinates
     })
   }).then(async r => {
-    const message = await r.text().catch(() => '')
+    const message = await r.text().catch(() => `{message: '[PH] Route Fetching Error'}`)
+    const j = JSON.parse(message)
 
     if (!r.ok)
       return {
         ok: DirectionFetchResult.Fail,
         status: r.status,
-        message: message || r.statusText
+        message: ('error' in j ? j.error.message : '') || r.statusText
       }
 
     return {
       ok: DirectionFetchResult.Success,
-      res: JSON.parse(message) as DirectionResponse
+      res: j
     }
   })
