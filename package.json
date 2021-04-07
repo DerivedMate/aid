@@ -4,7 +4,9 @@
   "description": "A fast and secure Progressive Web App built with ReactJS with every best practices for SEO and web performances. Full TypeScript !",
   "main": "src/index.tsx",
   "scripts": {
-    "start": "cross-env TS_NODE_PROJECT=\"tsconfig.webpack.json\" NODE_ENV=\"development\" webpack-dev-server --color --watch --hot --stdin --config config/webpack/app.dev.ts",
+    "start": "npm run start:prod",
+    "postinstall": "npm run build",
+    "start:dev": "cross-env TS_NODE_PROJECT=\"tsconfig.webpack.json\" NODE_ENV=\"development\" webpack-dev-server --color --watch --hot --stdin --config config/webpack/app.dev.ts",
     "start:test": "cross-env TS_NODE_PROJECT=\"tsconfig.webpack.json\" NODE_ENV=\"test\" webpack-dev-server --color --watch --hot --stdin --config config/webpack/app.dev.ts",
     "start:prod": "cross-env NODE_ENV=\"production\" ts-node -P \"./tsconfig.json\" --files server/index.ts",
     "server:dev": "NODE_ENV=\"development\" nodemon --watch server --exec \"kill -9 `lsof -t -i:3001`; ts-node -P \"./tsconfig.json\" --files \" ./server/index.ts",
@@ -46,8 +48,8 @@
     "url": "https://github.com/DerivedMate/aid/issues"
   },
   "engines": {
-    "node": ">=12",
-    "npm": ">=6"
+    "node": ">=14",
+    "npm": ">=7"
   },
   "homepage": "https://github.com/DerivedMate/aid",
   "devDependencies": {
@@ -156,10 +158,10 @@
     "stylelint-webpack-plugin": "^2.1.0",
     "terser-webpack-plugin": "^4.2.2",
     "ts-jest": "^26.4.1",
-    "ts-node": "^9.0.0",
+    "ts-node": "^9.1.1",
     "tsconfig-paths": "^3.9.0",
     "type-fest": "^0.17.0",
-    "typescript": "^4.0.3",
+    "typescript": "^4.2.3",
     "url-loader": "^4.1.0",
     "webpack": "^4.44.2",
     "webpack-bundle-analyzer": "^3.9.0",

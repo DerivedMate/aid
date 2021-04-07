@@ -55,6 +55,12 @@ interface DirectionResponseWrapperFail {
 
 export type DirectionResponseWrapper = DirectionResponseWrapperSuccess | DirectionResponseWrapperFail
 
+interface ResError {
+  error: {
+    message: string
+  }
+}
+
 export const leafletOfGeoJson = ([long, lat]: LongLat): LatLong => [lat, long]
 export const geoJsonOfLeaflet = ([lat, long]: LatLong): LongLat => [long, lat]
 
@@ -77,14 +83,18 @@ export const fetchDirections = (
     })
   }).then(async r => {
     const message = await r.text().catch(() => `{message: '[PH] Route Fetching Error'}`)
-    const j = JSON.parse(message)
 
-    if (!r.ok)
+    if (!r.ok) {
+      const j = JSON.parse(message) as ResError
+
       return {
         ok: DirectionFetchResult.Fail,
         status: r.status,
-        message: ('error' in j ? j.error.message : '') || r.statusText
+        message: j.error.message || r.statusText
       }
+    }
+
+    const j = JSON.parse(message) as DirectionResponse
 
     return {
       ok: DirectionFetchResult.Success,

@@ -1,4 +1,3 @@
-import { UUID } from '%/query/columnTypes'
 import { Locale } from '@/locale/model'
 import { State } from '@/store/reducers'
 import { ListItemText, ListItem, Snackbar } from '@material-ui/core'
@@ -69,7 +68,7 @@ const mapProps = (state: State): DispatchProps => ({
   locale: state.lang.dict
 })
 
-const Elem = ({ buttonClassName }: LocalProps & DispatchProps): React.ReactElement => {
+const Elem = ({ buttonClassName, locale }: LocalProps & DispatchProps): React.ReactElement => {
   const [state, dispatch] = useReducer(
     (prev: LocalState, action: LocalAction): LocalState => {
       switch (action.type) {
@@ -91,53 +90,56 @@ const Elem = ({ buttonClassName }: LocalProps & DispatchProps): React.ReactEleme
       stage: Stage.NoCall,
       error: {
         show: false,
-        message: ''
+        message: locale.menu.account // [PH]
       }
     }
   )
 
-  const establishCall = () =>
+  const establishCall = (): Promise<void> =>
     new Promise(res => {
       setTimeout(res, 1000)
     })
 
-  const handleClick = () => {
+  const handleClick = (): void => {
     switch (state.stage) {
       case Stage.Establishing:
-        return
+        break
 
       case Stage.InCall:
-        return dispatch({
+        dispatch({
           type: LocalActionType.CancelCall
         })
+        break
 
-      default:
+      default: {
         dispatch({
           type: LocalActionType.EstablishCall
         })
 
-        return establishCall()
+        establishCall()
           .then(() =>
             dispatch({
               type: LocalActionType.EstablishedCall
             })
           )
-          .catch(message =>
+          .catch((message: string): void =>
             dispatch({
               type: LocalActionType.IntoError,
               stage: Stage.EstablishingError,
               message
             })
           )
+        break
+      }
     }
   }
 
-  const handleClosePopUp = () =>
+  const handleClosePopUp = (): void =>
     dispatch({
       type: LocalActionType.ClosePopup
     })
 
-  const buttonMessage = (() => {
+  const buttonMessage = ((): string => {
     switch (state.stage) {
       case Stage.CallError:
       case Stage.EstablishingError:

@@ -7,10 +7,10 @@ import DirectionsBikeIcon from '@material-ui/icons/DirectionsBike'
 import DriveEtaIcon from '@material-ui/icons/DriveEta'
 import DirectionsWalkIcon from '@material-ui/icons/DirectionsWalk'
 import AccessibleIcon from '@material-ui/icons/Accessible'
-import React, { useEffect, useReducer, useState } from 'react'
+import React, { useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { MapContainer, Marker, Polyline, Popup, TileLayer } from 'react-leaflet'
-import { LineString, Feature } from 'geojson'
+import { LineString } from 'geojson'
 import { divIcon } from 'leaflet'
 import Loader from '@/components/loader'
 import { randomWalk } from './mockLocation'
@@ -218,7 +218,7 @@ const Elem = ({ locale, supervised }: LocalProps & DispatchProps) => {
           return { ...prev, stage: Stage.Pending, res: { ...prev.res, show: false }, route: [] }
         case LocalActionType.IntoRequiringLocation:
           return { ...prev, stage: Stage.RequiringLocation }
-        case LocalActionType.IntoShowingRoute:
+        case LocalActionType.IntoShowingRoute: {
           const distInHigher = action.distance > 1000 // should convert to km?
           const durInHigher = action.duration > 3600 // should convert to hours?
 
@@ -238,6 +238,7 @@ const Elem = ({ locale, supervised }: LocalProps & DispatchProps) => {
               }
             }
           }
+        }
         case LocalActionType.UpdateOwn:
           return { ...prev, ownLocation: action.location }
         case LocalActionType.UpdateSupervised:
@@ -301,15 +302,16 @@ const Elem = ({ locale, supervised }: LocalProps & DispatchProps) => {
   const calcRoute = (start: LatLong, end: LatLong, profile: Profile): void => {
     fetchDirections(APIKey, [start, end].map(geoJsonOfLeaflet), profile).then(r => {
       switch (r.ok) {
-        case DirectionFetchResult.Success:
-          const f = r.res.features[0] as Feature
+        case DirectionFetchResult.Success: {
+          const f = r.res.features[0]
 
           return dispatch({
             type: LocalActionType.IntoShowingRoute,
             route: (f.geometry as LineString).coordinates.map(leafletOfGeoJson),
-            distance: f.properties.summary.distance as number,
-            duration: f.properties.summary.duration as number
+            distance: f.properties.summary.distance as number, // eslint-disable-line
+            duration: f.properties.summary.duration as number // eslint-disable-line
           })
+        }
 
         default:
           return dispatch({
