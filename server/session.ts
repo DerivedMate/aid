@@ -15,7 +15,7 @@ export const init_session = (server: Express, secret: string) => {
       resave: false,
       cookie: {
         maxAge: 30 * 24 * 3600 * 1000,
-        secure: process.env['NODE_ENV'] === 'production'
+        secure: false // process.env['NODE_ENV'] === 'production'
       },
       saveUninitialized: false
     })
