@@ -1,4 +1,3 @@
-import { SupervisedListDisplay } from '%/query/supervised'
 import { Locale } from '@/locale/model'
 import { State } from '@/store/reducers'
 import { listed } from '@/styles/ts/common'
@@ -6,12 +5,15 @@ import { Collapse, List, ListItem, ListItemText, makeStyles, Snackbar, Typograph
 import { Alert } from '@material-ui/lab'
 import React, { useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
-import { randomWalk } from './mockLocation'
 import { MapContainer, Marker, Polyline, Popup, TileLayer } from 'react-leaflet'
+import { LineString } from 'geojson'
+import { divIcon } from 'leaflet'
+import Loader from '@/components/loader'
+import { randomWalk } from './mockLocation'
 import { fetchDirections, geoJsonOfLeaflet, LatLong, Profile, DirectionFetchResult, leafletOfGeoJson } from './OrsApi'
 import { APIKey } from './const'
-import { LineString } from 'geojson'
-import { divIcon, Point } from 'leaflet'
+import { SupervisedListDisplay } from '%/query/supervised'
+import CallButton from '../call'
 
 enum Stage {
   FetchingLocation,
@@ -36,7 +38,7 @@ enum LocalActionType {
   SetSupervisedAddress
 }
 
-//#region
+// #region
 interface LocalActionInto {
   type: LocalActionType.IntoFetchingLocation | LocalActionType.IntoRequiringLocation | LocalActionType.IntoPending
 }
@@ -76,7 +78,7 @@ interface LocalActionTypeSetSupervisedAddress {
   supervisedAddress: string
 }
 
-//#endregion
+// #endregion
 type LocalAction =
   | LocalActionInto
   | LocalActionFetchedLocation
@@ -147,18 +149,16 @@ const makeCustomMarker = (color: string) => {
   return divIcon({
     className: '',
     iconAnchor: [0, 24],
-    // @ts-ignore
-    labelAnchor: [-6, 0],
-    popupAnchor: [-6, -36],
+    popupAnchor: [-8, -36],
     html: `<span style="${styles}" />`
   })
 }
 
-const Elem = ({ locale }: LocalProps & DispatchProps) => {
+const PHSupervisedLocation: LatLong = [52.73101709012718, 15.23381079831591]
+
+const Elem = ({ locale, supervised }: LocalProps & DispatchProps) => {
   const localStyles = makeLocalStyes()
   const globalStyles = listed()
-  const PHSupervisedLocation: LatLong = [52.73101709012718, 15.23381079831591]
-  const PHOwnLocation: LatLong = [52.72298324041586, 15.244774615480452]
 
   const [state, dispatch] = useReducer(
     (prev: LocalState, action: LocalAction): LocalState => {
@@ -213,7 +213,7 @@ const Elem = ({ locale }: LocalProps & DispatchProps) => {
             type: LocalActionType.IntoPending
           })
       },
-      5000,
+      2000,
       state.supervisedLocation || PHSupervisedLocation
     )
   }, [state.supervisedLocation])
@@ -223,48 +223,28 @@ const Elem = ({ locale }: LocalProps & DispatchProps) => {
       type: LocalActionType.IntoPending
     })
 
-  const calcRoute = (start: LatLong, end: LatLong, profile: Profile) => {
+  const calcRoute = (start: LatLong, end: LatLong, profile: Profile): void => {
     fetchDirections(APIKey, [start, end].map(geoJsonOfLeaflet), profile).then(r => {
       switch (r.ok) {
-        case DirectionFetchResult.Fail:
-          return dispatch({
-            type: LocalActionType.IntoError,
-            message: r.message,
-            stage: Stage.FetchingRouteError
-          })
         case DirectionFetchResult.Success:
           return dispatch({
             type: LocalActionType.IntoShowingRoute,
             route: (r.res.features[0].geometry as LineString).coordinates.map(leafletOfGeoJson)
           })
+
+        default:
+          return dispatch({
+            type: LocalActionType.IntoError,
+            message: r.message,
+            stage: Stage.FetchingRouteError
+          })
       }
     })
-  }
-
-  const askOwn = () => {
-    dispatch({
-      type: LocalActionType.IntoRequiringLocation
-    })
-
-    navigator.geolocation.getCurrentPosition(
-      p =>
-        dispatch({
-          type: LocalActionType.UpdateOwn,
-          location: [p.coords.latitude, p.coords.longitude]
-        }),
-      e =>
-        dispatch({
-          type: LocalActionType.IntoError,
-          stage: Stage.RequiringLocationError,
-          message: e.message
-        }),
-      {
-        enableHighAccuracy: true
-      }
-    )
   }
 
   const onCalcRoute = () => {
+    if (state.stage === Stage.RequiringLocation) return
+
     dispatch({
       type: LocalActionType.IntoRequiringLocation
     })
@@ -319,12 +299,7 @@ const Elem = ({ locale }: LocalProps & DispatchProps) => {
     }
   })()
 
-  if (state.stage === Stage.FetchingLocation)
-    return (
-      <Typography variant='h5' align='center'>
-        [PH] Fetching Ward's Location
-      </Typography>
-    )
+  if (state.stage === Stage.FetchingLocation) return <Loader title="[PH] Fetching Ward's Location" />
 
   return (
     <div>
@@ -346,13 +321,16 @@ const Elem = ({ locale }: LocalProps & DispatchProps) => {
         <Polyline positions={state.route} pathOptions={{ color: '#2f2ff5' }} />
         <Marker icon={makeCustomMarker('#62d9fc')} position={state.supervisedLocation}>
           <Popup className={localStyles.mapPopUp}>
-            [PH] Supervised <br />
+            <Typography variant='body1'>
+              {supervised.name} {supervised.lastname}
+            </Typography>
+            <Typography variant='body2'>{supervised.supervised_id} </Typography>
             {state.supervisedAddress}
           </Popup>
         </Marker>
         {state.ownLocation && (
           <Marker icon={makeCustomMarker('#e3d091')} position={state.ownLocation}>
-            <Popup className={localStyles.mapPopUp}>[PH] Your location</Popup>
+            <Popup className={localStyles.mapPopUp}>[PH] Your location; {locale.medicine.common.button.confirm}</Popup>
           </Marker>
         )}
       </MapContainer>
@@ -373,6 +351,9 @@ const Elem = ({ locale }: LocalProps & DispatchProps) => {
             <ListItemText primary='[PH] Cancel Route' />
           </ListItem>
         </Collapse>
+        <CallButton
+          buttonClassName={`${localStyles.centerButton} ${globalStyles.topItem} ${localStyles.semiFullCard}`}
+        />
       </List>
     </div>
   )

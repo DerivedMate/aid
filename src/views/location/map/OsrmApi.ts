@@ -12,7 +12,7 @@ export interface WayPoint {
 
 interface Leg {
   distance: number
-  /**Duration in seconds */
+  /** Duration in seconds */
   duration: number
   weight: number
   summary: string
@@ -34,7 +34,7 @@ enum WeightName {
 
 interface Route {
   distance: number
-  /**Duration in seconds */
+  /** Duration in seconds */
   duration: number
   geometry: Geometry
   weight: number
