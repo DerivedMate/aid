@@ -150,7 +150,7 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
       setRawDate(d)
       dispatch({
         type: LocalActionType.ChangeDate,
-        date: +Date.now()
+        date: +d
       })
     }
   }

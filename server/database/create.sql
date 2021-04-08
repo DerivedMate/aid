@@ -3,8 +3,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 do $$
 declare
-  db varchar := 'aid';
-  usr varchar := 'aidclient';
+  usr varchar := 'bqzhqyrvkjwwji';
 begin
   -- Custom types
   create type bloodtype as enum (
@@ -66,7 +65,7 @@ begin
     medicine_id UUID not null
       references medicine (medicine_id) 
       on delete cascade,
-    date timestamptz,
+    date timestamptz not null,
     primary key (take_id)
   );
   execute 'grant all privileges on table take to "'||usr||'"';
