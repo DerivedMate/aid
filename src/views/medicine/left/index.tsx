@@ -9,9 +9,9 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/picker
 import DateFnsUtils from '@date-io/date-fns'
 import React, { useEffect, useReducer, useState } from 'react'
 import { connect } from 'react-redux'
-import { MedicineLeft } from '%/query/medicine'
+import { Medicine } from '%/query/medicine'
 import { UUID } from '%/query/columnTypes'
-import { MedicineDate, MedicineGetLeftReqBody, MedicineGetLeftRes } from '%/api/medicine'
+import { MedicineGetLeftReqBody, MedicineGetLeftRes } from '%/api/medicine'
 import TakeConfirmPopup from '../all/takeConfirmPopup'
 
 enum Stage {
@@ -24,8 +24,8 @@ interface LocalState {
   stage: Stage
   message: string
   status: number
-  medicines: MedicineLeft[]
-  date: MedicineDate
+  medicines: Medicine[]
+  date: number
 }
 
 interface LocalProps {
@@ -50,12 +50,12 @@ interface LocalActionIntoLoadingFail {
 
 interface LocalActionIntoDisplay {
   type: LocalActionType.IntoDisplay
-  medicines: MedicineLeft[]
+  medicines: Medicine[]
 }
 
 interface LocalActionChangeData {
   type: LocalActionType.ChangeDate
-  date: MedicineDate
+  date: number
 }
 
 type LocalAction = LocalActionIntoLoadingFail | LocalActionIntoDisplay | LocalActionChangeData
@@ -66,7 +66,6 @@ const mapProps = (state: State): DispatchProps => ({
 
 const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.ReactElement => {
   const styles = listed()
-  const today = new Date()
 
   const [state, dispatch] = useReducer(
     (prev: LocalState, action: LocalAction): LocalState => {
@@ -86,11 +85,7 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
       message: '',
       status: 200,
       medicines: [],
-      date: {
-        year: today.getFullYear(),
-        month: today.getMonth() + 1,
-        day: today.getDate()
-      }
+      date: +Date.now()
     }
   )
 
@@ -105,7 +100,7 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
       },
       body: JSON.stringify({
         supervised_id,
-        date: state.date
+        date: new Date(state.date).toUTCString()
       } as MedicineGetLeftReqBody)
     }).then(r => {
       r.text().then(j => {
@@ -155,11 +150,7 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
       setRawDate(d)
       dispatch({
         type: LocalActionType.ChangeDate,
-        date: {
-          year: d.getFullYear(),
-          month: d.getMonth() + 1,
-          day: d.getDate()
-        }
+        date: +Date.now()
       })
     }
   }

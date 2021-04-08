@@ -20,22 +20,14 @@ export interface MedicineUpdateReq {
 export interface MedicineGetTakenQueryReq {
   supervisor_id: UUID
   supervised_id: UUID
-  date: {
-    year: number
-    month: number
-    day: number
-  }
+  date: string
 }
 
 export interface MedicineTake extends Medicine {
-  year: string
-  month: string
-  day: string
+  date: string
   take_id: UUID
 }
 
 export interface MedicineLeft extends Medicine {
-  year: string
-  month: string
-  day: string
+  date: string
 }

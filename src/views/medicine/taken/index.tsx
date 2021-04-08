@@ -11,7 +11,7 @@ import React, { useEffect, useReducer, useState } from 'react'
 import { connect } from 'react-redux'
 import { MedicineTake } from '%/query/medicine'
 import { UUID } from '%/query/columnTypes'
-import { MedicineDate, MedicineGetTakenReqBody, MedicineGetTakenRes } from '%/api/medicine'
+import { MedicineGetTakenReqBody, MedicineGetTakenRes } from '%/api/medicine'
 import TakeDeletePopup from './takeDeletePopup'
 
 enum Stage {
@@ -25,7 +25,7 @@ interface LocalState {
   message: string
   status: number
   medicines: MedicineTake[]
-  date: MedicineDate
+  date: number
 }
 
 interface LocalProps {
@@ -55,7 +55,7 @@ interface LocalActionIntoDisplay {
 
 interface LocalActionChangeData {
   type: LocalActionType.ChangeDate
-  date: MedicineDate
+  date: number
 }
 
 type LocalAction = LocalActionIntoLoadingFail | LocalActionIntoDisplay | LocalActionChangeData
@@ -66,7 +66,6 @@ const mapProps = (state: State): DispatchProps => ({
 
 const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.ReactElement => {
   const styles = listed()
-  const today = new Date()
 
   const [state, dispatch] = useReducer(
     (prev: LocalState, action: LocalAction): LocalState => {
@@ -86,11 +85,7 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
       message: '',
       status: 200,
       medicines: [],
-      date: {
-        year: today.getFullYear(),
-        month: today.getMonth() + 1,
-        day: today.getDate()
-      }
+      date: Date.now()
     }
   )
 
@@ -105,7 +100,7 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
       },
       body: JSON.stringify({
         supervised_id,
-        date: state.date
+        date: new Date(state.date).toUTCString()
       } as MedicineGetTakenReqBody)
     }).then(r => {
       r.text().then(j => {
@@ -156,11 +151,7 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
       setRawDate(d)
       dispatch({
         type: LocalActionType.ChangeDate,
-        date: {
-          year: d.getFullYear(),
-          month: d.getMonth() + 1,
-          day: d.getDate()
-        }
+        date: +d
       })
     }
   }
@@ -205,17 +196,11 @@ const Elem = ({ locale, supervised_id }: LocalProps & DispatchProps): React.Reac
             {locale.medicine.common.alter.empty}
           </Typography>
         ) : (
-          state.medicines.map(({ take_id, name, amount, unit, year, month, day }, i) => (
+          state.medicines.map(({ take_id, name, amount, unit, date }, i) => (
             <ListItem className={styles.fullCard} key={take_id}>
               <List className={styles.fullCard}>
                 <ListItem button onClick={handleListClick(i)} className={styles.topItem}>
-                  <ListItemText
-                    primary={name}
-                    secondary={`${amount} ${unit}. ${year}-${String(month).padStart(2, '0')}-${String(day).padStart(
-                      2,
-                      '0'
-                    )}`}
-                  />
+                  <ListItemText primary={name} secondary={`${amount} ${unit}. ${new Date(date).toDateString()}`} />
                 </ListItem>
                 <Collapse in={openListItemNr === i} timeout='auto' unmountOnExit>
                   <List component='ul' className={styles.subItem}>

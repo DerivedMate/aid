@@ -1,7 +1,7 @@
 import { UUID } from '../../../shared/query/columnTypes'
 import { query } from '../db'
 
-export const createTake = (medicine_id: UUID, timeSinceEpoch: number): Promise<boolean> =>
+export const createTake = (medicine_id: UUID, date: string): Promise<boolean> =>
   query(
     `
     insert into take 
@@ -10,10 +10,10 @@ export const createTake = (medicine_id: UUID, timeSinceEpoch: number): Promise<b
       )
     values
       ( $1
-      , to_timestamp(${timeSinceEpoch} / 1000.0)
+      , $2
       );
     `,
-    [medicine_id]
+    [medicine_id, date]
   ).then(r => r.rowCount === 1)
 
 export const validateSupervisorTakeAuth = (take_id: UUID, supervisor_id: UUID): Promise<boolean> =>

@@ -1,11 +1,11 @@
-DO $$
-DECLARE
-  db varchar(255) := 'da35027kv98jt2';
-  usr varchar(255) := 'bqzhqyrvkjwwji';
-BEGIN
-  CREATE EXTENSION pgcrypto;
-  CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+do $$
+declare
+  db varchar := 'aid';
+  usr varchar := 'aidclient';
+begin
   -- Custom types
   create type bloodtype as enum (
     'A+' , 'A-' , 
@@ -66,7 +66,7 @@ BEGIN
     medicine_id UUID not null
       references medicine (medicine_id) 
       on delete cascade,
-    date timestamp,
+    date timestamptz,
     primary key (take_id)
   );
   execute 'grant all privileges on table take to "'||usr||'"';
@@ -94,13 +94,6 @@ BEGIN
   );
   execute 'grant all privileges on table position to "'||usr||'"';
 
-  /*
-  FOREACH t_name in array array[supervisor, supervised, supervision, medicine, take, info, position] LOOP
-    execute 'grant all privileges on table t_name to "'||usr||'"';
-  END LOOP;
-  */
-
-
   -- Session
   CREATE TABLE IF NOT EXISTS "session" (
     "sid" varchar NOT NULL COLLATE "default",
@@ -114,5 +107,4 @@ BEGIN
   CREATE INDEX IF NOT EXISTS "IDX_session_expire" ON "session" ("expire");
   execute 'grant all privileges on table "session" to "'||usr||'"';
 
-
-END $$;
+end $$;

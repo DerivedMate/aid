@@ -28,11 +28,7 @@ interface MedicineResUpdateSuccess {
   message: string
 }
 
-export interface MedicineDate {
-  year: number
-  month: number
-  day: number
-}
+export type MedicineDate = string
 
 export interface MedicineGetTakenReqBody {
   supervised_id: UUID

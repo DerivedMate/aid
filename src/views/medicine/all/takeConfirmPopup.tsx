@@ -99,7 +99,7 @@ const Elem = ({
       body: JSON.stringify({
         medicine_id,
         supervised_id,
-        timeSinceEpoch: date || Date.now()
+        date: new Date(date || Date.now()).toUTCString()
       } as CreateTakeReqBody)
     })
       .then(r =>
