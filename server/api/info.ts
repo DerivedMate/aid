@@ -4,6 +4,7 @@ import { mockDev } from '../security'
 import { validateUUID } from '../database/types'
 import {
   createAdditionalInfo,
+  deletedAdditionalData,
   getAdditionalInfo,
   getSupervisedInfo,
   updateAdditionalInfo,
@@ -77,7 +78,7 @@ class Info extends EndPoint {
       mockDev(req)
 
       const supervisor_id = req.session.user_id
-      const { supervised_id, info, additional }: SaveInfoReqBody = req.body as SaveInfoReqBody
+      const { supervised_id, info, additional, deletedAdditional }: SaveInfoReqBody = req.body as SaveInfoReqBody
 
       console.info(`[Info/save] ${supervisor_id}/${supervised_id}`)
 
@@ -99,17 +100,20 @@ class Info extends EndPoint {
 
       const addToCreate = additional.filter(a => !a.add_info_id)
       const addToUpdate = additional.filter(a => a.add_info_id)
+      const addToDelete = deletedAdditional.map(a => a.add_info_id)
 
       Promise.all([
         updateSupervisedInfo(supervised_id, info as any),
         updateAdditionalInfo(addToUpdate),
-        createAdditionalInfo(supervised_id, addToCreate)
+        createAdditionalInfo(supervised_id, addToCreate),
+        deletedAdditionalData(addToDelete)
       ])
-        .then(([ri, ru, ra]) => {
+        .then(([ri, ru, ra, rd]) => {
           const ruOk = ru === addToUpdate.length
           const raOk = ra === addToCreate.length
+          const rdOk = rd === addToDelete.length
 
-          const ok = ri && ruOk && raOk
+          const ok = ri && ruOk && raOk && rdOk
           if (!ok)
             return res.status(500).send(
               JSON.stringify({

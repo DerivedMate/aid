@@ -149,7 +149,10 @@ self.addEventListener('message', (event: { data: string }) => {
     case MessageTypes.LO_QUE_SEA:
       self.registration.showNotification(data.title, {
         ...data,
-        body: data.body
+        body: data.body,
+        data: {
+          url: '/supervised'
+        }
       })
       break
     default:

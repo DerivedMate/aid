@@ -22,7 +22,7 @@ import {
 } from '@material-ui/core'
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft'
 import { Alert } from '@material-ui/lab'
-import React, { useEffect, useReducer } from 'react'
+import React, { useEffect, useReducer, useState } from 'react'
 import { connect } from 'react-redux'
 import { useParams } from 'react-router'
 import { Link } from 'react-router-dom'
@@ -136,6 +136,7 @@ interface LocalState {
   editorial: {
     info: SupervisedInfoRes
     additional: AdditionalInfo[]
+    deletedAdditional: AdditionalInfo[]
   }
 }
 
@@ -213,7 +214,8 @@ const Elem = ({ locale }: DispatchProps): React.ReactElement => {
             additional: action.additional,
             editorial: {
               info: action.info,
-              additional: action.additional
+              additional: action.additional,
+              deletedAdditional: []
             }
           }
         case LaType.EditInfo:
@@ -232,7 +234,10 @@ const Elem = ({ locale }: DispatchProps): React.ReactElement => {
               ...prev,
               editorial: {
                 ...prev.editorial,
-                additional: prev.editorial.additional.filter((_, i) => i !== action.index)
+                additional: prev.editorial.additional.filter((_, i) => i !== action.index),
+                deletedAdditional: prev.additional.some(est => est.add_info_id === nv.add_info_id)
+                  ? [...prev.editorial.deletedAdditional, nv]
+                  : prev.editorial.deletedAdditional
               }
             }
 
@@ -275,7 +280,8 @@ const Elem = ({ locale }: DispatchProps): React.ReactElement => {
       },
       editorial: {
         info: null,
-        additional: null
+        additional: null,
+        deletedAdditional: []
       }
     }
   )
@@ -361,7 +367,8 @@ const Elem = ({ locale }: DispatchProps): React.ReactElement => {
       body: JSON.stringify({
         supervised_id,
         info: state.editorial.info,
-        additional: state.editorial.additional
+        additional: state.editorial.additional,
+        deletedAdditional: state.editorial.deletedAdditional
       } as SaveInfoReqBody)
     }).then(async r => {
       const j: SaveInfoRes = await r

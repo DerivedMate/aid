@@ -70,6 +70,15 @@ export const updateAdditionalInfo = (kvp: AdditionalInfo[]): Promise<number> =>
     [JSON.stringify(kvp)]
   ).then(r => r.rowCount)
 
+export const deletedAdditionalData = (ids: UUID[]): Promise<number> =>
+  query(
+    `
+      delete from add_info
+      where add_info_id = ANY ($1)
+    `,
+    [ids as any]
+  ).then(r => r.rowCount)
+
 export const updateSupervisedInfo = (
   supervised_id: UUID,
   { name, lastname, blood_type, hc_number }: SupervisedEditReq

@@ -24,6 +24,7 @@ export interface SaveInfoReqBody {
   supervised_id: UUID
   info: SupervisedInfoRes
   additional: AdditionalInfo[]
+  deletedAdditional: AdditionalInfo[]
 }
 
 interface SaveInfoResSuccess {
