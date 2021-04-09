@@ -18,9 +18,9 @@ const dict: Locale = {
 
   home: {
     toAbout: {
-      title: 'Aid',
+      title: 'Aid Mate',
       subtitle: 'Safety always near you',
-      body: 'Aid Mate to rewolocyjne rozwiązanie w zakresie monitorowania bezpieczeństwa i nadawania samodzielności osobom z niepełnosprawnościami, seniorom i innym grupom potrzebującym codziennego wsparcia.'
+      body: ''
     }
   },
 
