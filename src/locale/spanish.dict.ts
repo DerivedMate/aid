@@ -77,6 +77,10 @@ const dict: Locale = {
       fieldLabel: 'Número de Identificación',
       button: 'Agregar',
       success: 'Se añadió un(a) supervisado/a con éxito'
+    },
+
+    delete: {
+      body: (n: string): string => `¿Está usted seguro/a que usted quiere eliminar ${n} como un(a) supervisado/a?`
     }
   },
 
@@ -145,6 +149,59 @@ const dict: Locale = {
 
   account: {
     logout: 'Terminar sesión'
+  },
+
+  alert: {
+    title: '¡Alerta!',
+    body: (n: string, t: string): string => `${n} encontró algunos problemas circa ${t}. Necesitaría su ayuda.`,
+    bodyNoDate: (n: string): string => `${n} encontró algunos problemas. Necesitaría su ayuda.`,
+    trigger: 'Simular Alerta',
+    ignore: 'Ignorar',
+    respond: 'Responder'
+  },
+
+  info: {
+    name: 'Nombre',
+    bloodType: 'El grupo sanguíneo',
+    hcNumber: 'Número de la tarjeta de salud',
+    lastname: 'Apellido',
+    info: 'Información primaria',
+    additional: 'Informacje dodatkowe',
+    key: 'Clave',
+    value: 'Valor',
+    add: 'Añadir',
+    details: 'Información sobre salud',
+    save: 'Guardar',
+    edit: 'Editar'
+  },
+
+  call: {
+    retry: 'Intentar de nuevo',
+    calling: 'Conectando',
+    inCall: 'Conectado',
+    call: 'Conectar'
+  },
+
+  location: {
+    stageButton: {
+      fetchingWard: 'Descargando la posición del / la supervisado/a', // 'Pobieranie Pozycji Podopiecznego/nej',
+      fetchingRoute: 'Descargando la Ruta',
+      retryFetching: 'Intentar a descargar de nuevo',
+      acceptReq: 'Acepte la solicitud de posición',
+      reCalcRoute: 'Calcular la Ruta de Nuevo',
+      calcRoute: 'Calcular la Ruta',
+      cancelRoute: 'Cancelar la Ruta'
+    },
+
+    map: {
+      dist: 'Distancia',
+      duration: 'Duración',
+      yourPosition: 'Su Posición'
+    },
+
+    error: {
+      routeFetching: 'Error mientras descargando la ruta'
+    }
   }
 }
 

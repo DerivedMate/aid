@@ -12,6 +12,7 @@ import { Locale } from '@/locale/model'
 import { Link } from 'react-router-dom'
 import { Routes } from '@/app.routes'
 import styles from './styles.module.scss'
+import AlertWatch from '../alert-watch'
 
 interface IProps {
   children: React.ReactNode
@@ -94,12 +95,15 @@ const UnAuthNav = ({ locale, route }: NavProps): React.ReactElement => (
 
 const Wrapper = ({ children, route, locale, auth }: StateProps & DispatchProps & IProps): React.ReactElement => {
   return (
-    <div className={styles.wrapper}>
-      <section className={styles.view}>{children}</section>
-      <nav className={styles.navbar}>
-        {auth ? <AuthNav locale={locale} route={route} /> : <UnAuthNav locale={locale} route={route} />}
-      </nav>
-    </div>
+    <>
+      <div className={styles.wrapper}>
+        <section className={styles.view}>{children}</section>
+        <nav className={styles.navbar}>
+          {auth ? <AuthNav locale={locale} route={route} /> : <UnAuthNav locale={locale} route={route} />}
+        </nav>
+      </div>
+      <AlertWatch />
+    </>
   )
 }
 

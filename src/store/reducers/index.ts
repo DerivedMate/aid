@@ -7,17 +7,21 @@ import { User as UserState } from '../actions/user'
 import { changeLang, LangState } from '../actions/lang'
 import langReducer from './lang'
 import { Action } from '../actions'
+import { AlertState } from '../actions/alert'
+import alertReducer from './alert'
 
 const rootReducer = (history: History): Reducer<SubState, AnyAction> =>
   combineReducers({
     user: userReducer,
     lang: langReducer,
+    alert: alertReducer,
     router: connectRouter(history)
   })
 
 export interface SubState {
   user: UserState
   lang: LangState
+  alert: AlertState
 }
 
 export interface State extends SubState {

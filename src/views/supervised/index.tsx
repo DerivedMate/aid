@@ -14,6 +14,7 @@ import LocationOnIcon from '@material-ui/icons/LocationOn'
 import LocalHospitalIcon from '@material-ui/icons/LocalHospital'
 import InfoIcon from '@material-ui/icons/Info'
 import DeleteIcon from '@material-ui/icons/Delete'
+import AlertCaller from '@/components/alert-caller'
 import { SupervisedListFail, SupervisedListSuccess } from '%/api/supervised'
 import { SupervisedListDisplay } from '%/query/supervised'
 import AddPopUp from './addPopup'
@@ -173,6 +174,7 @@ const Supervised = ({ locale }: StateProps) => {
                         </ListItemIcon>
                         <ListItemText primary={locale.medicine.common.button.delete} color='warning' />
                       </ListItem>
+                      <AlertCaller supervised={state.supervised[i]} />
                     </List>
                   </Collapse>
                 </List>

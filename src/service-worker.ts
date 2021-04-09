@@ -132,6 +132,7 @@ self.addEventListener('message', (event: { data: string }) => {
     type: string
     title: string
     body: string
+    url: string
   }
   const data: IData = JSON.parse(event.data) as IData
 
@@ -154,6 +155,23 @@ self.addEventListener('message', (event: { data: string }) => {
           url: '/supervised'
         }
       })
+      break
+    case MessageTypes.LOAD_PUSH_URL:
+      /*
+      self.addEventListener('notificationclick', e => {
+        e.notification.close()
+        e.waitUntil(
+          self.clients.matchAll({includeUncontrolled: true, type: 'window'}).then(wcs => {
+            wcs.forEach(wc => {
+              if (wc.url === data.url && 'focus' in wc ) wc.focus()
+              else if ('openWindow' in wcs) 
+                wcs.openWindow()
+            })
+            
+          })
+        )
+      })
+      */
       break
     default:
       break

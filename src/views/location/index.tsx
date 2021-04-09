@@ -247,7 +247,7 @@ export const Elem = ({ locale }: DispatchProps): ReactElement => {
               <KeyboardArrowLeftIcon />
             </IconButton>
             <Typography variant='h6' className={localStyles.topBarTitle}>
-              [PH] Location
+              {locale.supervised.list.item.location}
             </Typography>
             <div className={localStyles.topBarSpace} />
             <div>

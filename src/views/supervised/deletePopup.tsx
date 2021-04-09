@@ -141,9 +141,7 @@ const Elem = ({ handleClose, supervised, onResult, locale }: LocalProps & Dispat
   return (
     <Dialog open onClose={handleClose}>
       <DialogTitle>{locale.medicine.all.delete.title}</DialogTitle>
-      <DialogContent>
-        [PH] Want to delete {supervised.name} {supervised.lastname}?
-      </DialogContent>
+      <DialogContent>{locale.supervised.delete.body(`${supervised.name} ${supervised.lastname}`)}</DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>{locale.medicine.common.button.cancel}</Button>
         <Button color='primary' onClick={handleClick}>

@@ -1,9 +1,21 @@
 import React from 'react'
 import PriorityHighIcon from '@material-ui/icons/PriorityHigh'
+import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
+import { listed } from '@/styles/ts/common'
+import { Locale } from '@/locale/model'
+import { State } from '@/store/reducers'
+import { Dispatch } from 'redux'
+import { AlertAction, AlertActionType } from '@/store/actions/alert'
+import { connect } from 'react-redux'
+import { SupervisedListDisplay } from '%/query/supervised'
 
-const showLocalNotification = (title: string, body: string): void => {
-  const options = {
-    body
+const showLocalNotification = (title: string, body: string, url?: string): void => {
+  const options: NotificationOptions = {
+    body,
+    actions: [{ action: url, title: 'Go to' }],
+    data: {
+      url
+    }
   }
 
   navigator.serviceWorker
@@ -28,22 +40,56 @@ navigator.serviceWorker.addEventListener('message', msg => {
   console.dir(msg)
 })
 
-const onNotify = () => {
-  navigator.serviceWorker.getRegistration().then(
-    r =>
-      r &&
-      r.active.postMessage(
-        JSON.stringify({
-          type: 'LO_QUE_SEA',
-          title: 'Message title',
-          body: 'El cuerpo o lo que sea, no sé'
-        })
-      )
+interface DispatchProps {
+  locale: Locale
+}
+
+const mapProps = (state: State): DispatchProps => ({
+  locale: state.lang.dict
+})
+
+interface DispatchActions {
+  startAlert: (supervised: SupervisedListDisplay, time: Date) => void
+}
+
+const mapActions = (dispatch: Dispatch): DispatchActions => ({
+  startAlert(supervised: SupervisedListDisplay, time: Date) {
+    return dispatch({
+      type: AlertActionType.StartAlert,
+      supervised,
+      time
+    } as AlertAction)
+  }
+})
+
+interface OwnProps {
+  supervised: SupervisedListDisplay
+}
+
+const Elem = ({ supervised, startAlert, locale }: DispatchProps & DispatchActions & OwnProps) => {
+  const styles = listed()
+
+  console.log(locale.account)
+
+  const handleClick = () => {
+    const d = new Date()
+
+    onPressReg()
+    startAlert(supervised, d)
+    showLocalNotification(
+      locale.alert.title,
+      locale.alert.body(`${supervised.name} ${supervised.lastname}`, d.toTimeString())
+    )
+  }
+
+  return (
+    <ListItem button className={styles.listItemDanger} onClick={handleClick}>
+      <ListItemIcon>
+        <PriorityHighIcon />
+      </ListItemIcon>
+      <ListItemText primary={`[DEV] ${locale.alert.trigger}`} color='warning' />
+    </ListItem>
   )
 }
 
-const onPressTrigger = () => {
-  showLocalNotification('This better fucking work', 'Coño, te mataré si no funciona esta wea... te lo juro')
-}
-
-const Eleme = () => {}
+export default connect<DispatchProps, DispatchActions>(mapProps, mapActions)(Elem)

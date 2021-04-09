@@ -76,6 +76,10 @@ const dict: Locale = {
       fieldLabel: 'Device ID',
       button: 'Add',
       success: 'Successfully added a ward'
+    },
+
+    delete: {
+      body: (n: string): string => `Are you sure that you want to remove ${n} from your supervisees?`
     }
   },
 
@@ -144,6 +148,60 @@ const dict: Locale = {
 
   account: {
     logout: 'Log out'
+  },
+
+  alert: {
+    title: 'Alert!',
+    body: (n: string, t: string): string =>
+      `${n} encountered some difficulties at ${t}, and is in need of your assistance.`,
+    bodyNoDate: (n: string): string => `${n} encountered some difficulties, and is in need of your assistance.`,
+    trigger: 'Trigger Alert',
+    ignore: 'Ignore',
+    respond: 'Respond'
+  },
+
+  info: {
+    name: 'name',
+    bloodType: 'Blood Type',
+    hcNumber: 'Health Card Nr.',
+    lastname: 'Surname',
+    info: 'Primary Info.',
+    additional: 'Additional Info.',
+    key: 'Key',
+    value: 'Value',
+    add: 'Add',
+    details: 'Health Details',
+    save: 'Save',
+    edit: 'Edit'
+  },
+
+  call: {
+    retry: 'Re-try',
+    calling: 'Calling',
+    inCall: 'In Call',
+    call: 'Call'
+  },
+
+  location: {
+    stageButton: {
+      fetchingWard: "Fetching Supervisee's Position",
+      fetchingRoute: 'Fetching Route',
+      retryFetching: 'Retry Fetching',
+      acceptReq: 'Accept Location Request',
+      reCalcRoute: 'Re-Calc. Route',
+      calcRoute: 'Calc. Route',
+      cancelRoute: 'Cancel Route'
+    },
+
+    map: {
+      dist: 'Distance',
+      duration: 'Duration',
+      yourPosition: 'Your Position'
+    },
+
+    error: {
+      routeFetching: 'Error Fetching Route'
+    }
   }
 }
 

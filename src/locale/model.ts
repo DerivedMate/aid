@@ -76,6 +76,10 @@ export interface Locale {
       button: string
       success: string
     }
+
+    delete: {
+      body: (n: string) => string
+    }
   }
 
   medicine: {
@@ -143,6 +147,57 @@ export interface Locale {
 
   account: {
     logout: string
+  }
+
+  alert: {
+    title: string
+    body: (n: string, t: string) => string
+    bodyNoDate: (n: string) => string
+    trigger: string
+    ignore: string
+    respond: string
+  }
+
+  info: {
+    name: string
+    bloodType: string
+    hcNumber: string
+    lastname: string
+    info: string
+    additional: string
+    key: string
+    value: string
+    add: string
+    details: string
+    save: string
+    edit: string
+  }
+
+  call: {
+    retry: string
+    calling: string
+    inCall: string
+    call: string
+  }
+
+  location: {
+    stageButton: {
+      fetchingWard: string
+      fetchingRoute: string
+      retryFetching: string
+      acceptReq: string
+      reCalcRoute: string
+      calcRoute: string
+      cancelRoute: string
+    }
+    map: {
+      dist: string
+      duration: string
+      yourPosition: string
+    }
+    error: {
+      routeFetching: string
+    }
   }
 }
 

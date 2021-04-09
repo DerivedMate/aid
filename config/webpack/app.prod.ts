@@ -221,40 +221,39 @@ const webpackConfig: webpack.Configuration = {
       defaultAttribute: 'async'
     }),
     new WebpackPwaManifest({
-      name: 'ReactJS Progressive Web App',
-      short_name: 'ReactPWA',
+      name: 'Aid Mate',
+      short_name: 'AidMate',
       orientation: 'portrait',
-      description:
-        'A fast and full TypeScript PWA built with React with every best practices for SEO and web performances',
+      description: 'Bezpieczniej. Pewniej. Szybciej.',
       background_color: '#FFFFFF',
-      theme_color: '#5A0FC8',
+      theme_color: '#e74c32',
       crossorigin: 'anonymous',
       display: 'standalone',
-      lang: 'en',
+      lang: 'pl',
       dir: 'ltr',
       inject: true,
       fingerprints: true,
       start_url: '.',
       ios: {
-        'apple-mobile-web-app-title': 'ReactPWA',
+        'apple-mobile-web-app-title': 'Aid Mate',
         'apple-mobile-web-app-capable': 'yes',
         'apple-mobile-web-app-status-bar-style': 'black'
       },
       icons: [
         {
-          src: path.resolve(rootDir, 'public/pwa-react-logo.png'),
+          src: path.resolve(rootDir, 'public/aid-mate-logo.png'),
           destination: 'images/pwa/ios',
           sizes: [152, 167, 180, 192],
           ios: true
         },
         {
-          src: path.resolve(rootDir, 'public/pwa-react-logo.png'),
+          src: path.resolve(rootDir, 'public/aid-mate-logo.png'),
           size: 512,
           destination: 'images/pwa',
           ios: 'startup'
         },
         {
-          src: path.resolve(rootDir, 'public/pwa-react-logo.png'),
+          src: path.resolve(rootDir, 'public/aid-mate-logo.png'),
           size: 270,
           destination: 'images/pwa'
           // purpose: 'maskable' Waiting for the plugin to update his declaration files

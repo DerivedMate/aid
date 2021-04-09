@@ -90,7 +90,7 @@ const Elem = ({ buttonClassName, locale }: LocalProps & DispatchProps): React.Re
       stage: Stage.NoCall,
       error: {
         show: false,
-        message: locale.menu.account // [PH]
+        message: ''
       }
     }
   )
@@ -143,13 +143,13 @@ const Elem = ({ buttonClassName, locale }: LocalProps & DispatchProps): React.Re
     switch (state.stage) {
       case Stage.CallError:
       case Stage.EstablishingError:
-        return '[PH] Retry'
+        return locale.call.retry
       case Stage.Establishing:
-        return '[PH] Calling'
+        return locale.call.calling
       case Stage.InCall:
-        return '[PH] In Call'
+        return locale.call.inCall
       default:
-        return '[PH] Call'
+        return locale.call.call
     }
   })()
 

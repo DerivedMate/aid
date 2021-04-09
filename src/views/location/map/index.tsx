@@ -1,3 +1,4 @@
+/* eslint react-hooks/exhaustive-deps: 0 */
 import { Locale } from '@/locale/model'
 import { State } from '@/store/reducers'
 import { listed } from '@/styles/ts/common'
@@ -13,11 +14,14 @@ import { MapContainer, Marker, Polyline, Popup, TileLayer } from 'react-leaflet'
 import { LineString } from 'geojson'
 import { divIcon } from 'leaflet'
 import Loader from '@/components/loader'
+import { Dispatch } from 'redux'
+import { AlertActionType, AppAlert } from '@/store/actions/alert'
 import { randomWalk } from './mockLocation'
 import { fetchDirections, geoJsonOfLeaflet, LatLong, Profile, DirectionFetchResult, leafletOfGeoJson } from './OrsApi'
 import { APIKey } from './const'
 import { SupervisedListDisplay } from '%/query/supervised'
 import CallButton from '../call'
+import { UUID } from '%/query/columnTypes'
 
 enum Stage {
   FetchingLocation,
@@ -130,10 +134,25 @@ interface LocalProps {
 
 interface DispatchProps {
   locale: Locale
+  alerts: AppAlert[]
 }
 
 const mapProps = (state: State): DispatchProps => ({
-  locale: state.lang.dict
+  locale: state.lang.dict,
+  alerts: state.alert.alerts
+})
+
+interface DispatchActions {
+  stopAlert: (supervised_id: UUID) => void
+}
+
+const mapActions = (dispatch: Dispatch): DispatchActions => ({
+  stopAlert(supervised_id: UUID) {
+    dispatch({
+      type: AlertActionType.StopAlert,
+      supervised_id
+    })
+  }
 })
 
 const makeLocalStyes = makeStyles(theme => ({
@@ -210,7 +229,7 @@ const makeCustomMarker = (color: string) => {
 
 const PHSupervisedLocation: LatLong = [52.73101709012718, 15.23381079831591]
 
-const Elem = ({ locale, supervised }: LocalProps & DispatchProps) => {
+const Elem = ({ locale, supervised, stopAlert, alerts }: LocalProps & DispatchProps & DispatchActions) => {
   const localStyles = makeLocalStyes()
   const globalStyles = listed()
 
@@ -379,24 +398,32 @@ const Elem = ({ locale, supervised }: LocalProps & DispatchProps) => {
     }
   }
 
+  // Alert
+  useEffect(() => {
+    if (!!state.supervisedLocation && alerts.some(a => a.supervised.supervised_id === supervised.supervised_id)) {
+      stopAlert(supervised.supervised_id)
+      onCalcRoute()
+    }
+  }, [alerts, supervised.supervised_id, onCalcRoute, state.supervisedLocation, stopAlert])
+
   const mapButtonText = (() => {
     switch (state.stage) {
       case Stage.FetchingLocation:
-        return "[PH] Fetching ward's location"
+        return locale.location.stageButton.fetchingWard // Fetching ward's location"
       case Stage.FetchingRoute:
-        return '[PH] Fetching Route'
+        return locale.location.stageButton.fetchingRoute // Fetching Route'
       case Stage.FetchingRouteError:
-        return '[PH] Retry Fetching Route'
+        return locale.location.stageButton.retryFetching // Retry Fetching Route'
       case Stage.RequiringLocation:
-        return '[PH] Accept Location Inquiry'
+        return locale.location.stageButton.acceptReq // Accept Location Inquiry'
       case Stage.ShowingRoute:
-        return '[PH] Recalculate Route'
+        return locale.location.stageButton.reCalcRoute // Recalculate Route'
       default:
-        return '[PH] Calculate Route'
+        return locale.location.stageButton.calcRoute // Calculate Route'
     }
   })()
 
-  if (state.stage === Stage.FetchingLocation) return <Loader title="[PH] Fetching Ward's Location" />
+  if (state.stage === Stage.FetchingLocation) return <Loader title={locale.location.stageButton.fetchingWard} />
 
   return (
     <div className={localStyles.rootSpread}>
@@ -419,10 +446,10 @@ const Elem = ({ locale, supervised }: LocalProps & DispatchProps) => {
           <Polyline positions={state.route} pathOptions={{ color: '#2f2ff5' }}>
             <Popup maxWidth={250} maxHeight={80}>
               <Typography variant='body1'>
-                [PH] dist: {state.routePopup.distance.mag} {state.routePopup.distance.unit}
+                {locale.location.map.dist}: {state.routePopup.distance.mag} {state.routePopup.distance.unit}
               </Typography>
               <Typography variant='body2'>
-                [PH] duration: {state.routePopup.duration.mag} {state.routePopup.duration.unit}
+                {locale.location.map.duration}: {state.routePopup.duration.mag} {state.routePopup.duration.unit}
               </Typography>
             </Popup>
           </Polyline>
@@ -438,9 +465,7 @@ const Elem = ({ locale, supervised }: LocalProps & DispatchProps) => {
           </Marker>
           {state.ownLocation && (
             <Marker icon={makeCustomMarker('#e3d091')} position={state.ownLocation}>
-              <Popup className={localStyles.mapPopUp}>
-                [PH] Your location; {locale.medicine.common.button.confirm}
-              </Popup>
+              <Popup className={localStyles.mapPopUp}>{locale.location.map.yourPosition}</Popup>
             </Marker>
           )}
         </MapContainer>
@@ -475,7 +500,7 @@ const Elem = ({ locale, supervised }: LocalProps & DispatchProps) => {
             onClick={closeRoute}
             className={`${localStyles.centerButton} ${globalStyles.listItemDanger} ${localStyles.faintGray}`}
           >
-            <ListItemText primary='[PH] Cancel Route' />
+            <ListItemText primary={locale.location.stageButton.cancelRoute} />
           </ListItem>
         </Collapse>
         <CallButton
@@ -486,7 +511,7 @@ const Elem = ({ locale, supervised }: LocalProps & DispatchProps) => {
   )
 }
 
-export default connect<DispatchProps>(mapProps)(Elem)
+export default connect<DispatchProps, DispatchActions>(mapProps, mapActions)(Elem)
 /**
  
  */

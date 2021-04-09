@@ -82,7 +82,7 @@ export const fetchDirections = (
       coordinates
     })
   }).then(async r => {
-    const message = await r.text().catch(() => `{message: '[PH] Route Fetching Error'}`)
+    const message = await r.text().catch(() => `{message: 'Route Fetching Error'}`)
 
     if (!r.ok) {
       const j = JSON.parse(message) as ResError

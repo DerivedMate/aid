@@ -75,6 +75,10 @@ const dict: Locale = {
       fieldLabel: 'Id urządzenia',
       button: 'Dodaj',
       success: 'Pomyślnie dodano podopiecznego/ną'
+    },
+
+    delete: {
+      body: (n: string): string => `Jesteś pewien/na, że chcesz usunąć ${n} z podopiecznych?`
     }
   },
 
@@ -142,6 +146,60 @@ const dict: Locale = {
   },
   account: {
     logout: 'Wyloguj się'
+  },
+
+  alert: {
+    title: 'Alert!',
+    body: (n: string, t: string): string =>
+      `${n} napotkał(a) na pewne trudności w okolicach ${t}. Przydałaby mu/jej się Twoja pomoc.`,
+    bodyNoDate: (n: string): string => `${n} napotkał(a) na pewne trudności. Przydałaby mu/jej się Twoja pomoc.`,
+    trigger: 'Zasymuluj Alert',
+    ignore: 'Ignoruj',
+    respond: 'Odpowiedz'
+  },
+
+  info: {
+    name: 'Imię',
+    bloodType: 'Grupa Krwi',
+    hcNumber: 'Nr. Karty Zdrowia',
+    lastname: 'Nazwisko',
+    info: 'Informacje Główne',
+    additional: 'Informacje dodatkowe',
+    key: 'Klucz',
+    value: 'Wartość',
+    add: 'Dodaj',
+    details: 'Info. Zdrowotne',
+    save: 'Zapisz',
+    edit: 'Edytuj'
+  },
+
+  call: {
+    retry: 'Spróbuj Ponownie',
+    calling: 'Łączę się',
+    inCall: 'Rozmowa Trwa',
+    call: 'Połącz się'
+  },
+
+  location: {
+    stageButton: {
+      fetchingWard: 'Pobieranie Pozycji Podopiecznego/nej',
+      fetchingRoute: 'Pobieranie Drogi',
+      retryFetching: 'Spróbuj Pobrać Ponownie',
+      acceptReq: 'Zaakceptuj Prośbę o Lokalizację',
+      reCalcRoute: 'Ponownie oblicz drogę',
+      calcRoute: 'Oblicz Drogę',
+      cancelRoute: 'Anuluj Drogę'
+    },
+
+    map: {
+      dist: 'Dystans',
+      duration: 'Czas trwania',
+      yourPosition: 'Twoja Pozycja'
+    },
+
+    error: {
+      routeFetching: 'Błąd Pobierania Drogi'
+    }
   }
 }
 

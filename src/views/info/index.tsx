@@ -22,7 +22,7 @@ import {
 } from '@material-ui/core'
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft'
 import { Alert } from '@material-ui/lab'
-import React, { useEffect, useReducer, useState } from 'react'
+import React, { useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { useParams } from 'react-router'
 import { Link } from 'react-router-dom'
@@ -318,10 +318,10 @@ const Elem = ({ locale }: DispatchProps): React.ReactElement => {
   }, [supervised_id])
 
   const kpv: Record<keyof SupervisedInfoRes, string> = {
-    name: '[PH] Name',
-    blood_type: '[PH] Blood Type',
-    hc_number: '[PH] Health Card Nr.',
-    lastname: '[PH] Last name'
+    name: locale.info.name,
+    blood_type: locale.info.bloodType,
+    hc_number: locale.info.hcNumber,
+    lastname: locale.info.lastname
   }
 
   const handleChangeInfo = (key: keyof SupervisedInfoRes) => (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -384,7 +384,7 @@ const Elem = ({ locale }: DispatchProps): React.ReactElement => {
 
       dispatch({
         type: LaType.Success,
-        message: '[PH] success'
+        message: r.statusText
       })
 
       return dispatch({
@@ -407,7 +407,7 @@ const Elem = ({ locale }: DispatchProps): React.ReactElement => {
           <List subheader={<li />} className={`${globalStyles.fullCard} ${localStyles.keyList}`}>
             <li key='section-info' className={localStyles.listSection}>
               <ul className={localStyles.ul}>
-                <ListSubheader>[PH] Info</ListSubheader>
+                <ListSubheader>{locale.info.info}</ListSubheader>
                 {Object.keys(state.info).map((k: keyof SupervisedInfoRes) => (
                   <ListItem divider key={k}>
                     <ListItemText>{kpv[k]}</ListItemText>
@@ -418,7 +418,7 @@ const Elem = ({ locale }: DispatchProps): React.ReactElement => {
             </li>
             <li key='section-additional' className={localStyles.listSection}>
               <ul className={localStyles.ul}>
-                <ListSubheader>[PH] Additional</ListSubheader>
+                <ListSubheader>{locale.info.additional}</ListSubheader>
                 {state.additional.map(({ key, value, add_info_id }) => (
                   <ListItem divider key={add_info_id}>
                     <ListItemText>{key}</ListItemText>
@@ -434,7 +434,7 @@ const Elem = ({ locale }: DispatchProps): React.ReactElement => {
           <List subheader={<li />} className={`${globalStyles.fullCard} ${localStyles.keyList}`}>
             <li key='section-info' className={localStyles.listSection}>
               <ul className={localStyles.ul}>
-                <ListSubheader>[PH] Info</ListSubheader>
+                <ListSubheader>{locale.info.info}</ListSubheader>
                 {Object.keys(state.editorial.info).map((k: keyof SupervisedInfoRes) => (
                   <ListItem divider key={k}>
                     <ListItemText>{kpv[k]}</ListItemText>
@@ -470,7 +470,7 @@ const Elem = ({ locale }: DispatchProps): React.ReactElement => {
             </li>
             <li key='section-additional' className={localStyles.listSection}>
               <ul className={localStyles.ul}>
-                <ListSubheader>[PH] Additional</ListSubheader>
+                <ListSubheader>{locale.info.additional}</ListSubheader>
                 {state.editorial.additional.map(({ add_info_id, key, value }, i) => (
                   <ListItem divider key={`${add_info_id}-${i}`}>
                     <ListItemText>
@@ -491,7 +491,7 @@ const Elem = ({ locale }: DispatchProps): React.ReactElement => {
                     />
                   </ListItem>
                 ))}
-                <Button onClick={handleAddAdditional('[PH] Key', '[PH] Value')}>[PH] Add</Button>
+                <Button onClick={handleAddAdditional(locale.info.key, locale.info.value)}>{locale.info.add}</Button>
               </ul>
             </li>
           </List>
@@ -519,12 +519,12 @@ const Elem = ({ locale }: DispatchProps): React.ReactElement => {
             <KeyboardArrowLeftIcon />
           </IconButton>
           <Typography variant='h6' className={localStyles.topBarTitle}>
-            [PH] Details
+            {locale.info.details}
           </Typography>
           <div className={localStyles.topBarSpace} />
           <div>
             <Button onClick={state.stage === Stage.Editing ? saveChanges : switchMode}>
-              {state.stage === Stage.Editing ? '[PH] Save' : '[PH] Edit'}
+              {state.stage === Stage.Editing ? locale.info.save : locale.info.edit}
             </Button>
           </div>
         </Toolbar>
