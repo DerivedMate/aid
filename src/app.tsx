@@ -18,7 +18,7 @@ interface IProps {
 const App = ({ history, store }: IProps): ReactElement => {
   return (
     <ErrorBoundary>
-      <Helmet defaultTitle={process.env.APP_TITLE} titleTemplate={`%s | ${process.env.APP_TITLE}`}>
+      <Helmet defaultTitle="Aid Mate" titleTemplate={`%s`}>
         <link rel='canonical' href={process.env.SERVER_BASE_URL} />
       </Helmet>
       <Provider store={store}>
