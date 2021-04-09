@@ -5,7 +5,7 @@ export interface GetInfoReqBody {
   supervised_id: UUID
 }
 
-//#region
+// #region
 interface GetInfoResSuccess {
   ok: true
   info: SupervisedInfoRes
@@ -16,7 +16,7 @@ interface GetInfoResFail {
   ok: false
   message: string
 }
-//#endregion
+// #endregion
 
 export type GetInfoRes = GetInfoResFail | GetInfoResSuccess
 
