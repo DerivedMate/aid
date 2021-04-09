@@ -140,13 +140,18 @@ const makeLocalStyes = makeStyles(theme => ({
   map: {
     height: '40vh'
   },
+
   mapSector: {
-    marginBottom: theme.spacing(2)
+    marginBottom: theme.spacing(1)
   },
 
   centerButton: {
     textAlign: 'center'
     // boxShadow: theme.shadows[1]
+  },
+
+  listRoot: {
+    backgroundColor: theme.palette.background.paper
   },
 
   mapPopUp: {
@@ -169,7 +174,11 @@ const makeLocalStyes = makeStyles(theme => ({
   },
 
   faintGray: {
-    backgroundColor: theme.palette.grey[100]
+    backgroundColor: theme.palette.grey[50]
+  },
+
+  darkerGray: {
+    backgroundColor: theme.palette.grey[200]
   },
 
   callButton: {
@@ -453,13 +462,15 @@ const Elem = ({ locale, supervised }: LocalProps & DispatchProps) => {
       <List className={`${globalStyles.container} ${globalStyles.fullCard}`}>
         <ListItem
           button
-          className={`${localStyles.centerButton} ${globalStyles.topItem} ${localStyles.semiFullCard}`}
+          divider
+          className={`${localStyles.centerButton}  ${localStyles.semiFullCard} ${localStyles.darkerGray}`}
           onClick={onCalcRoute}
         >
           <ListItemText primary={mapButtonText} />
         </ListItem>
         <Collapse in={state.stage === Stage.ShowingRoute} className={`${localStyles.semiFullCard}`}>
           <ListItem
+            divider
             button
             onClick={closeRoute}
             className={`${localStyles.centerButton} ${globalStyles.listItemDanger} ${localStyles.faintGray}`}
@@ -468,7 +479,7 @@ const Elem = ({ locale, supervised }: LocalProps & DispatchProps) => {
           </ListItem>
         </Collapse>
         <CallButton
-          buttonClassName={`${localStyles.centerButton} ${globalStyles.topItem} ${localStyles.semiFullCard} ${localStyles.callButton}`}
+          buttonClassName={`${localStyles.centerButton} ${localStyles.semiFullCard} ${localStyles.darkerGray}`}
         />
       </List>
     </div>

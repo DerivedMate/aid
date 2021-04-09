@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import { ignore } from '@/helpers/func'
 import { AnyRecord } from '@/@types/common'
 import { Routes } from '@/app.routes'
+import { listed } from '@/styles/ts/common'
 
 interface StateProps {
   locale: Locale
@@ -19,22 +20,6 @@ const mapState = (state: State): StateProps => ({
 })
 
 const makeLocalStyles = makeStyles(theme => ({
-  fullCard: {
-    [theme.breakpoints.down('sm')]: {
-      width: '100%'
-    },
-    [theme.breakpoints.up('sm')]: {
-      width: '500px'
-    }
-  },
-
-  container: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'column'
-  },
-
   styledLink: {
     padding: theme.spacing(1),
     textDecoration: 'none'
@@ -59,19 +44,25 @@ const makeLocalStyles = makeStyles(theme => ({
     height: 'fit-content',
     paddingTop: theme.spacing(1),
     paddingBottom: theme.spacing(1)
+  },
+
+  center: {
+    marginLeft: 'auto',
+    marginRight: 'auto'
   }
 }))
 
 const Home = ({ locale }: StateProps): React.ReactElement => {
   const styles = makeLocalStyles()
+  const globalStyles = listed()
 
   return (
     <>
       <Helmet>
-        <title>Home</title>
+        <title>{locale.title.home}</title>
       </Helmet>
-      <div className={styles.container}>
-        <Card variant='elevation' className={styles.fullCard}>
+      <div className={`${globalStyles.container} ${globalStyles.fullCard} ${styles.center}`}>
+        <Card variant='elevation' className={globalStyles.fullCard}>
           <CardContent>
             <Typography variant='h4'>{locale.home.toAbout.title}</Typography>
             <Typography variant='h6'>{locale.home.toAbout.subtitle}</Typography>

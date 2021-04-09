@@ -5,6 +5,17 @@ const dict: Locale = {
     learnMore: 'Leer más'
   },
 
+  title: {
+    home: 'Início',
+    signIn: 'Iniciar Sesión',
+    signUp: 'Registrarse',
+    supervised: 'Supervisados',
+    account: 'Cuenta',
+    medications: 'Medicinas',
+    location: 'Ubicación',
+    health: 'Salud'
+  },
+
   home: {
     toAbout: {
       title: 'Aid',
@@ -25,7 +36,7 @@ const dict: Locale = {
   menu: {
     home: 'Inicio',
     about: 'Sobre la Ap.',
-    signIn: 'Registrarse',
+    signIn: 'Iniciar sesión',
     supervised: 'Supervisados',
     account: 'Cuenta'
   },

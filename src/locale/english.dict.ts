@@ -5,6 +5,17 @@ const dict: Locale = {
     learnMore: 'Read more'
   },
 
+  title: {
+    home: 'Home',
+    signIn: 'Sign In',
+    signUp: 'Sign Up',
+    supervised: 'Supervisees',
+    account: 'Account',
+    medications: 'Medications',
+    location: 'Position',
+    health: 'Salud'
+  },
+
   home: {
     toAbout: {
       title: 'Aid',
@@ -15,10 +26,10 @@ const dict: Locale = {
 
   dashboard: {
     toSupervised: {
-      title: 'Supervised',
+      title: 'Supervisees',
       body:
-        'Here you will find information regarding the location, health details, and the medicine taken by your wards',
-      button: 'Go to supervised'
+        'Here you will find information regarding the position, health details, and the medicine taken by your wards',
+      button: 'Go to Supervisees'
     }
   },
 
@@ -26,7 +37,7 @@ const dict: Locale = {
     home: 'Home',
     about: 'About',
     signIn: 'Sign In',
-    supervised: 'Supervised',
+    supervised: 'Supervisees',
     account: 'Account'
   },
 
@@ -54,7 +65,7 @@ const dict: Locale = {
       pageTitle: 'List of Wards',
       item: {
         healthDetail: 'Health Details',
-        location: 'Location',
+        location: 'Position',
         medications: 'Medications'
       }
     },

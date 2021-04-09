@@ -2,7 +2,7 @@ import React, { useEffect, useReducer, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { makeLocationUrl, makeMedicineUrl, Routes } from '@/app.routes'
+import { makeInfoUrl, makeLocationUrl, makeMedicineUrl } from '@/app.routes'
 import Loader from '@/components/loader'
 import { ignore } from '@/helpers/func'
 import { getApiBase } from '@/helpers/url'
@@ -116,7 +116,7 @@ const Supervised = ({ locale }: StateProps) => {
   return (
     <>
       <Helmet>
-        <title>{locale.supervised.list.pageTitle}</title>
+        <title>{locale.title.supervised}</title>
       </Helmet>
       <div className={styles.container}>
         {state.stage === Stage.Loading ? (
@@ -131,7 +131,7 @@ const Supervised = ({ locale }: StateProps) => {
                   </ListItem>
                   <Collapse in={openNr === i} timeout='auto' unmountOnExit>
                     <List component='ul' className={styles.subItem}>
-                      <ListItem component={Link} to={Routes.Dashboard}>
+                      <ListItem component={Link} to={makeInfoUrl(supervised_id)}>
                         <ListItemIcon>
                           <InfoIcon />
                         </ListItemIcon>

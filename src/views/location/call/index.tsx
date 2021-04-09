@@ -165,7 +165,7 @@ const Elem = ({ buttonClassName, locale }: LocalProps & DispatchProps): React.Re
           {state.error.message}
         </Alert>
       </Snackbar>
-      <ListItem button className={buttonClassName} onClick={handleClick}>
+      <ListItem divider button className={buttonClassName} onClick={handleClick}>
         <ListItemText>{buttonMessage}</ListItemText>
       </ListItem>
     </>

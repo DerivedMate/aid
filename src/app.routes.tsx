@@ -9,9 +9,10 @@ import {
   Supervised as SupervisedRoute,
   Medicine as MedicineRoute,
   Account as AccountRoute,
-  Location as LocationRoute
+  Location as LocationRoute,
+  Info as InfoRoute
 } from '@/views'
-import { Redirect, Switch } from 'react-router-dom'
+import { Redirect, Route, Switch } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { DeGuardedRoute, GuardedRoute } from './components/guarded-route'
 import { UUID } from '%/query/columnTypes'
@@ -33,12 +34,15 @@ export enum Routes {
   Account = '/account',
   Dashboard = '/dashboard',
   MedicineBase = '/medicine',
-  LocationBase = '/location'
+  LocationBase = '/location',
+  InfoBase = '/info'
 }
 
-export const makeMedicineUrl = (supervised_id: UUID): string => `${Routes.MedicineBase}/${supervised_id}`
+export const makeIdUrlMaker = (route: Routes) => (supervised_id: UUID): string => `${route}/${supervised_id}`
 
-export const makeLocationUrl = (supervised_id: UUID): string => `${Routes.LocationBase}/${supervised_id}`
+export const makeMedicineUrl = makeIdUrlMaker(Routes.MedicineBase)
+export const makeLocationUrl = makeIdUrlMaker(Routes.LocationBase)
+export const makeInfoUrl = makeIdUrlMaker(Routes.InfoBase)
 
 interface DispatchProps {
   auth: boolean
@@ -114,8 +118,21 @@ export const routes = ({ auth, authorizing, locale }: DispatchProps): React.Reac
           key='location_/location'
           component={LocationRoute}
         />
-        <GuardedRoute auth={auth} path={Routes.Account} key='account_/account' component={AccountRoute} />
-        <GuardedRoute auth={auth} path='/404' key='notFound_/404' component={NotFoundRoute} />
+        <GuardedRoute
+          auth={auth}
+          guarded
+          path={`${Routes.InfoBase}/:supervised_id`}
+          key='info_/info'
+          component={InfoRoute}
+        />
+        <GuardedRoute
+          auth={auth}
+          path={Routes.Account}
+          key='account_/account'
+          component={AccountRoute}
+          redirectTo={Routes.Home}
+        />
+        <Route path='/404' key='notFound_/404' component={NotFoundRoute} />
         <Redirect to='/404' />
       </Switch>
     </>

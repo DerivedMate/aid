@@ -9,6 +9,7 @@ import React, { ReactElement, useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { useParams } from 'react-router'
 import { Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet'
 import { SupervisedListDisplay } from '%/query/supervised'
 import { SupervisionAuthReqBody, SupervisionAuthRes } from '%/api/auth'
 import Map from './map'
@@ -236,6 +237,9 @@ export const Elem = ({ locale }: DispatchProps): ReactElement => {
   // if (state.stage === Stage.Authorized)
   return (
     <>
+      <Helmet>
+        <title>{locale.title.location}</title>
+      </Helmet>
       <div className={localStyles.root}>
         <AppBar component='header' position='static' className={localStyles.topBar}>
           <Toolbar>

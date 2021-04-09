@@ -108,8 +108,8 @@ export const updateMedicine = ({ medicine_id, name, unit, amount }: MedicineUpda
     `
       update medicine
       set 
-        name = $2,
-        unit = $3,
+        name   = $2,
+        unit   = $3,
         amount = $4::INTEGER
       where
         medicine_id = $1;

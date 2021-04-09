@@ -5,6 +5,17 @@ export interface Locale {
     learnMore: string
   }
 
+  title: {
+    home: string
+    signIn: string
+    signUp: string
+    supervised: string
+    account: string
+    medications: string
+    location: string
+    health: string
+  }
+
   home: {
     toAbout: {
       title: string

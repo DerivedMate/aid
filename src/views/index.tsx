@@ -26,3 +26,5 @@ export const Medicine = loadable(() => import(/* webpackChunkName: 'medicine' */
 export const Account = loadable(() => import(/* webpackChunkName: 'account' */ './account'), loadableOptions)
 
 export const Location = loadable(() => import(/* webpackChunkName: 'location' */ './location'), loadableOptions)
+
+export const Info = loadable(() => import(/* webpackChunkName: 'info' */ './info'), loadableOptions)

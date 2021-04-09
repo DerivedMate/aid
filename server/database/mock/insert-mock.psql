@@ -11,7 +11,7 @@ declare
   date_offset int := 0;
 begin
   -- Clean tables
-    truncate supervisor, supervised, supervision, medicine, take, info, position;
+    truncate supervisor, supervised, supervision, medicine, take, add_info, info, position;
 
   -- Mock Supervisor
   insert into supervisor 

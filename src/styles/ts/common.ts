@@ -6,7 +6,9 @@ export const listed = makeStyles(theme => ({
       width: '100%'
     },
     [theme.breakpoints.up('sm')]: {
-      width: '500px'
+      width: '500px',
+      marginLeft: 'auto',
+      marginRight: 'auto'
     }
   },
 

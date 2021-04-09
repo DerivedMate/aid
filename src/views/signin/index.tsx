@@ -5,8 +5,6 @@ import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import TextField from '@material-ui/core/TextField'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '@material-ui/core/Checkbox'
 import Link from '@material-ui/core/Link'
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
@@ -191,9 +189,7 @@ const SignIn = (props: RouteComponentProps<AnyRecord> & StateProps & DispatchPro
   return (
     <>
       <Helmet>
-        <title>
-          {locale.signIn.signIn} [{String(loggedIn)}]
-        </title>
+        <title>{locale.title.signIn}</title>
       </Helmet>
       <Container component='main' maxWidth='xs'>
         <CssBaseline />
@@ -236,7 +232,6 @@ const SignIn = (props: RouteComponentProps<AnyRecord> & StateProps & DispatchPro
               autoComplete='current-password'
               onChange={makeOnChange(ActionType.Password)}
             />
-            <FormControlLabel control={<Checkbox value='remember' color='primary' />} label={locale.signIn.remember} />
             <Button
               type='button'
               fullWidth
@@ -248,11 +243,6 @@ const SignIn = (props: RouteComponentProps<AnyRecord> & StateProps & DispatchPro
               {locale.signIn.signIn}
             </Button>
             <Grid container justify='space-between'>
-              <Grid item>
-                <Link href='/' variant='body2'>
-                  {locale.signIn.forgotPassword}
-                </Link>
-              </Grid>
               <Grid item>
                 <Link href={Routes.SignUp} variant='body2'>
                   {locale.signIn.noAccount}

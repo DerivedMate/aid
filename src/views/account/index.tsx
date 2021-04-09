@@ -4,6 +4,7 @@ import { State } from '@/store/reducers'
 import { listed } from '@/styles/ts/common'
 import { List, ListItem } from '@material-ui/core'
 import React from 'react'
+import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 
 interface DispatchProps {
@@ -24,13 +25,18 @@ const Elem = ({ locale }: DispatchProps): React.ReactElement => {
       .catch(console.error)
 
   return (
-    <div className={styles.container}>
-      <List component='ul' className={styles.fullCard}>
-        <ListItem className={styles.fullCard} onClick={onLogoutClick} button>
-          {locale.account.logout}
-        </ListItem>
-      </List>
-    </div>
+    <>
+      <Helmet>
+        <title>{locale.title.account}</title>
+      </Helmet>
+      <div className={styles.container}>
+        <List component='ul' className={styles.fullCard}>
+          <ListItem className={styles.fullCard} onClick={onLogoutClick} button>
+            {locale.account.logout}
+          </ListItem>
+        </List>
+      </div>
+    </>
   )
 }
 

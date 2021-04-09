@@ -5,6 +5,17 @@ const dict: Locale = {
     learnMore: 'Dowiedz się więcej'
   },
 
+  title: {
+    home: 'Strona G.',
+    signIn: 'Logowanie',
+    signUp: 'Rejestracja',
+    supervised: 'Podopieczni',
+    account: 'Konto',
+    medications: 'Leki',
+    location: 'Lokalizacja',
+    health: 'Zdrowie'
+  },
+
   home: {
     toAbout: {
       title: 'Aid',

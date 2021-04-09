@@ -199,9 +199,7 @@ const SignUp = (props: RouteComponentProps<AnyRecord> & StateProps & DispatchPro
   return (
     <>
       <Helmet>
-        <title>
-          {locale.signUp.signUp} [{String(loggedIn)}]
-        </title>
+        <title>{locale.title.signUp}</title>
       </Helmet>
       <Container component='main' maxWidth='xs'>
         <CssBaseline />

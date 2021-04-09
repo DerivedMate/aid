@@ -1,8 +1,7 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import { Card, CardActions, CardContent, Typography } from '@material-ui/core'
-
 import { Locale } from '@/locale/model'
 import { State } from '@/store/reducers'
 import { connect } from 'react-redux'
@@ -13,19 +12,23 @@ import { listed } from '@/styles/ts/common'
 
 interface StateProps {
   locale: Locale
+  auth: boolean
 }
 
 const mapState = (state: State): StateProps => ({
-  locale: state.lang.dict
+  locale: state.lang.dict,
+  auth: state.user.loggedIn
 })
 
-const Dashboard = ({ locale }: StateProps): React.ReactElement => {
+const Dashboard = ({ locale, auth }: StateProps): React.ReactElement => {
   const styles = listed()
+
+  if (!auth) return <Redirect to={Routes.Home} />
 
   return (
     <>
       <Helmet>
-        <title>Dashboard</title>
+        <title>{locale.title.home}</title>
       </Helmet>
       <div className={styles.container}>
         <Card variant='elevation' className={styles.fullCard}>
