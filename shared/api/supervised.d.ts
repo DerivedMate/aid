@@ -28,3 +28,18 @@ interface AddSupervisedResError {
 }
 
 export type AddSupervisedRes = AddSupervisedResOk | AddSupervisedResError
+
+export interface SupervisedRemoveReqBody {
+  supervised_id: UUID
+}
+
+interface SupervisedRemoveResFail {
+  ok: false
+  message: string
+}
+
+interface SupervisedRemoveResSuccess {
+  ok: true
+}
+
+type SupervisedRemoveRes = SupervisedRemoveResFail | SupervisedRemoveResSuccess

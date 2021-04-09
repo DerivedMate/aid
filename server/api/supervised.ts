@@ -1,9 +1,17 @@
 import { EndPoint } from './_common'
 import { Express } from 'express-serve-static-core'
-import { createSupervision, getSupervisedList } from '../database/schema/Supervised'
-import { SupervisedListResult, AddSupervisedReqBody, AddSupervisedRes } from '../../shared/api/supervised'
+import { createSupervision, getSupervisedList, removeSupervision } from '../database/schema/Supervised'
+import {
+  SupervisedListResult,
+  AddSupervisedReqBody,
+  AddSupervisedRes,
+  SupervisedRemoveReqBody,
+  SupervisedRemoveResFail,
+  SupervisedRemoveResSuccess
+} from '../../shared/api/supervised'
 import { validateUUID } from '../database/types'
 import { mockDev } from '../security'
+import { AuthSupervision } from '../database/schema/Supervision'
 
 class Supervised extends EndPoint {
   mount(s: Express, prefix: string) {
@@ -76,6 +84,67 @@ class Supervised extends EndPoint {
               ok: false,
               message: e
             } as AddSupervisedRes)
+          )
+        )
+    })
+
+    s.delete(`${prefix}/supervised/delete`, async (req, res) => {
+      mockDev(req)
+
+      const supervisor_id = req.session.user_id
+      const { supervised_id } = req.body as SupervisedRemoveReqBody
+
+      if (!supervisor_id)
+        return res.status(401).send(
+          JSON.stringify({
+            ok: false,
+            message: 'No supervisor ID'
+          } as SupervisedRemoveResFail)
+        )
+
+      if (!validateUUID(supervised_id))
+        return res.status(400).send(
+          JSON.stringify({
+            ok: false,
+            message: 'Invalid supervised ID'
+          } as SupervisedRemoveResFail)
+        )
+
+      const auth = await AuthSupervision(supervised_id, supervisor_id).catch(e => {
+        console.error(e)
+        return { ok: false }
+      })
+
+      if (!auth.ok)
+        return res.status(403).send(
+          JSON.stringify({
+            ok: false,
+            message: 'Access Denied'
+          } as SupervisedRemoveResFail)
+        )
+
+      removeSupervision(supervisor_id, supervised_id)
+        .then(r => {
+          if (!r)
+            return res.status(500).send(
+              JSON.stringify({
+                ok: false,
+                message: 'Query Error'
+              } as SupervisedRemoveResFail)
+            )
+
+          return res.status(200).send(
+            JSON.stringify({
+              ok: true
+            } as SupervisedRemoveResSuccess)
+          )
+        })
+        .catch(e =>
+          res.status(500).send(
+            JSON.stringify({
+              ok: false,
+              message: String(e)
+            } as SupervisedRemoveResFail)
           )
         )
     })

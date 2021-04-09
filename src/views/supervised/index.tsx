@@ -13,9 +13,11 @@ import { Collapse, List, ListItem, ListItemIcon, ListItemText } from '@material-
 import LocationOnIcon from '@material-ui/icons/LocationOn'
 import LocalHospitalIcon from '@material-ui/icons/LocalHospital'
 import InfoIcon from '@material-ui/icons/Info'
+import DeleteIcon from '@material-ui/icons/Delete'
 import { SupervisedListFail, SupervisedListSuccess } from '%/api/supervised'
 import { SupervisedListDisplay } from '%/query/supervised'
 import AddPopUp from './addPopup'
+import DeletePopup from './deletePopup'
 
 interface StateProps {
   locale: Locale
@@ -111,6 +113,13 @@ const Supervised = ({ locale }: StateProps) => {
     else setOpenNr(v)
   }
 
+  const [deleteOn, switchDelete] = useState(false)
+  const [currentSupervised, setCurrentSupervised] = useState<SupervisedListDisplay>(null)
+  const handleDeleteClick = (i: number) => () => {
+    setCurrentSupervised(state.supervised[i])
+    switchDelete(true)
+  }
+
   const styles = listed()
 
   return (
@@ -158,6 +167,12 @@ const Supervised = ({ locale }: StateProps) => {
                           className={styles.camouflagedLink}
                         />
                       </ListItem>
+                      <ListItem button className={styles.listItemDanger} onClick={handleDeleteClick(i)}>
+                        <ListItemIcon>
+                          <DeleteIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={locale.medicine.common.button.delete} color='warning' />
+                      </ListItem>
                     </List>
                   </Collapse>
                 </List>
@@ -174,6 +189,9 @@ const Supervised = ({ locale }: StateProps) => {
         button={locale.supervised.add.button}
         onResult={onPopUpResult}
       />
+      {deleteOn && (
+        <DeletePopup onResult={onPopUpResult} handleClose={() => switchDelete(false)} supervised={currentSupervised} />
+      )}
     </>
   )
 }

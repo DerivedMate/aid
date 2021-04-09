@@ -41,3 +41,14 @@ export const createSupervision = (supervisor_id: UUID, device_id: UUID): Promise
     console.dir(r)
     return r.rows[0] as UUID
   })
+
+export const removeSupervision = (supervisor_id: UUID, supervised_id: UUID): Promise<boolean> =>
+  query(
+    `
+      delete from supervision
+      where 
+        supervisor_id = $1::uuid and
+        supervised_id = $2::uuid ;
+    `,
+    [supervisor_id, supervised_id]
+  ).then(r => r.rowCount === 1)
