@@ -1,5 +1,10 @@
 # Aid (name pending)
 
+## Mock account access
+
+login: e@mail.com
+password: toor
+
 ## Installation
 
 ```shell
