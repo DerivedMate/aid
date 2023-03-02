@@ -10,7 +10,7 @@
     "start:prod": "cross-env NODE_ENV=\"production\" ts-node -P \"./tsconfig.json\" --files server/index.ts",
     "server:dev": "DATABASE_URL=\"postgresql://aidclient:toor@localhost:5432/aid\" NODE_ENV=\"development\" nodemon --watch server --exec \"kill -9 `lsof -t -i:3001`; ts-node -P \"./tsconfig.json\" --files \" ./server/index.ts",
     "server:test": "NODE_ENV=\"test\" nodemon --watch server --exec \"kill -9 `lsof -t -i:3001`; ts-node -P \"./tsconfig.json\" --files \" ./server/index.ts",
-    "build": "cross-env TS_NODE_PROJECT=\"tsconfig.webpack.json\" NODE_ENV=\"production\" webpack --progress --fix --colors --config config/webpack/app.prod.ts",
+    "build": "cross-env DS_PYTHON_VERSION=2 TS_NODE_PROJECT=\"tsconfig.webpack.json\" NODE_ENV=\"production\" webpack --progress --fix --colors --config config/webpack/app.prod.ts",
     "postbuild": "npm run build:sw:prod",
     "build:sw:prod": "cross-env TS_NODE_PROJECT=\"tsconfig.webpack.json\" NODE_ENV=\"production\" webpack --progress --colors --config config/webpack/service-worker.prod.ts && ts-node config/service-worker/inject-manifest.ts",
     "build:local": "cross-env TS_NODE_PROJECT=\"tsconfig.webpack.json\" NODE_ENV=\"production\" webpack --progress --colors --config config/webpack/app.prod.ts",
@@ -47,8 +47,8 @@
     "url": "https://github.com/DerivedMate/aid/issues"
   },
   "engines": {
-    "node": ">=14 <15",
-    "npm": ">=7 <8"
+    "node": ">=14 <19",
+    "npm": ">=7"
   },
   "homepage": "https://github.com/DerivedMate/aid",
   "devDependencies": {
