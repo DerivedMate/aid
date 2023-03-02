@@ -10,7 +10,7 @@ module.exports = {
   testEnvironment: 'jsdom',
   verbose: true,
   setupFiles: ['dotenv/config'],
-  setupFilesAfterEnv: ['<rootDir>/config/tests/setupTests.js'],
+  setupFilesAfterEnv: [],
   testMatch: ['<rootDir>/src/**/*.(spec|test).(ts|tsx)'],
   testPathIgnorePatterns: ['<rootDir>/node_modules/'],
   moduleDirectories: ['node_modules', 'src'],
