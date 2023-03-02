@@ -168,22 +168,6 @@ const webpackConfig: webpack.Configuration = {
             }
           },
           {
-            test: /\.(jpe?g|png|webp)$/i,
-            use: {
-              loader: 'responsive-loader',
-              options: {
-                // eslint-disable-next-line global-require, @typescript-eslint/no-unsafe-assignment
-                adapter: require('responsive-loader/sharp'),
-                name: '[name].[width].[hash].[ext]',
-                outputPath: 'images/',
-                sizes: [320, 640, 960, 1280],
-                quality: 75,
-                format: 'webp',
-                emitFile: true
-              }
-            }
-          },
-          {
             test: /\.svg$/i,
             use: ['@svgr/webpack', 'url-loader']
           }
