@@ -47,7 +47,7 @@
     "url": "https://github.com/DerivedMate/aid/issues"
   },
   "engines": {
-    "node": ">=14 <19",
+    "node": ">=14 <15",
     "npm": ">=7"
   },
   "homepage": "https://github.com/DerivedMate/aid",
